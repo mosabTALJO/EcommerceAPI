@@ -6,10 +6,12 @@ namespace EcommerceAPI.Data.Models
     public class OrderItem : SoftDeleteEntity
     {
         public int Id { get; set; }
-        public int ProductId { get; set; }
-        public Product Product { get; set; }
-        public int? ProductTypeId { get; set; }
-        public ProductType ProductType { get; set; }
+        //public int ProductId { get; set; }
+        //public Product? Product { get; set; }
+        public int ProductVariantId { get; set; }
+        public ProductVariant? ProductVariant { get; set; }
+        //public int? ProductTypeId { get; set; }
+        //public ProductType ProductType { get; set; }
         public OrderItemState OrderItemState { get; set; }
         public DateTime? AcceptedDate { get; set; }
         public DateTime? ShippingDate { get; set; }
@@ -35,8 +37,8 @@ namespace EcommerceAPI.Data.Models
         public double SalePriceNoKDV { get; set; }
         public double KDV { get; set; }
         public double DiscountAmount { get; set; }
-        public int? ShipmentId { get; set; }
-        public Shipment Shipment { get; set; }
+        //public int? ShipmentId { get; set; }
+        //public Shipment Shipment { get; set; }
         public virtual ICollection<OrderLog> Logs { get; set; }
         [NotMapped]
         public bool HasLogs { get => Logs?.Any() ?? false; }

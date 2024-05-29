@@ -35,7 +35,7 @@ namespace EcommerceAPI.Core.Carts
         }
         public static async Task CalcualteCartItems(
             ICountryService _countryService,
-            IProductService _productService,
+            IProductVariantService _productVariantService,
             IOrderService _orderService,
             IUnitOfWork _unitOfWork,
             ICollectionService _collectionService,
@@ -57,18 +57,15 @@ namespace EcommerceAPI.Core.Carts
 
             //AddCollectionDiscounts(_collectionService, order);
 
-            foreach (var oi in order.OrderItems ?? new List<OrderItem>())
+            foreach (var oi in order.OrderItems ?? [])
             {
-                if (oi.ProductTypeId == 0)
-                    oi.ProductTypeId = null;
+                var pv = _productVariantService.Queryable().Include(x => x.Product).ThenInclude(x => x.Category).AsNoTracking()
+                .FirstOrDefault(x => x.Id == oi.ProductVariantId);
 
-                var p = _productService.Queryable().Include(x => x.ProductTypes).Include(x => x.Category).AsNoTracking()
-                .FirstOrDefault(x => x.Id == oi.ProductId);
-
-                bool productValid = p != null && p.Category?.IsActive == true;
-                if (productValid && (p.ProductTypes?.Count > 0 || oi.ProductTypeId.HasValue))
-                    productValid = p.ProductTypes?.Any(x => x.Id == oi.ProductTypeId && x.StockLevel > 0) == true;
-                if (!productValid)
+                bool pvValid = pv != null && pv.Product?.Category?.IsActive == true;
+                if (pvValid && pv!.ProductVariants?.Count > 0)
+                    pvValid = pv.ProductVariants?.Any(x => x.Id == oi.ProductVariantId && x.StockLevel > 0) == true;
+                if (!pvValid)
                 {
                     oi.Qty = 0;
                     _orderService.DeleteOrderItem(oi);
@@ -88,7 +85,7 @@ namespace EcommerceAPI.Core.Carts
                     }
                 }
 
-                oi.Product.MainImage = string.IsNullOrWhiteSpace(oi.Product.MainImage) || oi.Product.MainImage.StartsWith("https") ? oi.Product.MainImage : $"https://cdn.dsmcdn.com/mnresize/{600}/{500}" + oi.Product.MainImage;
+                oi.ProductVariant.MainImage = string.IsNullOrWhiteSpace(oi.ProductVariant.MainImage) || oi.ProductVariant.MainImage.StartsWith("https") ? oi.ProductVariant.MainImage : $"https://cdn.dsmcdn.com/mnresize/{600}/{500}" + oi.ProductVariant.MainImage;
 
                 //Calcualte Prices
                 oi.ProductSalesPrice = p.CompanyPrice.Value * (p.Category.ProfitRatio ?? 1.5) * order.CurrencyRate;
@@ -102,8 +99,8 @@ namespace EcommerceAPI.Core.Carts
                 totalWithCuponDiscount += oi.TotalSalePrice;
                 order.DiscountAmount += oi.DiscountAmount;
 
-                oi.Product.CompanyPrice = p.Category.ProfitRatio;
-                oi.Product.CompanyProductID = null;
+                //oi.ProductVariant.CompanyPrice = p.Category.ProfitRatio; //look here
+                //oi.ProductVariant.CompanyProductID = null;
             }
 
             order.SubTotalSalePrice = totalWithoutCuponDiscount;
@@ -157,15 +154,12 @@ namespace EcommerceAPI.Core.Carts
 
             foreach (var oi in order.OrderItems)
             {
-                if (oi.ProductTypeId == 0)
-                    oi.ProductTypeId = null;
-
-                var p = _productService.Queryable().Include(x => x.ProductTypes).Include(x => x.Category).AsNoTracking()
+                var p = _productService.Queryable().Include(x => x.ProductVariants).Include(x => x.Category).AsNoTracking()
                 .FirstOrDefault(x => x.Id == oi.ProductId);
 
                 bool productValid = p != null && p.Category?.IsActive == true;
-                if (productValid && (p.ProductTypes?.Count > 0 || oi.ProductTypeId.HasValue))
-                    productValid = p.ProductTypes?.Any(x => x.Id == oi.ProductTypeId && x.StockLevel > 0) == true;
+                if (productValid && p!.ProductVariants?.Count > 0)
+                    productValid = p.ProductVariants?.Any(x => x.Id == oi.ProductVariantId && x.StockLevel > 0) == true;
                 if (!productValid)
                 {
                     oi.Qty = 0;

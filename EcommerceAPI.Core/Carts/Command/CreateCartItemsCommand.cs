@@ -40,11 +40,11 @@ namespace EcommerceAPI.Core.Carts.Command
                 var o = _orderService.Queryable().Include(x => x.OrderItems).OrderByDescending(x => x.Id).AsNoTracking()
                     .FirstOrDefault(x => x.OrderStatus == OrderStatus.CartOrder && x.CustomerId == command.UserId);
                 o ??= new Order()
-                    {
-                        OrderStatus = OrderStatus.CartOrder,
-                        CustomerId = command.UserId,
-                        OrderItems = new List<OrderItem>(),
-                    };
+                {
+                    OrderStatus = OrderStatus.CartOrder,
+                    CustomerId = command.UserId,
+                    OrderItems = new List<OrderItem>(),
+                };
 
                 o.Currency = command.Currency;
                 o.Country = command.ContainsCountryCodeKey ? command.CountryCode : _countryService.Queryable().AsNoTracking().FirstOrDefault(x => x.CurrencyCode == o.Currency)?.Code;
@@ -53,23 +53,18 @@ namespace EcommerceAPI.Core.Carts.Command
                 string error = "";
                 foreach (var item in command.Items)
                 {
-                    var oi = o.OrderItems.FirstOrDefault(x => x.ProductId == item.ProductId && (!item.ProductTypeId.HasValue || x.ProductTypeId == item.ProductTypeId));
+                    var oi = o.OrderItems.FirstOrDefault(x => x.ProductId == item.ProductId && x.ProductVariantId == item.ProductVariantId);
                     if (oi is null && item.Quantity <= 0)
                         continue;
 
-                    var p = _productService.Queryable().Include(x => x.ProductTypes).AsNoTracking().FirstOrDefault(x => x.Id == item.ProductId);
+                    var p = _productService.Queryable().Include(x => x.ProductVariants).AsNoTracking().FirstOrDefault(x => x.Id == item.ProductId);
                     bool productExists = p != null;
-                    if (productExists && (p.ProductTypes?.Count > 0 || item.ProductTypeId.HasValue))
+                    if (productExists && p!.ProductVariants?.Count > 0)
                     {
-                        if (p.ProductTypes?.Count == 1 && !item.ProductTypeId.HasValue)
-                        {
-                            item.ProductTypeId = p.ProductTypes.First().Id;
-
-                            oi = o.OrderItems.FirstOrDefault(x => x.ProductId == item.ProductId && (!item.ProductTypeId.HasValue || x.ProductTypeId == item.ProductTypeId));
-                            if (oi is null && item.Quantity <= 0)
-                                continue;
-                        }
-                        productExists = p.ProductTypes?.Any(x => x.Id == item.ProductTypeId && x.StockLevel > 0) == true;
+                        oi = o.OrderItems.FirstOrDefault(x => x.ProductId == item.ProductId && x.ProductVariantId == item.ProductVariantId);
+                        if (oi is null && item.Quantity <= 0)
+                            continue;
+                        productExists = p.ProductVariants?.Any(x => x.Id == item.ProductVariantId && x.StockLevel > 0) == true;
                     }
                     if (!productExists)
                     {
@@ -81,7 +76,7 @@ namespace EcommerceAPI.Core.Carts.Command
                     {
                         if (oi is null)
                         {
-                            oi = new OrderItem { ProductId = item.ProductId, ProductTypeId = item.ProductTypeId, Qty = item.Quantity, OrderItemState = OrderItemState.Pending };
+                            oi = new OrderItem { ProductId = item.ProductId, ProductVariantId = item.ProductVariantId, Qty = item.Quantity, OrderItemState = OrderItemState.Pending };
                             o.OrderItems.Add(oi);
                         }
                         oi.Qty = item.Quantity;

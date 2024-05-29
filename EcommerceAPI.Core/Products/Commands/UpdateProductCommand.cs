@@ -35,7 +35,7 @@ namespace EcommerceAPI.Core.Products.Commands
         public string CompanyURL { get; set; }
         public double? CompanyPrice { get; set; }
         public string CompanyColor { get; set; }
-        public ICollection<ProductTypeVM> ProductTypes { get; set; }
+        public ICollection<ProductVariantVM> ProductVariants { get; set; }
         public bool OnlinePaymentOnly { get; set; }
         public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, RequestResult<bool>>
         {
@@ -74,7 +74,7 @@ namespace EcommerceAPI.Core.Products.Commands
                     p.IsActive = command.IsActive;
                     p.OnlinePaymentOnly = command.OnlinePaymentOnly;
                     p.CompanyPrice = command.CompanyPrice;
-                    p.ProductTypes = command.ProductTypes?.Select(x => _mapper.Map<ProductType>(x)).ToList() ?? new List<ProductType>();
+                    p.ProductVariants = command.ProductVariants?.Select(_mapper.Map<ProductVariant>).ToList() ?? [];
                     p.CompanyColor = command.CompanyColor;
 
                     _productService.UpdateProduct(p);

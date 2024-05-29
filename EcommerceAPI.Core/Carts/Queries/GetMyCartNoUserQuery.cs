@@ -53,7 +53,7 @@ namespace EcommerceAPI.Core.Carts.Queries
 
                 foreach (var item in query.Items)
                 {
-                    o.OrderItems.Add(new OrderItem { ProductId = item.ProductId, ProductTypeId = item.ProductTypeId, Qty = item.Quantity, Product = new Product { Id = item.ProductId } });
+                    o.OrderItems.Add(new OrderItem { ProductId = item.ProductId, ProductVariantId = item.ProductVariantId, Qty = item.Quantity, Product = new Product { Id = item.ProductId } });
                 }
 
                 await CartOrderOperations.CalcualteCartItems(_countryService, _productService, _orderService, _unitOfWork, _collectionService, _currencyRateService, o, coupon );

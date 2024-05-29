@@ -12,18 +12,18 @@ namespace EcommerceAPI.Services
         void DeleteProduct(Product p);
         int[] GetCategoryProductIds(List<int> categoryIds);
         IQueryable<Product> GetRelatedProducts(int id, string lang, double currencyRate);
-        IQueryable<ProductType> GetProductTypes(int productId);
+        IQueryable<ProductVariant> GetProductVariant(int productId);
     }
 
     public class ProductService : Service<Product>, IProductService
     {
-        ITrackableRepository<ProductType> _productTypeRepo;
+        ITrackableRepository<ProductVariant> _productVariantRepo;
         ITrackableRepository<OrderItem> _orderItemRepo;
         public ProductService(ITrackableRepository<Product> repo
-            , ITrackableRepository<ProductType> productTypeRepo
+            , ITrackableRepository<ProductVariant> productVariantRepo
             , ITrackableRepository<OrderItem> orderItemRepo) : base(repo)
         {
-            _productTypeRepo = productTypeRepo;
+            _productVariantRepo = productVariantRepo;
             _orderItemRepo = orderItemRepo;
         }
 
@@ -31,58 +31,55 @@ namespace EcommerceAPI.Services
         {
             Insert(p);
 
-            foreach (var pt in p.ProductTypes ?? new List<ProductType>())
+            foreach (var pt in p.ProductVariants ?? new List<ProductVariant>())
             {
                 pt.Product = p;
                 //if (p.VendorId == Vendor.Custom)
                 //    pt.StockLevel = 10;
-                _productTypeRepo.Insert(pt);
+                _productVariantRepo.Insert(pt);
             }
         }
 
         public void UpdateProduct(Product p)
         {
-            var dbTypes = _productTypeRepo.Queryable().Where(x => x.ProductId == p.Id).ToList();
-            foreach (var dbType in dbTypes)
+            var dbVariants = _productVariantRepo.Queryable().Where(x => x.ProductId == p.Id).ToList();
+            foreach (var dbVariant in dbVariants)
             {
-                var existed = p.ProductTypes.Where(x => x.Size == dbType.Size).ToList();
-                if (!existed.Any())
-                {
-                    if (_orderItemRepo.Queryable().Any(oi => oi.ProductTypeId == dbType.Id))
-                        dbType.StockLevel = 0;
-                    else
-                        _productTypeRepo.Delete(dbType);
-                }
-                else
-                {
-                    dbType.Barcode = existed[0].Barcode;
-                    dbType.StockLevel = existed[0].StockLevel;
-                    _productTypeRepo.Update(dbType);
+                //var existed = p.ProductVariants.Where(x => x.Size == dbVariant.Size).ToList();//look here
+                //if (!existed.Any())
+                //{
+                //    if (_orderItemRepo.Queryable().Any(oi => oi.ProductVariantId == dbVariant.Id))
+                //        dbVariant.StockLevel = 0;
+                //    else
+                //        _productVariantRepo.Delete(dbVariant);
+                //}
+                //else
+                //{
+                //    dbVariant.Barcode = existed[0].Barcode;
+                //    dbVariant.StockLevel = existed[0].StockLevel;
+                //    _productVariantRepo.Update(dbVariant);
 
-                    p.ProductTypes = p.ProductTypes.Except(existed).ToList();
-                }
+                //    p.ProductVariants = p.ProductVariants.Except(existed).ToList();
+                //}
             }
-            foreach (var pt in p.ProductTypes)
+            foreach (var pv in p.ProductVariants)
             {
-                pt.Product = p;
+                pv.Product = p;
                 //if (p.VendorId == Vendor.Custom)
                 //    pt.StockLevel = 10;
-                _productTypeRepo.Insert(pt);
+                _productVariantRepo.Insert(pv);
             }
             Update(p);
         }
-
         public void DeleteProduct(Product p)
         {
-            _productTypeRepo.Queryable().Where(x => x.ProductId == p.Id).ToList().ForEach(pt => _productTypeRepo.Delete(pt));
+            _productVariantRepo.Queryable().Where(x => x.ProductId == p.Id).ExecuteDeleteAsync();
             Delete(p);
         }
-
         public int[] GetCategoryProductIds(List<int> categoryIds)
         {
             return Repository.Queryable().Where(x => x.CategoryId != null && categoryIds.Contains(x.CategoryId.Value)).Select(x => x.Id).ToArray();
         }
-
         public IQueryable<Product> GetRelatedProducts(int productId, string lang, double currencyRate)
         {
             var catId = Repository.Queryable().FirstOrDefault(x => x.Id == productId)?.CategoryId;
@@ -101,10 +98,9 @@ namespace EcommerceAPI.Services
             }
             return lst;
         }
-
-        public IQueryable<ProductType> GetProductTypes(int productId)
+        public IQueryable<ProductVariant> GetProductVariant(int productId)
         {
-            return _productTypeRepo.Queryable().Where(x => x.ProductId == productId);
+            return _productVariantRepo.Queryable().Where(x => x.ProductId == productId);
         }
     }
 }

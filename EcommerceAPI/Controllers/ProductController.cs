@@ -99,7 +99,7 @@ namespace EcommerceAPI.Web.Controllers
 
         // GET api/products/{id}
         [HttpGet("GetProductTypes/{id}")]
-        public async Task<ActionResult<RequestResult<ProductTypeVM[]>>> GetProductTypes(int id)
+        public async Task<ActionResult<RequestResult<ProductVariantVM[]>>> GetProductTypes(int id)
         {
             return GetActionResult(await _mediator.Send(new GetProductTypesQuery
             {

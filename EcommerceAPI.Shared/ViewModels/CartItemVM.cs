@@ -3,7 +3,7 @@
     public class CartItemVM
     {
         public int ProductId { get; set; }
-        public int? ProductTypeId { get; set; }
+        public int ProductVariantId { get; set; }
         public int Quantity { get; set; }
     }
 }

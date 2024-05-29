@@ -28,19 +28,18 @@
         public double? CompanyPrice { get; set; }
         public string CompanyColor { get; set; }
         public bool IsFavorite { get; set; }
-        public List<int> CategoryIds => new List<int> { CategoryId ?? 0 };
+        public List<int> CategoryIds => [CategoryId ?? 0];
         public List<ProductCategoryVM> ProductCategories =>
-            new List<ProductCategoryVM>
-            {
+            [
                 new ProductCategoryVM {
                     CategoryId = CategoryId ?? 0,
                     CategoryNameEn = Category?.NameEn,
                     CategoryNameTr = Category?.NameTr,
                     CategoryNameAr = Category?.NameAr
                 }
-            };
+            ];
 
-        public ICollection<ProductTypeVM> ProductTypes { get; set; }
+        public ICollection<ProductVariantVM> ProductVariants { get; set; }
         public bool OnlinePaymentOnly { get; set; }
     }
 }

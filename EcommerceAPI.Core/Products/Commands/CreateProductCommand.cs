@@ -32,7 +32,7 @@ namespace EcommerceAPI.Core.Products.Commands
         public string CompanyURL { get; set; }
         public double? CompanyPrice { get; set; }
         public string CompanyColor { get; set; }
-        public ICollection<ProductTypeVM> ProductTypes { get; set; }
+        public ICollection<ProductVariantVM> ProductVariants { get; set; }
         public bool OnlinePaymentOnly { get; set; }
         public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, RequestResult<int>>
         {

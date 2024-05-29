@@ -14,7 +14,7 @@ namespace EcommerceAPI.Core.Products
                 .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.NameEn))
                 .ForMember(dst => dst.BrandName, opt => opt.MapFrom(src => src.Brand.NameEn));
 
-            CreateMap<ProductType, ProductTypeVM>().ReverseMap();
+            CreateMap<ProductVariant, ProductVariantVM>().ReverseMap();
 
             CreateMap<Product, ProductVM>()
                 .ForMember(dst => dst.Images,

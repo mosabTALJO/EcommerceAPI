@@ -8,7 +8,7 @@ namespace EcommerceAPI.Shared.ViewModels
         public int ProductId { get; set; }
         public ProductVM Product { get; set; }
         public int? ProductTypeId { get; set; }
-        public ProductTypeVM ProductType { get; set; }
+        public ProductVariantVM ProductVariant { get; set; }
         public OrderItemState OrderItemState { get; set; }
         public DateTime? AcceptedDate { get; set; }
         public DateTime? RejectedDate { get; set; }

@@ -52,10 +52,10 @@ namespace EcommerceAPI.Core.Carts.Command
                 bool couponExists = false;
                 foreach (var oi in order.OrderItems)
                 {
-                    var p = _productService.Queryable().Include(x => x.ProductTypes).AsNoTracking().FirstOrDefault(x => x.Id == oi.ProductId);
+                    var p = _productService.Queryable().Include(x => x.ProductVariants).AsNoTracking().FirstOrDefault(x => x.Id == oi.ProductId);
                     if (p is null)
                         continue;
-                    if (oi.ProductTypeId.HasValue && !p.ProductTypes.Any(x => x.Id == oi.ProductTypeId))
+                    if (!p.ProductVariants.Any(x => x.Id == oi.ProductVariantId))
                         continue;
 
                     if (coupon.Type == CouponType.General

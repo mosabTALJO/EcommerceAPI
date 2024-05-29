@@ -23,13 +23,15 @@ namespace EcommerceAPI.Services
     {
         ITrackableRepository<OrderItem> _orderItemRepo;
         ITrackableRepository<Product> _productRepo;
-        ITrackableRepository<ProductType> _productTypeRepo;
+        //ITrackableRepository<ProductType> _productTypeRepo;
+        ITrackableRepository<ProductVariant> _productVariantRepo;
         public OrderService(ITrackableRepository<Order> repo, ITrackableRepository<OrderItem> orderItemRepo,
-            ITrackableRepository<ProductType> productTypeRepo, ITrackableRepository<Product> productRepo) : base(repo)
+            /*ITrackableRepository<ProductType> productTypeRepo*/ITrackableRepository<ProductVariant> productVariantRepo, ITrackableRepository<Product> productRepo) : base(repo)
         {
             _orderItemRepo = orderItemRepo;
             _productRepo = productRepo;
-            _productTypeRepo = productTypeRepo;
+            _productVariantRepo = productVariantRepo;
+            //_productTypeRepo = productTypeRepo;
         }
 
         public void CreateOrder(Order o)
@@ -96,24 +98,19 @@ namespace EcommerceAPI.Services
             var previousState = orderItem.OrderItemState;
             orderItem.AcceptedDate = DateTime.UtcNow;
             orderItem.OrderItemState = OrderItemState.Accepted;
-            var p = _productRepo.Queryable().Include(x => x.ProductTypes).IgnoreQueryFilters().FirstOrDefault(x => x.Id == orderItem.ProductId);
-            if (p is null)
-                throw new Exception("Product Not Found");
-            if (orderItem.ProductTypeId.HasValue)
-            {
-                var pt = p.ProductTypes.FirstOrDefault(x => x.Id == orderItem.ProductTypeId);
-                if (pt is null)
-                    throw new Exception("Product Type Not Found");
-                if (previousState == OrderItemState.Pending)
-                    pt.StockLevel -= orderItem.Qty;
-                _productTypeRepo.Update(pt);
+            //var p = _productRepo.Queryable().Include(x => x.ProductTypes).IgnoreQueryFilters().FirstOrDefault(x => x.Id == orderItem.ProductId);
+            var pv = _productVariantRepo.Queryable().Include(x => x.Product).IgnoreQueryFilters().FirstOrDefault(x => x.Id == orderItem.ProductVariantId)
+                ?? throw new Exception("Product Not Found");
 
-                if (p.ProductTypes.All(x => x.StockLevel <= 0))
-                {
-                    p.IsActive = false;
-                    _productRepo.Update(p);
-                }
-            }
+            if (previousState == OrderItemState.Pending)
+                pv.StockLevel -= orderItem.Qty;
+            _productVariantRepo.Update(pv);
+
+            //if (p.ProductVariants.All(x => x.StockLevel <= 0))//look here
+            //{
+            //    p.IsActive = false;
+            //    _productRepo.Update(p);
+            //}
 
             _orderItemRepo.Update(orderItem);
         }
@@ -140,16 +137,15 @@ namespace EcommerceAPI.Services
             var o = await Repository.Queryable().IgnoreQueryFilters().AsNoTracking()
                 .Include(x => x.Customer)
                 .Include(x => x.Gift)
-                .Include(x => x.OrderItems).ThenInclude(x => x.Product).ThenInclude(x => x.Brand)
-                .Include(x => x.OrderItems).ThenInclude(x => x.ProductType)
+                .Include(x => x.OrderItems).ThenInclude(x => x.ProductVariant).ThenInclude(x => x.Product).ThenInclude(x => x.Brand)
                 .Include(x => x.OrderItems).ThenInclude(x => x.Logs)
                 .Where(x => !x.DeletedAt.HasValue).FirstOrDefaultAsync(x => x.Id == id);
 
-            if (o?.OrderItems?.Any() == true)
-            {
-                foreach (var oi in o.OrderItems)
-                    CleanImages(oi.Product);
-            }
+            //if (o?.OrderItems?.Any() == true)//look here
+            //{
+            //    foreach (var oi in o.OrderItems)
+            //        CleanImages(oi.Product);
+            //}
 
             return o;
         }

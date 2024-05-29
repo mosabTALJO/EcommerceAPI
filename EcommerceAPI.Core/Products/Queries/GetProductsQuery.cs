@@ -64,7 +64,7 @@ namespace EcommerceAPI.Core.Products.Queries
                         lst = _collectionService.Queryable().AsNoTracking()
                             .Include(x => x.Items).ThenInclude(x => x.Product.Brand)
                             .Include(x => x.Items).ThenInclude(x => x.Product.Category)
-                            .Include(x => x.Items).ThenInclude(x => x.Product.ProductTypes)
+                            .Include(x => x.Items).ThenInclude(x => x.Product.ProductVariants)
                             .Where(x => x.Id == query.CollectionId)
                             .SelectMany(x => x.Items.Select(x => x.Product))
                             .OrderByDescending(x => x.Id);
@@ -130,7 +130,7 @@ namespace EcommerceAPI.Core.Products.Queries
                     if (!string.IsNullOrEmpty(query.Sizes))
                     {
                         var dbSizes = query.Sizes.Split(",");
-                        lst = lst.Include(x => x.ProductTypes).Where(x => x.ProductTypes.Any(s => s.StockLevel > 0 && dbSizes.Contains(s.Size)));
+                        //lst = lst.Include(x => x.ProductVariants).Where(x => x.ProductVariants.Any(s => s.StockLevel > 0 && dbSizes.Contains(s.Size)));//look here
                     }
                     //BRANDS
                     if (!string.IsNullOrEmpty(query.Brands))
@@ -188,7 +188,7 @@ namespace EcommerceAPI.Core.Products.Queries
                             lst = _collectionService.Queryable().AsNoTracking()
                                 .Include(x => x.Items).ThenInclude(x => x.Product.Brand)
                                 .Include(x => x.Items).ThenInclude(x => x.Product.Category)
-                                .Include(x => x.Items).ThenInclude(x => x.Product.ProductTypes)
+                                .Include(x => x.Items).ThenInclude(x => x.Product.ProductVariants)
                                 .Where(x => x.Id == query.CollectionId)
                                 .SelectMany(x => x.Items.Select(x => x.Product))
                                 .OrderByDescending(x => x.Id);
