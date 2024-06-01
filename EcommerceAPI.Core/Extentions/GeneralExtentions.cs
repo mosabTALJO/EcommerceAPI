@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using EcommerceAPI.Shared.Helpers;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,5 +28,6 @@ namespace EcommerceAPI.Core.Extentions
 
             return result;
         }
+        public static string GetPolicyNumber(this Policies p) => ((int)p).ToString();
     }
 }

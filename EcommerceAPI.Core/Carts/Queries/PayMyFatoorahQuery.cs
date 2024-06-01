@@ -26,18 +26,18 @@ namespace EcommerceAPI.Core.Carts.Queries
             private readonly ICouponService _couponService;
             private readonly IUnitOfWork _unitOfWork;
             private readonly ICountryService _countryService;
-            private readonly IProductService _productService;
+            private readonly IProductVariantService _productVariantService;
             private readonly ICollectionService _collectionService;
             private readonly ICurrencyRateService _currencyRateService;
 
-            public PayMyFatoorahQueryHandler(IOrderService orderService, UserManager<AppUser> userManager, ICouponService couponService, IUnitOfWork unitOfWork, ICountryService countryService, IProductService productService, ICollectionService collectionService, IOrderLogService orderLogService, ICurrencyRateService currencyRateService, IOrderPaymentService orderPaymentLogService)
+            public PayMyFatoorahQueryHandler(IOrderService orderService, UserManager<AppUser> userManager, ICouponService couponService, IUnitOfWork unitOfWork, ICountryService countryService, IProductVariantService productVariantService, ICollectionService collectionService, IOrderLogService orderLogService, ICurrencyRateService currencyRateService, IOrderPaymentService orderPaymentLogService)
             {
                 _orderService = orderService;
                 _userManager = userManager;
                 _couponService = couponService;
                 _unitOfWork = unitOfWork;
                 _countryService = countryService;
-                _productService = productService;
+                _productVariantService = productVariantService;
                 _collectionService = collectionService;
                 _orderLogService = orderLogService;
                 _currencyRateService = currencyRateService;
@@ -86,7 +86,7 @@ namespace EcommerceAPI.Core.Carts.Queries
                 o.ProductNotFound = query.ProductNotFound;
                 o.OrderDeviceType = query.OrderDeviceType;
 
-                bool areProductsValid = await CartOrderOperations.CalcualteAndValidateOrderItems(_countryService, _productService, _couponService, _collectionService, _currencyRateService, o, address, coupon, query.Currency);
+                bool areProductsValid = await CartOrderOperations.CalcualteAndValidateOrderItems(_countryService, _productVariantService, _couponService, _collectionService, _currencyRateService, o, address, coupon, query.Currency);
 
                 _orderService.UpdateOrder(o, true);
                 if (await _unitOfWork.SaveChangesAsync() > 0)

@@ -31,10 +31,10 @@ namespace EcommerceAPI.Core.Carts.Queries
 
                 var c = _countryService.Queryable().AsNoTracking().Include(x => x.Cities).FirstOrDefault(x => x.Code == query.CountryCode);
                 var u = await _userManager.FindByIdAsync(query.UserId);
-                var cartOrder = _orderService.Queryable().Include(x => x.OrderItems).ThenInclude(x => x.Product).AsNoTracking()
-                    .FirstOrDefault(x => x.OrderStatus == OrderStatus.CartOrder && x.CustomerId == query.UserId);
+                var onlinePaymentOnlyExists = await _orderService.ItemsQueryable()
+                    .AnyAsync(x => x.Order.OrderStatus == OrderStatus.CartOrder && x.Order.CustomerId == query.UserId && x.ProductVariant!.Product!.OnlinePaymentOnly);
 
-                bool OnDoorPayment = c?.OnDoorPayment == true && u?.IsBlackList != true && cartOrder?.OrderItems?.Any(x => x.Product.OnlinePaymentOnly) != true;
+                bool OnDoorPayment = c?.OnDoorPayment == true && u?.IsBlackList != true && !onlinePaymentOnlyExists;
                 if (!string.IsNullOrEmpty(query.CityCode))
                 {
                     var city = c.Cities.FirstOrDefault(x => x.Code == query.CityCode);

@@ -18,17 +18,17 @@ namespace EcommerceAPI.Core.Carts.Queries
         {
             private readonly IOrderService _orderService;
             private readonly ICountryService _countryService;
-            private readonly IProductService _productService;
+            private readonly IProductVariantService _productVariantService;
             private readonly ICollectionService _collectionService;
             private readonly IUnitOfWork _unitOfWork;
             private readonly IMapper _mapper;
             private readonly ICurrencyRateService _currencyRateService;
 
-            public GetMyCartQueryHandler(IOrderService orderService, ICountryService countryService, IProductService productService, IUnitOfWork unitOfWork, IMapper mapper, ICollectionService collectionService, ICurrencyRateService currencyRateService)
+            public GetMyCartQueryHandler(IOrderService orderService, ICountryService countryService, IProductVariantService productVariantService, IUnitOfWork unitOfWork, IMapper mapper, ICollectionService collectionService, ICurrencyRateService currencyRateService)
             {
                 _orderService = orderService;
                 _countryService = countryService;
-                _productService = productService;
+                _productVariantService = productVariantService;
                 _unitOfWork = unitOfWork;
                 _mapper = mapper;
                 _collectionService = collectionService;
@@ -49,7 +49,7 @@ namespace EcommerceAPI.Core.Carts.Queries
                 if (string.IsNullOrEmpty(dbOrder.Currency))
                     dbOrder.Currency = "KWD";
 
-                await CartOrderOperations.CalcualteCartItems(_countryService, _productService, _orderService, _unitOfWork, _collectionService, _currencyRateService, dbOrder);
+                await CartOrderOperations.CalcualteCartItems(_countryService, _productVariantService, _orderService, _unitOfWork, _collectionService, _currencyRateService, dbOrder);
                 return new RequestResult<OrderVM>(_mapper.Map<OrderVM>(dbOrder));
             }
         }

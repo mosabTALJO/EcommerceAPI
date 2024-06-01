@@ -22,7 +22,7 @@ namespace EcommerceAPI.Web.Controllers
         [HttpGet("GetProducts")]
         [HttpGet]
         public async Task<ActionResult<RequestResult<ListResponse<ProductLiteVM>>>> GetProducts(
-            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageNumber = 0,
             [FromQuery] int pageSize = 20,
             [FromQuery] int? categoryId = null,
             [FromQuery] int? collectionId = null,
@@ -48,7 +48,6 @@ namespace EcommerceAPI.Web.Controllers
                 BrandId = brandId,
                 Search = search,
                 Brands = brands,
-                Sizes = sizes,
                 Colors = colors,
                 Gender = gender,
                 MinPrice = minPrice,

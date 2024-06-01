@@ -16,7 +16,7 @@ namespace EcommerceAPI.Data.Models
         public int Id { get; set; }
         public int OrderId { get; set; }
         public Order Order { get; set; }
-        public int? RatedItemId { get; set; }
+        public int? ProductVariantID { get; set; }
         public double Rate { get; set; }
         public string Description { get; set; }
         public RatingType RatingType { get; set; }

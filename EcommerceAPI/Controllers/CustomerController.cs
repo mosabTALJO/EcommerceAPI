@@ -19,7 +19,7 @@ namespace EcommerceAPI.Web.Controllers
         // GET api/Customer
         [HttpGet]
         public async Task<ActionResult<RequestResult<ListResponse<UserVM>>>> Get(
-            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageNumber = 0,
             [FromQuery] int pageSize = 20,
             [FromQuery] string search = "",
             [FromQuery] string sortField = "CreatedAt",

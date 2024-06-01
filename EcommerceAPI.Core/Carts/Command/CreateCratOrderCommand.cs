@@ -48,18 +48,18 @@ namespace EcommerceAPI.Core.Carts.Command
             private readonly IOrderService _orderService;
             private readonly IOrderLogService _orderLogService;
             private readonly ICountryService _countryService;
-            private readonly IProductService _productService;
+            private readonly IProductVariantService _productVariantService;
             private readonly IUnitOfWork _unitOfWork;
             private readonly ICollectionService _collectionService;
             private readonly ICurrencyRateService _currencyRateService;
 
-            public CreateCratOrderCommandHandler(IOrderService orderService, ICouponService couponService, ICountryService countryService, IUnitOfWork unitOfWork, IProductService productService, ICollectionService collectionService, IOrderLogService orderLogService, ICurrencyRateService currencyRateService)
+            public CreateCratOrderCommandHandler(IOrderService orderService, ICouponService couponService, ICountryService countryService, IUnitOfWork unitOfWork, IProductVariantService productVariantService, ICollectionService collectionService, IOrderLogService orderLogService, ICurrencyRateService currencyRateService)
             {
                 _orderService = orderService;
                 _couponService = couponService;
                 _countryService = countryService;
                 _unitOfWork = unitOfWork;
-                _productService = productService;
+                _productVariantService = productVariantService;
                 _collectionService = collectionService;
                 _orderLogService = orderLogService;
                 _currencyRateService = currencyRateService;
@@ -97,7 +97,7 @@ namespace EcommerceAPI.Core.Carts.Command
                     FullAddress = command.FullAddress,
                 };
 
-                bool areProductsValid = await CartOrderOperations.CalcualteAndValidateOrderItems(_countryService, _productService, _couponService, _collectionService, _currencyRateService, o, address, coupon, country.CurrencyCode);
+                bool areProductsValid = await CartOrderOperations.CalcualteAndValidateOrderItems(_countryService, _productVariantService, _couponService, _collectionService, _currencyRateService, o, address, coupon, country.CurrencyCode);
 
                 _orderService.UpdateOrder(o, true);
                 if (await _unitOfWork.SaveChangesAsync() > 0)

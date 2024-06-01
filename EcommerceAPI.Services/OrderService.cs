@@ -7,6 +7,11 @@ namespace EcommerceAPI.Services
 {
     public interface IOrderService : IService<Order>
     {
+        /// <summary>
+        /// Get the Order with its details (Customer, Gift, OrderItems, ProductVariant, Product, Brand, Logs).
+        /// </summary>
+        /// <param name="id">Order ID</param>
+        /// <returns>Order with its details</returns>
         Task<Order> GetOrderDetails(int id);
         void CreateOrder(Order o);
         void UpdateOrder(Order o, bool UpdateCreatedAt = false);
@@ -17,6 +22,7 @@ namespace EcommerceAPI.Services
         void Cancel(OrderItem oi);
         void Return(OrderItem oi, string reason);
         void DeleteOrderItem(OrderItem oi);
+        IQueryable<OrderItem> ItemsQueryable();
     }
 
     public class OrderService : Service<Order>, IOrderService
@@ -33,7 +39,6 @@ namespace EcommerceAPI.Services
             _productVariantRepo = productVariantRepo;
             //_productTypeRepo = productTypeRepo;
         }
-
         public void CreateOrder(Order o)
         {
             Insert(o);
@@ -46,7 +51,6 @@ namespace EcommerceAPI.Services
                 }
             }
         }
-
         public void UpdateOrder(Order o, bool UpdateCreatedAt = false)
         {
             var dbItems = _orderItemRepo.Queryable().AsNoTracking().Where(x => x.OrderId == o.Id).ToList();
@@ -76,13 +80,11 @@ namespace EcommerceAPI.Services
 
             Update(o);
         }
-
         public void DeleteOrder(Order o)
         {
             _orderItemRepo.Queryable().Where(x => x.OrderId == o.Id).ToList().ForEach(pt => _orderItemRepo.Delete(pt));
             Delete(o);
         }
-
         public void ShipItem(OrderItem OrderItem, string ShippingCompany, string ShippingCode)
         {
             OrderItem.ShippingCode = ShippingCode;
@@ -92,7 +94,6 @@ namespace EcommerceAPI.Services
 
             _orderItemRepo.Update(OrderItem);
         }
-
         public void Accept(OrderItem orderItem)
         {
             var previousState = orderItem.OrderItemState;
@@ -105,16 +106,8 @@ namespace EcommerceAPI.Services
             if (previousState == OrderItemState.Pending)
                 pv.StockLevel -= orderItem.Qty;
             _productVariantRepo.Update(pv);
-
-            //if (p.ProductVariants.All(x => x.StockLevel <= 0))//look here
-            //{
-            //    p.IsActive = false;
-            //    _productRepo.Update(p);
-            //}
-
             _orderItemRepo.Update(orderItem);
         }
-
         public async void Cancel(OrderItem OrderItem)
         {
             OrderItem.CancelDate = DateTime.UtcNow;
@@ -123,7 +116,6 @@ namespace EcommerceAPI.Services
 
             //UpdateOrder(await Repository.FindAsync(OrderItem.OrderId));
         }
-
         public void Return(OrderItem OrderItem, string reason)
         {
             OrderItem.ReturningDate = DateTime.UtcNow;
@@ -131,7 +123,6 @@ namespace EcommerceAPI.Services
             OrderItem.OrderItemState = OrderItemState.Returning;
             _orderItemRepo.Update(OrderItem);
         }
-
         public async Task<Order> GetOrderDetails(int id)
         {
             var o = await Repository.Queryable().IgnoreQueryFilters().AsNoTracking()
@@ -139,17 +130,10 @@ namespace EcommerceAPI.Services
                 .Include(x => x.Gift)
                 .Include(x => x.OrderItems).ThenInclude(x => x.ProductVariant).ThenInclude(x => x.Product).ThenInclude(x => x.Brand)
                 .Include(x => x.OrderItems).ThenInclude(x => x.Logs)
-                .Where(x => !x.DeletedAt.HasValue).FirstOrDefaultAsync(x => x.Id == id);
-
-            //if (o?.OrderItems?.Any() == true)//look here
-            //{
-            //    foreach (var oi in o.OrderItems)
-            //        CleanImages(oi.Product);
-            //}
+                .Where(x => !x.DeletedAt.HasValue).AsSplitQuery().FirstOrDefaultAsync(x => x.Id == id);
 
             return o;
         }
-
         public void DeleteOrderItem(OrderItem oi)
         {
             var dbOrderItem = _orderItemRepo.Queryable().FirstOrDefault(x => x.Id == oi.Id);
@@ -159,37 +143,12 @@ namespace EcommerceAPI.Services
             dbOrderItem.CompleteRemove = true;
             _orderItemRepo.Delete(dbOrderItem);
         }
-
         public void InStock(OrderItem orderItem)
         {
             orderItem.InStockDate = DateTime.UtcNow;
             orderItem.OrderItemState = OrderItemState.InStock;
             _orderItemRepo.Update(orderItem);
         }
-
-        private void CleanImages(Product p)
-        {
-            var allImages = p.Images?.Split(',');
-            //if (p.VendorId == Vendor.Custom)
-            //{
-            //    p.MainImage = $"https://api.trgatestore.com/api/Files/PreviewImage/{p.MainImage}?w=300&h=400";
-            //    return;
-            //}
-
-            if (string.IsNullOrWhiteSpace(p.MainImage))
-            {
-                if (allImages?.Length > 0)
-                {
-                    for (int i = 0; i < (allImages?.Length ?? 0); i++)
-                        allImages[i] = allImages[i].StartsWith("https") ? allImages[i] : $"https://cdn.dsmcdn.com/mnresize/{300}/{400}" + allImages[i];
-                    p.Images = string.Join(",", allImages);
-                    p.MainImage = allImages[0];
-                }
-            }
-            else
-            {
-                p.MainImage = p.MainImage.StartsWith("https") ? p.MainImage : $"https://cdn.dsmcdn.com/mnresize/{1200}/{1000}" + p.MainImage;
-            }
-        }
+        public IQueryable<OrderItem> ItemsQueryable() => _orderItemRepo.Queryable();
     }
 }

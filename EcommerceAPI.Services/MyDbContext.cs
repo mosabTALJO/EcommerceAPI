@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
-namespace EcommerceAPI.Core
+namespace EcommerceAPI.Services
 {
     public class MyDbContext : IdentityDbContext<AppUser>
     {
@@ -37,7 +37,6 @@ namespace EcommerceAPI.Core
             modelBuilder.Entity<Brand>().HasIndex(p => p.IsActive);
             modelBuilder.Entity<Brand>().HasQueryFilter(p => p.IsActive);
 
-            modelBuilder.Entity<Product>().HasIndex(p => p.CompanyProductID);
             modelBuilder.Entity<Product>().HasIndex(p => p.NameEn);
             modelBuilder.Entity<Product>().HasIndex(p => p.NameAr);
             modelBuilder.Entity<Product>().HasIndex(p => p.NameTr);
@@ -118,7 +117,7 @@ namespace EcommerceAPI.Core
         public DbSet<OrderCategoryBrand> OrderCategoryBrands { get; set; }
         public DbSet<CollectionItem> CollectionItems { get; set; }
         public DbSet<Collection> Collections { get; set; }
-        public DbSet<Shipment> Shipments { get; set; }
+        //public DbSet<Shipment> Shipments { get; set; }
         public DbSet<OrderLog> OrderLogs { get; set; }
         public DbSet<OrderPayment> OrderPayments { get; set; }
         public DbSet<Inventory> Inventories { get; set; }

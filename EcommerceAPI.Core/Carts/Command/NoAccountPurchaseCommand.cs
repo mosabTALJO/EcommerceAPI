@@ -32,20 +32,20 @@ namespace EcommerceAPI.Core.Carts.Command
             private readonly IUnitOfWork _unitOfWork;
             private readonly UserManager<AppUser> _userManager;
             private readonly ICurrencyRateService _currencyRateService;
-            private readonly IProductService _productService;
+            private readonly IProductVariantService _productVariantService;
             private readonly ICouponService _couponService;
             private readonly ICountryService _countryService;
             private readonly ICollectionService _collectionService;
             private readonly IOrderLogService _orderLogService;
             private readonly IOrderPaymentService _orderPaymentService;
             //private readonly IEmailSender _emailSender;
-            public NoAccountPurchaseCommandHandler(IOrderService orderService, IUnitOfWork unitOfWork, UserManager<AppUser> userManager, ICurrencyRateService currencyRateService, IProductService productService, ICouponService couponService, ICountryService countryService, ICollectionService collectionService, IOrderLogService orderLogService, IOrderPaymentService orderPaymentService/*, IEmailSender emailSender*/)
+            public NoAccountPurchaseCommandHandler(IOrderService orderService, IUnitOfWork unitOfWork, UserManager<AppUser> userManager, ICurrencyRateService currencyRateService, IProductVariantService productVariantService, ICouponService couponService, ICountryService countryService, ICollectionService collectionService, IOrderLogService orderLogService, IOrderPaymentService orderPaymentService/*, IEmailSender emailSender*/)
             {
                 _orderService = orderService;
                 _unitOfWork = unitOfWork;
                 _userManager = userManager;
                 _currencyRateService = currencyRateService;
-                _productService = productService;
+                _productVariantService = productVariantService;
                 _couponService = couponService;
                 _countryService = countryService;
                 _collectionService = collectionService;
@@ -132,27 +132,21 @@ namespace EcommerceAPI.Core.Carts.Command
                 bool couponExists = false;
                 foreach (var item in command.Items)
                 {
-                    var oi = new OrderItem() { ProductId = item.ProductId, ProductVariantId = item.ProductVariantId, Qty = item.Quantity, OrderItemState = OrderItemState.Pending };
+                    var oi = new OrderItem() { ProductVariantId = item.ProductVariantId, Qty = item.Quantity, OrderItemState = OrderItemState.Pending };
                     o.OrderItems.Add(oi);
 
-                    var p = _productService.Queryable().Include(x => x.ProductVariants).AsNoTracking().FirstOrDefault(x => x.Id == item.ProductId);
-                    bool productExists = p != null && p.ProductVariants.Any(x => x.Id == item.ProductVariantId);
-
-                    if (!productExists)
-                    {
+                    var pv = await _productVariantService.Queryable().Where(x => x.Id == item.ProductVariantId)
+                        .Select(x => new { x.Id, x.ProductId, x.Product.BrandId, x.Product.CategoryId }).FirstOrDefaultAsync();
+                    if (pv == null)
                         return new RequestResult<NoAccountPaymentVM>(ActionResultType.NotFound, $"item {oi.Id} is not found");
-                        //if (oi != null)
-                        //    oi.Qty = 0;
-                        //error = "ProductId not found : " + item.ProductId + "\n";
-                    }
                     else
                     {
                         if (coupon == null)
                             continue;
                         if (coupon.Type == CouponType.General
-                        || (coupon.Type == CouponType.Product && p.Id == coupon.TypeId)
-                        || (coupon.Type == CouponType.Brand && p.BrandId == coupon.TypeId)
-                        || (coupon.Type == CouponType.Category && p.CategoryId == coupon.TypeId))
+                        || (coupon.Type == CouponType.Product && pv.ProductId == coupon.TypeId)
+                        || (coupon.Type == CouponType.Brand && pv.BrandId == coupon.TypeId)
+                        || (coupon.Type == CouponType.Category && pv.CategoryId == coupon.TypeId))
                         {
                             oi.CoupunDiscount = coupon.Rate;
                             couponExists = true;
@@ -173,7 +167,7 @@ namespace EcommerceAPI.Core.Carts.Command
                 o.ProductNotFound = command.ProductNotFound;
                 o.OrderDeviceType = command.OrderDeviceType;
 
-                bool areProductsValid = await CartOrderOperations.CalcualteAndValidateOrderItems(_countryService, _productService, _couponService, _collectionService, _currencyRateService, o, address, coupon, command.Currency);
+                bool areProductsValid = await CartOrderOperations.CalcualteAndValidateOrderItems(_countryService, _productVariantService, _couponService, _collectionService, _currencyRateService, o, address, coupon, command.Currency);
                 _orderService.CreateOrder(o);
 
                 if (await _unitOfWork.SaveChangesAsync() > 0)

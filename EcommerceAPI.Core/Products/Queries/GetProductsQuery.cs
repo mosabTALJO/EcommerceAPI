@@ -20,7 +20,6 @@ namespace EcommerceAPI.Core.Products.Queries
         public string Search { get; set; }
 
         public string Brands { get; set; }
-        public string Sizes { get; set; }
         public string Colors { get; set; }
         public string Gender { get; set; }
         public double? MinPrice { get; set; }
@@ -57,7 +56,7 @@ namespace EcommerceAPI.Core.Products.Queries
 
                 ListResponse<ProductLiteVM> result = null;
                 //Filtering used
-                if (!string.IsNullOrEmpty(query.Brands) || !string.IsNullOrEmpty(query.Sizes) || !string.IsNullOrEmpty(query.Colors) || !string.IsNullOrEmpty(query.Gender) || query.MinPrice.HasValue || query.MaxPrice.HasValue)
+                if (!string.IsNullOrEmpty(query.Brands) || !string.IsNullOrEmpty(query.Colors) || !string.IsNullOrEmpty(query.Gender) || query.MinPrice.HasValue || query.MaxPrice.HasValue)
                 {
                     if (query.CollectionId.HasValue)
                     {
@@ -93,9 +92,9 @@ namespace EcommerceAPI.Core.Products.Queries
                     if (!string.IsNullOrEmpty(query.Search))
                     {
                         if (int.TryParse(query.Search, out int idToSearch))
-                            lst = lst.Where(x => x.Id == idToSearch || x.CompanyProductID == query.Search || EF.Functions.Like(x.CompanyBrand, query.Search + "%") || EF.Functions.Like(x.NameEn, query.Search + "%"));
+                            lst = lst.Where(x => x.Id == idToSearch || EF.Functions.Like(x.CompanyBrand, query.Search + "%") || EF.Functions.Like(x.NameEn, query.Search + "%"));
                         else
-                            lst = lst.Where(x => x.CompanyProductID == query.Search || EF.Functions.Like(x.CompanyBrand, query.Search + "%") || EF.Functions.Like(x.NameEn, query.Search + "%"));
+                            lst = lst.Where(x => EF.Functions.Like(x.CompanyBrand, query.Search + "%") || EF.Functions.Like(x.NameEn, query.Search + "%"));
                     }
 
                     //MIN PRICe
@@ -125,12 +124,6 @@ namespace EcommerceAPI.Core.Products.Queries
                                 x.CompanyPrice.Value
                              )
                              <= max);
-                    }
-                    //SIZES
-                    if (!string.IsNullOrEmpty(query.Sizes))
-                    {
-                        var dbSizes = query.Sizes.Split(",");
-                        //lst = lst.Include(x => x.ProductVariants).Where(x => x.ProductVariants.Any(s => s.StockLevel > 0 && dbSizes.Contains(s.Size)));//look here
                     }
                     //BRANDS
                     if (!string.IsNullOrEmpty(query.Brands))
@@ -230,9 +223,9 @@ namespace EcommerceAPI.Core.Products.Queries
                             if (!string.IsNullOrEmpty(query.Search))
                             {
                                 if (int.TryParse(query.Search, out int idToSearch))
-                                    lst = lst.Where(x => x.Id == idToSearch || x.CompanyProductID == query.Search || EF.Functions.Like(x.CompanyBrand, query.Search + "%") || EF.Functions.Like(x.NameEn, query.Search + "%"));
+                                    lst = lst.Where(x => x.Id == idToSearch || EF.Functions.Like(x.CompanyBrand, query.Search + "%") || EF.Functions.Like(x.NameEn, query.Search + "%"));
                                 else
-                                    lst = lst.Where(x => x.CompanyProductID == query.Search || EF.Functions.Like(x.CompanyBrand, query.Search + "%") || EF.Functions.Like(x.NameEn, query.Search + "%"));
+                                    lst = lst.Where(x => EF.Functions.Like(x.CompanyBrand, query.Search + "%") || EF.Functions.Like(x.NameEn, query.Search + "%"));
                             }
 
                             //enable 5 products per brand if there is no other filter

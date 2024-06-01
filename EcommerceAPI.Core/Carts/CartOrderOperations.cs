@@ -10,29 +10,6 @@ namespace EcommerceAPI.Core.Carts
 {
     public class CartOrderOperations
     {
-        public static void AddCollectionDiscounts(ICollectionService _collectionService, Order order)
-        {
-            var collections = new Dictionary<int, List<OrderItem>>(); // collection ID, order items in that collection
-            var pIds = order.OrderItems.Select(x => x.ProductId).ToArray();
-
-            var collectionsIds = _collectionService.GetCollectionsByProducts(pIds);
-            foreach (var id in collectionsIds)
-            {
-                collections.Add(id.Key, order.OrderItems.Where(x => id.Value.Select(x => x.ProductId).Contains(x.ProductId)).OrderBy(oi => oi.SalePrice).ToList());
-            }
-            foreach (var pair in collections)
-            {
-                while (pair.Value.Sum(x => x.RemainingQtyForDiscount - x.Qty) > 1)
-                {
-                    var first = pair.Value.First(x => x.RemainingQtyForDiscount < x.Qty);
-                    var last = pair.Value.Last(x => x.RemainingQtyForDiscount < x.Qty);
-
-                    first.RemainingQtyForDiscount++;
-                    last.RemainingQtyForDiscount++;
-                    first.DiscountAmount++;
-                }
-            }
-        }
         public static async Task CalcualteCartItems(
             ICountryService _countryService,
             IProductVariantService _productVariantService,
@@ -59,12 +36,22 @@ namespace EcommerceAPI.Core.Carts
 
             foreach (var oi in order.OrderItems ?? [])
             {
-                var pv = _productVariantService.Queryable().Include(x => x.Product).ThenInclude(x => x.Category).AsNoTracking()
-                .FirstOrDefault(x => x.Id == oi.ProductVariantId);
+                var pv = await _productVariantService.Queryable().Where(x => x.Id == oi.ProductVariantId)
+                    .Select(x => new
+                    {
+                        x.Id,
+                        x.ProductId,
+                        x.Product!.Category.IsActive,
+                        x.Product!.Category.ProfitRatio,
+                        x.StockLevel,
+                        x.Product.BrandId,
+                        x.Product.CategoryId,
+                        x.Product.CompanyPrice,
+                        x.Discount,
+                        CategoryDiscount = x.Product.Category.Discount,
+                    }).FirstOrDefaultAsync();
 
-                bool pvValid = pv != null && pv.Product?.Category?.IsActive == true;
-                if (pvValid && pv!.ProductVariants?.Count > 0)
-                    pvValid = pv.ProductVariants?.Any(x => x.Id == oi.ProductVariantId && x.StockLevel > 0) == true;
+                bool pvValid = pv != null && pv.IsActive == true && pv.StockLevel > 0;
                 if (!pvValid)
                 {
                     oi.Qty = 0;
@@ -72,13 +59,12 @@ namespace EcommerceAPI.Core.Carts
                     await _unitOfWork.SaveChangesAsync();
                     continue;
                 }
-
                 if (coupon != null)
                 {
                     if (coupon.Type == CouponType.General
-                    || coupon.Type == CouponType.Product && p.Id == coupon.TypeId
-                    || coupon.Type == CouponType.Brand && p.BrandId == coupon.TypeId
-                    || coupon.Type == CouponType.Category && p.CategoryId == coupon.TypeId)
+                    || coupon.Type == CouponType.Product && pv!.ProductId == coupon.TypeId
+                    || coupon.Type == CouponType.Brand && pv!.BrandId == coupon.TypeId
+                    || coupon.Type == CouponType.Category && pv!.CategoryId == coupon.TypeId)
                     {
                         oi.CoupunDiscount = coupon.Rate;
                         couponExists = true;
@@ -88,8 +74,8 @@ namespace EcommerceAPI.Core.Carts
                 oi.ProductVariant.MainImage = string.IsNullOrWhiteSpace(oi.ProductVariant.MainImage) || oi.ProductVariant.MainImage.StartsWith("https") ? oi.ProductVariant.MainImage : $"https://cdn.dsmcdn.com/mnresize/{600}/{500}" + oi.ProductVariant.MainImage;
 
                 //Calcualte Prices
-                oi.ProductSalesPrice = p.CompanyPrice.Value * (p.Category.ProfitRatio ?? 1.5) * order.CurrencyRate;
-                oi.ProductDiscount = p.Discount > 0 ? p.Discount : p.Category.Discount > 0 ? p.Category.Discount : null;
+                oi.ProductSalesPrice = pv.CompanyPrice.Value * (pv.ProfitRatio ?? 1.5) * order.CurrencyRate;
+                oi.ProductDiscount = pv.Discount > 0 ? pv.Discount : pv.CategoryDiscount > 0 ? pv.CategoryDiscount : null;
                 oi.SalePrice = oi.ProductSalesPrice - oi.ProductSalesPrice * (oi.ProductDiscount ?? 0) / 100;
 
                 totalWithoutCuponDiscount += oi.SalePrice * oi.Qty;
@@ -100,7 +86,6 @@ namespace EcommerceAPI.Core.Carts
                 order.DiscountAmount += oi.DiscountAmount;
 
                 //oi.ProductVariant.CompanyPrice = p.Category.ProfitRatio; //look here
-                //oi.ProductVariant.CompanyProductID = null;
             }
 
             order.SubTotalSalePrice = totalWithoutCuponDiscount;
@@ -116,7 +101,7 @@ namespace EcommerceAPI.Core.Carts
         }
         public static async Task<bool> CalcualteAndValidateOrderItems(
             ICountryService _countryService,
-            IProductService _productService,
+            IProductVariantService _productVariantService,
             ICouponService _couponService,
             ICollectionService _collectionService,
             ICurrencyRateService _currencyRateService,
@@ -154,12 +139,22 @@ namespace EcommerceAPI.Core.Carts
 
             foreach (var oi in order.OrderItems)
             {
-                var p = _productService.Queryable().Include(x => x.ProductVariants).Include(x => x.Category).AsNoTracking()
-                .FirstOrDefault(x => x.Id == oi.ProductId);
+                var pv = await _productVariantService.Queryable().Where(x => x.Id == oi.ProductVariantId)
+                    .Select(x => new
+                    {
+                        x.Id,
+                        x.ProductId,
+                        x.Product.Category.IsActive,
+                        x.StockLevel,
+                        x.Product.Category.ProfitRatio,
+                        x.Discount,
+                        x.Product.CompanyPrice,
+                        x.Product.CategoryId,
+                        x.Product.BrandId,
+                        CategoryDiscount = x.Product.Category.Discount,
+                    }).FirstOrDefaultAsync();
 
-                bool productValid = p != null && p.Category?.IsActive == true;
-                if (productValid && p!.ProductVariants?.Count > 0)
-                    productValid = p.ProductVariants?.Any(x => x.Id == oi.ProductVariantId && x.StockLevel > 0) == true;
+                bool productValid = pv != null && pv.IsActive == true && pv.StockLevel > 0;
                 if (!productValid)
                 {
                     oi.Qty = 0;
@@ -170,17 +165,17 @@ namespace EcommerceAPI.Core.Carts
                 if (coupon != null)
                 {
                     if (coupon.Type == CouponType.General
-                    || coupon.Type == CouponType.Product && p.Id == coupon.TypeId
-                    || coupon.Type == CouponType.Brand && p.BrandId == coupon.TypeId
-                    || coupon.Type == CouponType.Category && p.CategoryId == coupon.TypeId)
+                    || coupon.Type == CouponType.Product && pv!.Id == coupon.TypeId
+                    || coupon.Type == CouponType.Brand && pv!.BrandId == coupon.TypeId
+                    || coupon.Type == CouponType.Category && pv!.CategoryId == coupon.TypeId)
                     {
                         oi.CoupunDiscount = coupon.Rate;
                         couponExists = true;
                     }
                 }
                 //Calcualte Prices
-                oi.ProductSalesPrice = p.CompanyPrice.Value * p.Category.ProfitRatio.Value * order.CurrencyRate;
-                oi.ProductDiscount = p.Discount > 0 ? p.Discount : p.Category.Discount > 0 ? p.Category.Discount : null;
+                oi.ProductSalesPrice = (pv.CompanyPrice ?? 0) * (pv.ProfitRatio ?? 0) * order.CurrencyRate;
+                oi.ProductDiscount = pv.Discount > 0 ? pv.Discount : pv.CategoryDiscount > 0 ? pv.CategoryDiscount : null;
                 oi.SalePrice = oi.ProductSalesPrice - oi.ProductSalesPrice * (oi.ProductDiscount ?? 0) / 100;
 
                 totalWithoutCuponDiscount += oi.SalePrice * oi.Qty;

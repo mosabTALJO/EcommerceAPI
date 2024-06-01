@@ -49,7 +49,7 @@ namespace EcommerceAPI.Core.Orders.Commands
                 string MergedItems = "";
                 foreach (var item1 in order1.OrderItems)
                 {
-                    var item2 = order2.OrderItems.FirstOrDefault(oi => oi.ProductId == item1.ProductId);
+                    var item2 = order2.OrderItems.FirstOrDefault(oi => oi.ProductVariantId == item1.ProductVariantId);
                     if (item2 != null)
                     {
                         item2.Qty += item1.Qty;

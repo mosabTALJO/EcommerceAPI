@@ -45,28 +45,25 @@ namespace EcommerceAPI.Services
             var dbVariants = _productVariantRepo.Queryable().Where(x => x.ProductId == p.Id).ToList();
             foreach (var dbVariant in dbVariants)
             {
-                //var existed = p.ProductVariants.Where(x => x.Size == dbVariant.Size).ToList();//look here
-                //if (!existed.Any())
-                //{
-                //    if (_orderItemRepo.Queryable().Any(oi => oi.ProductVariantId == dbVariant.Id))
-                //        dbVariant.StockLevel = 0;
-                //    else
-                //        _productVariantRepo.Delete(dbVariant);
-                //}
-                //else
-                //{
-                //    dbVariant.Barcode = existed[0].Barcode;
-                //    dbVariant.StockLevel = existed[0].StockLevel;
-                //    _productVariantRepo.Update(dbVariant);
-
-                //    p.ProductVariants = p.ProductVariants.Except(existed).ToList();
-                //}
+                var variant = p.ProductVariants.FirstOrDefault(x => x.Id == dbVariant.Id);
+                if (variant == null)
+                {
+                    if (_orderItemRepo.Queryable().Any(oi => oi.ProductVariantId == dbVariant.Id))
+                        dbVariant.StockLevel = 0;
+                    else
+                        _productVariantRepo.Delete(dbVariant);
+                }
+                else
+                {
+                    dbVariant.Barcode = variant.Barcode;
+                    dbVariant.StockLevel = variant.StockLevel;
+                    _productVariantRepo.Update(dbVariant);
+                    //p.ProductVariants.Remove(variant);
+                }
             }
-            foreach (var pv in p.ProductVariants)
+            foreach (var pv in p.ProductVariants.Where(x => x.Id == 0))
             {
                 pv.Product = p;
-                //if (p.VendorId == Vendor.Custom)
-                //    pt.StockLevel = 10;
                 _productVariantRepo.Insert(pv);
             }
             Update(p);

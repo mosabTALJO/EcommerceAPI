@@ -18,7 +18,7 @@ namespace EcommerceAPI.Web.Controllers
         // GETList api/Brand/getlist
         [HttpGet("GetList")]
         public async Task<ActionResult<RequestResult<ListResponse<BrandVM>>>> Get(
-            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageNumber = 0,
             [FromQuery] int pageSize = 20,
             [FromQuery] int? categoryId = null,
             [FromQuery] string search = null,

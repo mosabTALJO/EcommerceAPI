@@ -28,7 +28,6 @@ namespace EcommerceAPI.Core.Products.Commands
         public string MainImage { get; set; }
         public List<string> Images { get; set; }
         public string SKU { get; set; }
-        public string CompanyProductID { get; set; }
         public string Weight { get; set; }
         public bool IsActive { get; set; }
         public int? OrderIndex { get; set; }
@@ -66,7 +65,6 @@ namespace EcommerceAPI.Core.Products.Commands
                     p.FullDescriptionTr = command.FullDescriptionTr;
                     p.BrandId = command.BrandId;
                     p.CategoryId = command.CategoryId ?? command.CategoryIds?.FirstOrDefault() ?? p.CategoryId;
-                    p.CompanyProductID = command.CompanyProductID;
                     p.Discount = command.Discount;
                     p.Images = command.Images?.Count > 0 ? string.Join(',', command.Images) : "";
                     p.MainImage = command.MainImage;

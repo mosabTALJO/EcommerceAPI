@@ -1,5 +1,6 @@
 using EcommerceAPI.Core;
 using EcommerceAPI.Data.Models;
+using EcommerceAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

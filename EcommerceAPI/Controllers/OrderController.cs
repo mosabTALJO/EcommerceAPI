@@ -21,7 +21,7 @@ namespace EcommerceAPI.Web.Controllers
         [Authorize(Policy = PoliciesText.GetOrders)]
         [ApiExplorerSettings(GroupName = "cp")]
         public async Task<ActionResult<RequestResult<ListResponse<OrderLiteVM>>>> Get(
-            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageNumber = 0,
             [FromQuery] int pageSize = 20,
             [FromQuery] string customerId = null,
             [FromQuery] string search = null,
@@ -32,7 +32,7 @@ namespace EcommerceAPI.Web.Controllers
             [FromQuery] string orderStatus = null,
             [FromQuery] bool showArchived = false)
         {
-            return Ok(await _mediator.Send(new GetAllOrdersQuery
+            return GetActionResult(await _mediator.Send(new GetAllOrdersQuery
             {
                 PageNumber = pageNumber,
                 PageSize = pageSize,
@@ -52,10 +52,10 @@ namespace EcommerceAPI.Web.Controllers
         [Authorize(Roles = "Customer")]
         [ApiExplorerSettings(GroupName = "fe")]
         public async Task<ActionResult<RequestResult<ListResponse<OrderLiteVM>>>> GetMyOrders(
-            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageNumber = 0,
             [FromQuery] int pageSize = 20)
         {
-            return Ok(await _mediator.Send(new GetMyOrdersQuery
+            return GetActionResult(await _mediator.Send(new GetMyOrdersQuery
             {
                 PageNumber = pageNumber,
                 PageSize = pageSize,
@@ -211,15 +211,6 @@ namespace EcommerceAPI.Web.Controllers
         [ApiExplorerSettings(GroupName = "cp")]
         public async Task<IActionResult> GeneratePaymentLink(int OrderId)
         {
-            //var o = _orderService.Queryable()
-            //         .Include(x => x.Customer)
-            //         .Include(x => x.OrderItems)
-            //         .FirstOrDefault(x => x.Id == OrderId);
-            //if (o is null)
-            //    return BadRequest("Order is missing");
-            //if (o.PaidSalePrice >= o.TotalSalePrice)
-            //    return BadRequest("The Order has no debt");
-
             return Ok("https://trgatestore.com");
         }
 
@@ -231,7 +222,6 @@ namespace EcommerceAPI.Web.Controllers
         {
             return GetActionResult(await _mediator.Send(new ArchiveOrderCommand { Id = Id, UserId = User.Identity.Name }));
         }
-
 
         // Archive api/Order
         [HttpPut("UnArchive/{Id}")]
@@ -268,7 +258,7 @@ namespace EcommerceAPI.Web.Controllers
             [FromQuery] DateTime? endDate = null,
             [FromQuery] string search = null)
         {
-            return Ok(await _mediator.Send(new GetActiveOrdersQuery
+            return GetActionResult(await _mediator.Send(new GetActiveOrdersQuery
             {
                 City = city,
                 Country = counrty,

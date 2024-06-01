@@ -25,11 +25,9 @@ namespace EcommerceAPI.Core.Orders.Queries
             public async Task<RequestResult<ListResponse<OrderLiteVM>>> Handle(GetMyOrdersQuery query, CancellationToken cancellationToken)
             {
                 var lst = _orderService.Queryable()
-                    .Include(x => x.OrderItems).ThenInclude(x => x.Product)
+                    .Include(x => x.OrderItems).ThenInclude(x => x.ProductVariant)
                     .Include(x => x.Customer)
-                    .Where(x => !x.DeletedAt.HasValue)
-                    .Where(x => x.OrderStatus > OrderStatus.Pending);
-                lst = lst.Where(x => x.CustomerId == query.UserId);
+                    .Where(x => !x.DeletedAt.HasValue && x.OrderStatus > OrderStatus.Pending && x.CustomerId == query.UserId);
 
                 var lang = CultureInfo.CurrentCulture?.TwoLetterISOLanguageName ?? "en";
                 var countries = await _countryService.GetCountries();
@@ -45,12 +43,6 @@ namespace EcommerceAPI.Core.Orders.Queries
                     CreatedAt = x.CreatedAt,
                     PaymentType = x.PaymentType,
                     OrderStatus = x.OrderStatus,
-                    //ProductImages = string.Join(",",
-                    //    x.OrderItems.Where(x => !string.IsNullOrEmpty(x.Product.MainImage)).Select(x =>
-                    //    x.Product.VendorId == Entities.Models.Vendor.Custom ?
-                    //    $"https://api.trgatestore.com/api/Files/PreviewImage/{x.Product.MainImage}?w=300&h=400" :
-                    //    x.Product.MainImage.StartsWith("https") ? x.Product.MainImage :
-                    //    $"https://cdn.dsmcdn.com/mnresize/{600}/{500}" + x.Product.MainImage)),
                 });
 
                 var items = await lstResult.Skip(query.PageSize * query.PageNumber).Take(query.PageSize).ToArrayAsync();
