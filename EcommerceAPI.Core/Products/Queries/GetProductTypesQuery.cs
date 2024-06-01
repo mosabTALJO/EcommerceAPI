@@ -8,10 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EcommerceAPI.Core.Products.Queries
 {
-    public class GetProductTypesQuery : IRequest<RequestResult<ProductVariantVM[]>>
+    public class GetProductVariantsQuery : IRequest<RequestResult<ProductVariantVM[]>>
     {
         public int Id { get; set; }
-        public class GetProductTypesQueryHandler : IRequestHandler<GetProductTypesQuery, RequestResult<ProductVariantVM[]>>
+        public class GetProductTypesQueryHandler : IRequestHandler<GetProductVariantsQuery, RequestResult<ProductVariantVM[]>>
         {
             private readonly IProductService _productService;
             private readonly IMapper _mapper;
@@ -21,7 +21,7 @@ namespace EcommerceAPI.Core.Products.Queries
                 _productService = productService;
                 _mapper = mapper;
             }
-            public async Task<RequestResult<ProductVariantVM[]>> Handle(GetProductTypesQuery query, CancellationToken cancellationToken)
+            public async Task<RequestResult<ProductVariantVM[]>> Handle(GetProductVariantsQuery query, CancellationToken cancellationToken)
             {
                 var items = await _productService.GetProductVariant(query.Id).To<ProductVariantVM>(_mapper).ToArrayAsync();
                 if (items is null)

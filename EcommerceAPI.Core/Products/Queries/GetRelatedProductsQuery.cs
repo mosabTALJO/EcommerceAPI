@@ -31,7 +31,10 @@ namespace EcommerceAPI.Core.Products.Queries
                 var lang = CultureInfo.CurrentCulture?.TwoLetterISOLanguageName ?? "en";
                 var currencyRate = _currencyRateService.GetCurrencyRate(query.Currency);
 
-                var lst = (await _productService.GetRelatedProducts(query.Id, lang, currencyRate).Select(x => new ProductLiteVM
+                var qry = _productService.GetRelatedProducts(query.Id, lang, currencyRate);
+                if (qry == null)
+                    return new RequestResult<ListResponse<ProductLiteVM>>(ActionResultType.BadRequest);
+                var lst = await qry.Select(x => new ProductLiteVM
                 {
                     Name = lang == "en" ? x.NameEn : lang == "ar" ? x.NameAr : x.NameTr,
                     BrandName = lang == "en" ? x.Brand.NameEn : lang == "ar" ? x.Brand.NameAr : x.Brand.NameTr,
@@ -42,7 +45,7 @@ namespace EcommerceAPI.Core.Products.Queries
                     TotalRate = x.TotalRate,
                     CreatedAt = x.CreatedAt,
                     //VendorId = x.VendorId,
-                }).ToArrayAsync()) ?? [];
+                }).ToArrayAsync();
 
                 var result = new ListResponse<ProductLiteVM>
                 {

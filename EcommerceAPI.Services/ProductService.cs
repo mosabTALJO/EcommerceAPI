@@ -11,7 +11,7 @@ namespace EcommerceAPI.Services
         void UpdateProduct(Product p);
         void DeleteProduct(Product p);
         int[] GetCategoryProductIds(List<int> categoryIds);
-        IQueryable<Product> GetRelatedProducts(int id, string lang, double currencyRate);
+        IQueryable<Product>? GetRelatedProducts(int id, string lang, double currencyRate);
         IQueryable<ProductVariant> GetProductVariant(int productId);
     }
 
@@ -77,15 +77,15 @@ namespace EcommerceAPI.Services
         {
             return Repository.Queryable().Where(x => x.CategoryId != null && categoryIds.Contains(x.CategoryId.Value)).Select(x => x.Id).ToArray();
         }
-        public IQueryable<Product> GetRelatedProducts(int productId, string lang, double currencyRate)
+        public IQueryable<Product>? GetRelatedProducts(int productId, string lang, double currencyRate)
         {
-            var catId = Repository.Queryable().FirstOrDefault(x => x.Id == productId)?.CategoryId;
-            if (catId is null)
+            var catId = Repository.Queryable().Where(x => x.Id == productId).Select(x => x.CategoryId).FirstOrDefault();
+            if (catId == null)
                 return null;
 
             var lst = Repository.Queryable().Include(x => x.Category)
                 .Include(x => x.Brand).Where(x => !x.DeletedAt.HasValue);
-            lst = lst.Where(x => x.Id != productId && x.CategoryId == catId).OrderBy(o => o.Id);
+            lst = lst.Where(x => x.Id != productId && x.CategoryId == catId.Value).OrderBy(o => o.Id);
 
             var allCount = lst.Count();
             if (allCount > 5)

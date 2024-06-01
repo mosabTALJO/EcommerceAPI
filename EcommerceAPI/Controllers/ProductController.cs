@@ -70,7 +70,6 @@ namespace EcommerceAPI.Web.Controllers
             }));
         }
 
-        // GET api/products/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<RequestResult<ProductVM>>> Get(int id)
         {
@@ -83,7 +82,6 @@ namespace EcommerceAPI.Web.Controllers
             }));
         }
 
-        // GET api/products/{id}
         [HttpGet("GetProductDetails/{id}")]
         public async Task<ActionResult<RequestResult<ProductVM>>> GetProductDetails(int id)
         {
@@ -96,11 +94,10 @@ namespace EcommerceAPI.Web.Controllers
             }));
         }
 
-        // GET api/products/{id}
         [HttpGet("GetProductTypes/{id}")]
-        public async Task<ActionResult<RequestResult<ProductVariantVM[]>>> GetProductTypes(int id)
+        public async Task<ActionResult<RequestResult<ProductVariantVM[]>>> GetProductVariants(int id)
         {
-            return GetActionResult(await _mediator.Send(new GetProductTypesQuery
+            return GetActionResult(await _mediator.Send(new GetProductVariantsQuery
             {
                 Id = id,
             }));
@@ -114,7 +111,6 @@ namespace EcommerceAPI.Web.Controllers
             return GetActionResult(await _mediator.Send(command));
         }
 
-        // Put api/Product
         [HttpPut("{Id}")]
         [Authorize(Policy = PoliciesText.UpdateProduct)]
         [ApiExplorerSettings(GroupName = "cp")]
@@ -124,7 +120,6 @@ namespace EcommerceAPI.Web.Controllers
             return GetActionResult(await _mediator.Send(command));
         }
 
-        // Delete api/Product
         [HttpDelete("{Id}")]
         [Authorize(Policy = PoliciesText.DeleteProduct)]
         [ApiExplorerSettings(GroupName = "cp")]
@@ -133,7 +128,6 @@ namespace EcommerceAPI.Web.Controllers
             return GetActionResult(await _mediator.Send(new DeleteProductCommand { Id = Id }));
         }
 
-        // Archive api/Product
         [HttpPut("Hide/{Id}")]
         [Authorize(Policy = PoliciesText.UpdateProduct)]
         [ApiExplorerSettings(GroupName = "cp")]
@@ -142,8 +136,6 @@ namespace EcommerceAPI.Web.Controllers
             return GetActionResult(await _mediator.Send(new HideProductCommand { Id = Id }));
         }
 
-
-        // Archive api/Product
         [HttpPut("UnHide/{Id}")]
         [Authorize(Policy = PoliciesText.UpdateProduct)]
         [ApiExplorerSettings(GroupName = "cp")]
