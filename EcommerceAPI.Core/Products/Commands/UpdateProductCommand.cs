@@ -20,7 +20,6 @@ namespace EcommerceAPI.Core.Products.Commands
         public string FullDescriptionTr { get; set; }
         public int BrandId { get; set; }
         public BrandVM Brand { get; set; }
-        //public Vendor VendorId { get; set; }
         public int? CategoryId { get; set; }
         public int[] CategoryIds { get; set; }
         public double SalesPrice { get; set; }
@@ -34,7 +33,7 @@ namespace EcommerceAPI.Core.Products.Commands
         public string CompanyURL { get; set; }
         public double? CompanyPrice { get; set; }
         public string CompanyColor { get; set; }
-        public ICollection<ProductVariantVM> ProductVariants { get; set; }
+        public List<ProductVariantVM> ProductVariants { get; set; }
         public bool OnlinePaymentOnly { get; set; }
         public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, RequestResult<bool>>
         {
@@ -72,7 +71,7 @@ namespace EcommerceAPI.Core.Products.Commands
                     p.IsActive = command.IsActive;
                     p.OnlinePaymentOnly = command.OnlinePaymentOnly;
                     p.CompanyPrice = command.CompanyPrice;
-                    p.ProductVariants = command.ProductVariants?.Select(_mapper.Map<ProductVariant>).ToList() ?? [];
+                    p.ProductVariants = command.ProductVariants.Select(_mapper.Map<ProductVariant>).ToList();
                     p.CompanyColor = command.CompanyColor;
 
                     _productService.UpdateProduct(p);

@@ -1,14 +1,11 @@
-﻿using Microsoft.Extensions.Options;
+﻿using EcommerceAPI.Shared.Helpers.Abstractions;
+using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
+using System.Net;
 
 namespace EcommerceAPI.Shared.Helpers
 {
-    public interface IEmailSender
-    {
-        public Task<Response> SendEmailAsync(string email, string subject, string message);
-        public Task<Response> SendEmailAsync(string[] emails, string subject, string message, bool sendAsBCC);
-    }
     public class SendGridEmailSender : IEmailSender
     {
         public SendGridEmailSender(IOptions<SendGridEmailSenderOptions> options)
@@ -18,14 +15,16 @@ namespace EcommerceAPI.Shared.Helpers
 
         public SendGridEmailSenderOptions Options { get; set; }
 
-        public async Task<Response> SendEmailAsync(string email, string subject, string message)
+        public async Task<EmailResponse> SendEmailAsync(string email, string subject, string message)
         {
-            return await Execute(Options.ApiKey, subject, message, new string[] { email }, false);
+            var response = await Execute(Options.ApiKey, subject, message, [email], false);
+            return new() { StatusCode = response.StatusCode, Body = await response.Body.ReadAsStringAsync() };
         }
 
-        public async Task<Response> SendEmailAsync(string[] emails, string subject, string message, bool sendAsBCC)
+        public async Task<EmailResponse> SendEmailAsync(string[] emails, string subject, string message, bool sendAsBCC)
         {
-            return await Execute(Options.ApiKey, subject, message, emails, sendAsBCC);
+            var response = await Execute(Options.ApiKey, subject, message, emails, sendAsBCC);
+            return new() { StatusCode = response.StatusCode, Body = await response.Body.ReadAsStringAsync() };
         }
 
         private async Task<Response> Execute(string apiKey, string subject, string message, string[] emails, bool sendAsBCC)

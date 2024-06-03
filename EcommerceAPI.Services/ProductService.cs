@@ -19,24 +19,29 @@ namespace EcommerceAPI.Services
     {
         ITrackableRepository<ProductVariant> _productVariantRepo;
         ITrackableRepository<OrderItem> _orderItemRepo;
-        public ProductService(ITrackableRepository<Product> repo
-            , ITrackableRepository<ProductVariant> productVariantRepo
-            , ITrackableRepository<OrderItem> orderItemRepo) : base(repo)
+        ITrackableRepository<ProductVariantAttribute> _productVariantAttributeRepo;
+        public ProductService(ITrackableRepository<Product> repo, 
+            ITrackableRepository<ProductVariant> productVariantRepo, 
+            ITrackableRepository<OrderItem> orderItemRepo, 
+            ITrackableRepository<ProductVariantAttribute> productVariantAttributeRepo) : base(repo)
         {
             _productVariantRepo = productVariantRepo;
             _orderItemRepo = orderItemRepo;
+            _productVariantAttributeRepo = productVariantAttributeRepo;
         }
 
         public void CreateProduct(Product p)
         {
             Insert(p);
-
-            foreach (var pt in p.ProductVariants ?? new List<ProductVariant>())
+            foreach (var v in p.ProductVariants ?? [])
             {
-                pt.Product = p;
-                //if (p.VendorId == Vendor.Custom)
-                //    pt.StockLevel = 10;
-                _productVariantRepo.Insert(pt);
+                v.Product = p;
+                _productVariantRepo.Insert(v);
+                foreach (var a in v.Attributes)
+                {
+                    a.ProductVariant = v;
+                    _productVariantAttributeRepo.Insert(a);
+                }
             }
         }
 
@@ -51,26 +56,43 @@ namespace EcommerceAPI.Services
                     if (_orderItemRepo.Queryable().Any(oi => oi.ProductVariantId == dbVariant.Id))
                         dbVariant.StockLevel = 0;
                     else
+                    {
                         _productVariantRepo.Delete(dbVariant);
+                        _productVariantAttributeRepo.Queryable().Where(x => x.ProductVariantID == dbVariant.Id).ExecuteDeleteAsync();
+                    }
                 }
                 else
                 {
+                    dbVariant.Name = variant.Name;
+                    dbVariant.SalesPrice = variant.SalesPrice;
+                    dbVariant.Discount = variant.Discount;
+                    dbVariant.MainImage = variant.MainImage;
+                    dbVariant.Images = variant.Images;
+                    dbVariant.SKU = variant.SKU;
+                    dbVariant.FullDescription = variant.FullDescription;
+                    dbVariant.IsActive = variant.IsActive;
                     dbVariant.Barcode = variant.Barcode;
                     dbVariant.StockLevel = variant.StockLevel;
                     _productVariantRepo.Update(dbVariant);
-                    //p.ProductVariants.Remove(variant);
                 }
             }
             foreach (var pv in p.ProductVariants.Where(x => x.Id == 0))
             {
-                pv.Product = p;
+                pv.ProductId = p.Id;
                 _productVariantRepo.Insert(pv);
+                foreach (var a in pv.Attributes)
+                {
+                    a.ProductVariant = pv;
+                    _productVariantAttributeRepo.Insert(a);
+                }
             }
             Update(p);
         }
         public void DeleteProduct(Product p)
         {
+            var variantIds = p.ProductVariants.Select(x => x.Id).ToArray();
             _productVariantRepo.Queryable().Where(x => x.ProductId == p.Id).ExecuteDeleteAsync();
+            _productVariantAttributeRepo.Queryable().Where(x => EF.Constant(variantIds).Contains(x.ProductVariantID)).ExecuteDeleteAsync();
             Delete(p);
         }
         public int[] GetCategoryProductIds(List<int> categoryIds)
