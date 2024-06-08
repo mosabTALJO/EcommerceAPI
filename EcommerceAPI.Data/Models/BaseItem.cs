@@ -7,6 +7,7 @@ namespace EcommerceAPI.Data.Models
         public int Id { get; set; }
         public int IsHomeOrCategory { get; set; }//0 Home
         public BaseItemTypes BaseItemType { get; set; }
+        public string NameTr { get; set; }
         public string NameEn { get; set; }
         public string NameAr { get; set; }
         public bool IsWeb { get; set; }
@@ -53,7 +54,7 @@ namespace EcommerceAPI.Data.Models
     {
         public string Image { get; set; }
         public string DirectionUrl => Direction.ProductId.HasValue || Direction.CategoryId.HasValue || Direction.BrandId.HasValue || Direction.CollectionId.HasValue ?
-            "https://app.trgatestore.com/Products" + (Direction.ProductId.HasValue ? $"/{Direction.ProductId}" : $"?categoryid={Direction.CategoryId}&brandid={Direction.BrandId}&collectionid={Direction.CollectionId}") : null;
+            "TODO: URL" + (Direction.ProductId.HasValue ? $"/{Direction.ProductId}" : $"?categoryid={Direction.CategoryId}&brandid={Direction.BrandId}&collectionid={Direction.CollectionId}") : null;
         public BannerDirection Direction { get; set; }
     }
     public class BannerDirection

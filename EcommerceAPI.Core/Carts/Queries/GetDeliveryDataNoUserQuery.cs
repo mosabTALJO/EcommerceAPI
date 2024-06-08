@@ -34,10 +34,10 @@ namespace EcommerceAPI.Core.Carts.Queries
                     FreeDeliveryAbove = c?.DeliveryLimitAmount.ToString() ?? "30",
                     DeliveryAverageDays = c?.AverageDeliveryDays.ToString() ?? "15",
                     CurrencyCode = c?.CurrencyCode ?? "KWD",
-                    MyFatoorah = c.MyFatoorahPayment,
-                    OnDoorPayment = c.OnDoorPayment && !onlinePaymentOnly && city?.IsBlackList != true,
+                    MyFatoorah = true,//c.MyFatoorahPayment,
+                    OnDoorPayment = c.OnDoorPayment && !onlinePaymentOnly,
                 };
-                if (deliverData.OnDoorPayment && c.IsRequestIdCard == true)
+                if (deliverData.OnDoorPayment)
                 {
                     deliverData.RequestIdCard = true;
                     deliverData.IdCardTermsAndConditions = c.PrivacyPolicyText;

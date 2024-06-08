@@ -14,8 +14,6 @@ namespace EcommerceAPI.Core.Carts.Command
         public int UserAddressId { get; set; }
         public string? UserId { get; set; }
         public string? Currency { get; set; }
-        public string? IdCard { get; set; }
-        public ProductNotFound? ProductNotFound { get; set; } = null;
         public OrderDeviceType? OrderDeviceType { get; set; }
         public class OnDoorPaymentPendingOrderCommandHandler : IRequestHandler<OnDoorPaymentPendingOrderCommand, RequestResult<bool>>
         {
@@ -53,16 +51,6 @@ namespace EcommerceAPI.Core.Carts.Command
                 var u = _userManager.Users.Include(x => x.UserAddresses).FirstOrDefault(x => x.Id == command.UserId);
                 if (u is null)
                     return new RequestResult<bool>(ActionResultType.NotFound, "User not found");
-                if (u.IsBlackList)
-                    return new RequestResult<bool>(ActionResultType.BadRequest, "You can't choose payment on door");
-
-                if (!string.IsNullOrEmpty(command.IdCard))
-                {
-                    u.IdCardImage = command.IdCard;
-                    var userResult = await _userManager.UpdateAsync(u);
-                    if (!userResult.Succeeded)
-                        return new RequestResult<bool>(ActionResultType.BadRequest, "error while savind id card");
-                }
 
                 var o = await _orderService.GetOrderDetails(cartOrder.Id);
                 if (o.OrderItems.Any(x => x.ProductVariant?.Product?.OnlinePaymentOnly == true))
@@ -80,8 +68,6 @@ namespace EcommerceAPI.Core.Carts.Command
                 await _countryService.Queryable().AsNoTracking().Include(x => x.Cities).FirstOrDefaultAsync(x => x.Code.ToLower() == "kwd");
 
                 var city = c.Cities.FirstOrDefault(x => x.Code == address.City);
-                if (city?.IsBlackList == true)
-                    return new RequestResult<bool>(ActionResultType.BadRequest, "You can't choose payment on door");
 
                 Coupon coupon = null;
                 if (o.DiscountCoupunId.HasValue)
@@ -92,7 +78,6 @@ namespace EcommerceAPI.Core.Carts.Command
                 }
                 o.OrderStatus = OrderStatus.OnDoorPaymentPending;
                 o.PaymentType = OrderPaymentType.OnDoor;
-                o.ProductNotFound = command.ProductNotFound;
                 o.OrderDeviceType = command.OrderDeviceType;
 
                 bool areProductsValid = await CartOrderOperations.CalcualteAndValidateOrderItems(_countryService, _productVariantService, _couponService, _collectionService, _currencyRateService, o, address, coupon, command.Currency);

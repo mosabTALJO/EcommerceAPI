@@ -58,7 +58,6 @@ namespace EcommerceAPI.Core.Inits.Queries
                         Email = user.Email,
                         UserType = user.UserType,
                         Country = user.Country,
-                        CustomerBalance = user.CustomerBalance,
                     }
                 };
 

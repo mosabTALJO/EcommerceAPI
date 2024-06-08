@@ -35,9 +35,6 @@ namespace EcommerceAPI.Core.Orders.Queries
                     return new RequestResult<OrderVM>(ActionResultType.NotFound, "NotFound");
                 var o = _mapper.Map<OrderVM>(item);
 
-                var u = await _userManager.FindByIdAsync(o.CustomerId);
-                o.IdCard = u.IdCardImage?.Replace("\"", "");
-
                 if (o.DiscountCoupunId.HasValue)
                     o.CoupunName = _couponService.Queryable().FirstOrDefault(x => x.Id == o.DiscountCoupunId)?.NameEn;
 

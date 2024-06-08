@@ -23,7 +23,6 @@ namespace EcommerceAPI.Core.Coupons.Commands
         public string TypeName { get; set; }
         public string TypeText => Type == CouponType.General ? "General" :
             Type == CouponType.Brand ? "Brand" : Type == CouponType.Category ? "Category" : "Product";
-        public bool IsForCustomerFirstOrder { get; set; }
         public class UpdateCouponCommandHandler : IRequestHandler<UpdateCouponCommand, RequestResult<bool>>
         {
             private readonly ICouponService _couponService;
@@ -55,7 +54,6 @@ namespace EcommerceAPI.Core.Coupons.Commands
                     c.NameTr = command.NameTr;
                     c.ExpireDate = command.ExpireDate;
                     c.IsActive = command.IsActive;
-                    c.IsForCustomerFirstOrder = command.IsForCustomerFirstOrder;
 
                     _couponService.Update(c);
                     if (await _unitOfWork.SaveChangesAsync() > 0)

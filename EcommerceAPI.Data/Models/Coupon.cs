@@ -23,7 +23,7 @@ namespace EcommerceAPI.Data.Models
         public CouponType Type { get; set; }
         public int? TypeId { get; set; }
         public string? CustomerId { get; set; }
-        public bool IsForCustomerFirstOrder { get; set; }
+        //public bool IsForCustomerFirstOrder { get; set; }
     }
     public enum CouponType { General, Product, Category, Brand, }
 }

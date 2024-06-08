@@ -26,14 +26,9 @@ namespace EcommerceAPI.Data.Models
         public double DeliveryLimitPercent { get; set; }
         public int AverageDeliveryDays { get; set; }
         public bool OnDoorPayment { get; set; }
-        public bool MyFatoorahPayment { get; set; }
-        public bool? IsRequestIdCard { get; set; }
         public string PrivacyPolicyText { get; set; }
-
-        public ICollection<City> Cities { get; set; }
-        public ICollection<GiftPriceRange> GiftPriceRanges { get; set; }
-
         [MaxLength(60)]
         public string Image { get; set; }
+        public ICollection<City> Cities { get; set; }
     }
 }

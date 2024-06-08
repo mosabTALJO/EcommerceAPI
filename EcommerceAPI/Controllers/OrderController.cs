@@ -268,22 +268,6 @@ namespace EcommerceAPI.Web.Controllers
             }));
         }
 
-        [HttpGet("GetGifts")]
-        [Authorize(Roles = "Customer")]
-        [ApiExplorerSettings(GroupName = "fe")]
-        public async Task<ActionResult<RequestResult<List<GiftVM>>>> GetGifts()
-        {
-            return GetActionResult(await _mediator.Send(new GetOrderGiftsQuery { CustomerId = User.Identity.Name }));
-        }
-
-        [HttpPost("ApplyGift")]
-        [Authorize(Roles = "Customer")]
-        [ApiExplorerSettings(GroupName = "fe")]
-        public async Task<ActionResult<RequestResult<bool>>> ApplyGiftToOrder()
-        {
-            return GetActionResult(await _mediator.Send(new ApplyGiftToOrderCommand { CustomerId = User.Identity.Name }));
-        }
-
         [HttpPut("TogglePaymentType/{OrderId}")]
         [Authorize(Policy = PoliciesText.UpdateOrder)]
         [ApiExplorerSettings(GroupName = "cp")]

@@ -43,12 +43,6 @@ namespace EcommerceAPI.Core.Carts.Command
                 if (coupon is null)
                     return new RequestResult<bool>(ActionResultType.NotFound, "orders.coupon-not-found");
 
-                if (coupon.IsForCustomerFirstOrder)
-                {
-                    if (_orderService.Queryable().Any(o => o.CustomerId == order.CustomerId && o.OrderStatus > OrderStatus.Pending))
-                        return new RequestResult<bool>(ActionResultType.BadRequest, "The Coupon is not applicable for the current user");
-                }
-
                 bool couponExists = false;
                 foreach (var oi in order.OrderItems)
                 {

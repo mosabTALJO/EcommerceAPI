@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EcommerceAPI.Shared.Helpers.Abstractions
 {
-    public interface IEmailSender
+    public interface IAppEmailSender
     {
         public Task<EmailResponse> SendEmailAsync(string email, string subject, string message);
         public Task<EmailResponse> SendEmailAsync(string[] emails, string subject, string message, bool sendAsBCC);

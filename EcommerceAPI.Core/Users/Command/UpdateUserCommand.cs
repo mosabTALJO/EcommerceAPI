@@ -14,12 +14,10 @@ namespace EcommerceAPI.Core.Users.Command
         public string OldPassword { get; set; }
         public string Password { get; set; }
         public bool IsActive { get; set; }
-        public double CustomerBalance { get; set; }
         public string Country { get; set; }
         public UserTypes UserType { get; set; }
         public List<Policies> Claims { get; set; }
         public string UserId { get; set; }
-        public string IdCardImage { get; set; }
         public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, RequestResult<bool>>
         {
             private readonly UserManager<AppUser> _userManager;
@@ -46,7 +44,6 @@ namespace EcommerceAPI.Core.Users.Command
                 u.UserName = command.Email;
                 u.PhoneNumber = command.PhoneNumber;
                 u.Country = command.Country;
-                u.IdCardImage = command.IdCardImage;
 
                 if (!string.IsNullOrEmpty(command.Password) && !await _userManager.CheckPasswordAsync(u, command.Password))
                 {

@@ -8,7 +8,7 @@ namespace EcommerceAPI.Services
     public interface IOrderService : IService<Order>
     {
         /// <summary>
-        /// Get the Order with its details (Customer, Gift, OrderItems, ProductVariant, Product, Brand, Logs).
+        /// Get the Order with its details (Customer, OrderItems, ProductVariant, Product, Brand, Logs).
         /// </summary>
         /// <param name="id">Order ID</param>
         /// <returns>Order with its details</returns>
@@ -127,7 +127,6 @@ namespace EcommerceAPI.Services
         {
             var o = await Repository.Queryable().IgnoreQueryFilters().AsNoTracking()
                 .Include(x => x.Customer)
-                .Include(x => x.Gift)
                 .Include(x => x.OrderItems).ThenInclude(x => x.ProductVariant).ThenInclude(x => x.Product).ThenInclude(x => x.Brand)
                 .Include(x => x.OrderItems).ThenInclude(x => x.Logs)
                 .Where(x => !x.DeletedAt.HasValue).AsSplitQuery().FirstOrDefaultAsync(x => x.Id == id);

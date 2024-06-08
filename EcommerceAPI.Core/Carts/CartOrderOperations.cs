@@ -42,11 +42,10 @@ namespace EcommerceAPI.Core.Carts
                         x.Id,
                         x.ProductId,
                         x.Product!.Category.IsActive,
-                        x.Product!.Category.ProfitRatio,
                         x.StockLevel,
                         x.Product.BrandId,
                         x.Product.CategoryId,
-                        x.Product.CompanyPrice,
+                        x.Product.SalesPrice,
                         x.Discount,
                         CategoryDiscount = x.Product.Category.Discount,
                     }).FirstOrDefaultAsync();
@@ -74,7 +73,7 @@ namespace EcommerceAPI.Core.Carts
                 oi.ProductVariant.MainImage = string.IsNullOrWhiteSpace(oi.ProductVariant.MainImage) || oi.ProductVariant.MainImage.StartsWith("https") ? oi.ProductVariant.MainImage : $"https://cdn.dsmcdn.com/mnresize/{600}/{500}" + oi.ProductVariant.MainImage;
 
                 //Calcualte Prices
-                oi.ProductSalesPrice = pv.CompanyPrice.Value * (pv.ProfitRatio ?? 1.5) * order.CurrencyRate;
+                oi.ProductSalesPrice = pv.SalesPrice * order.CurrencyRate;
                 oi.ProductDiscount = pv.Discount > 0 ? pv.Discount : pv.CategoryDiscount > 0 ? pv.CategoryDiscount : null;
                 oi.SalePrice = oi.ProductSalesPrice - oi.ProductSalesPrice * (oi.ProductDiscount ?? 0) / 100;
 
@@ -146,9 +145,8 @@ namespace EcommerceAPI.Core.Carts
                         x.ProductId,
                         x.Product.Category.IsActive,
                         x.StockLevel,
-                        x.Product.Category.ProfitRatio,
                         x.Discount,
-                        x.Product.CompanyPrice,
+                        x.SalesPrice,
                         x.Product.CategoryId,
                         x.Product.BrandId,
                         CategoryDiscount = x.Product.Category.Discount,
@@ -174,7 +172,7 @@ namespace EcommerceAPI.Core.Carts
                     }
                 }
                 //Calcualte Prices
-                oi.ProductSalesPrice = (pv.CompanyPrice ?? 0) * (pv.ProfitRatio ?? 0) * order.CurrencyRate;
+                oi.ProductSalesPrice = pv.SalesPrice * order.CurrencyRate;
                 oi.ProductDiscount = pv.Discount > 0 ? pv.Discount : pv.CategoryDiscount > 0 ? pv.CategoryDiscount : null;
                 oi.SalePrice = oi.ProductSalesPrice - oi.ProductSalesPrice * (oi.ProductDiscount ?? 0) / 100;
 
@@ -188,8 +186,6 @@ namespace EcommerceAPI.Core.Carts
             order.SubTotalSalePrice = totalWithoutCuponDiscount;
             order.DeliveryPrice = OrderOperations.CalculateOrderDeliveryPrice(totalWithCuponDiscount, c);
             order.TotalSalePrice = totalWithCuponDiscount + order.DeliveryPrice;
-
-            order.TotalTLPrice = order.TotalSalePrice / order.CurrencyRate;
 
             if (areProductsValid && couponExists)
             {

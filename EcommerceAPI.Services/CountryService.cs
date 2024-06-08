@@ -10,7 +10,6 @@ namespace EcommerceAPI.Services
         Task<List<Country>> GetCountries();
         Country GetCountry(string code);
         void UpdateCountryData(Country c, City[] passedCities);
-        bool UnBlockCity(int cityId);
     }
     public class CountryService : Service<Country>, ICountryService
     {
@@ -30,17 +29,6 @@ namespace EcommerceAPI.Services
 
             return c;
         }
-        public bool UnBlockCity(int cityId)
-        {
-            var city = _cityRepo.Queryable().FirstOrDefault(x => x.Id == cityId);
-            if (city != null)
-            {
-                city.IsBlackList = false;
-                return true;
-            }
-
-            return false;
-        }
         public void UpdateCountryData(Country c, City[] passedCities)
         {
             var dbItems = _cityRepo.Queryable().Where(x => x.CountryId == c.Id).ToList();
@@ -51,7 +39,6 @@ namespace EcommerceAPI.Services
                 {
                     dbItem.NameEn = item.NameEn;
                     dbItem.NameAr = item.NameAr;
-                    dbItem.IsBlackList = item.IsBlackList;
                     _cityRepo.Update(dbItem);
                 }
                 else

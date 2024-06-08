@@ -25,7 +25,7 @@ namespace EcommerceAPI.Core.Countries.Queries
 
             public async Task<RequestResult<CountryVM[]>> Handle(GetAllCountriesQuery query, CancellationToken cancellationToken)
             {
-                var lst = _countryService.Queryable().Include(c => c.GiftPriceRanges).AsQueryable();
+                var lst = _countryService.Queryable().AsQueryable();
                 lst = query.Role != "Admin" ? lst.Where(x => x.IsActive) : lst;
 
                 var items = await lst.To<CountryVM>(_mapper).ToArrayAsync();

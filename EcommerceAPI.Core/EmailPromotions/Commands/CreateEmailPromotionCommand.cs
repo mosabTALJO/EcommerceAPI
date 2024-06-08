@@ -6,6 +6,7 @@ using EcommerceAPI.Shared.Helpers;
 using EcommerceAPI.Data.Models;
 using EcommerceAPI.Services;
 using EcommerceAPI.UnitOfWork.Abstractions;
+using EcommerceAPI.Shared.Helpers.Abstractions;
 
 namespace EcommerceAPI.Core.EmailPromotions.Commands
 {
@@ -24,9 +25,9 @@ namespace EcommerceAPI.Core.EmailPromotions.Commands
             private readonly UserManager<AppUser> _userManager;
             private readonly IMapper _mapper;
             private readonly IUnitOfWork _unitOfWork;
-            private readonly IEmailSender _emailSender;
+            private readonly IAppEmailSender _emailSender;
 
-            public CreateEmailPromotionCommandHandler(IEmailPromotionService emailPromotionService, IMapper mapper, IUnitOfWork unitOfWork, IEmailSender emailSender, UserManager<AppUser> userManager, ICountryService countryService)
+            public CreateEmailPromotionCommandHandler(IEmailPromotionService emailPromotionService, IMapper mapper, IUnitOfWork unitOfWork, IAppEmailSender emailSender, UserManager<AppUser> userManager, ICountryService countryService)
             {
                 _emailPromotionService = emailPromotionService;
                 _mapper = mapper;
@@ -61,8 +62,8 @@ namespace EcommerceAPI.Core.EmailPromotions.Commands
                         {
                             var emails = allEmails.Length > 500 ? allEmails.Take(500).ToArray() : allEmails;
                             var r = await _emailSender.SendEmailAsync(emails, command.Subject, command.HtmlText, true);
-                            if (!r.IsSuccessStatusCode)
-                                throw new Exception(r.StatusCode + " body: " + await r.Body.ReadAsStringAsync());
+                            if (r.StatusCode != System.Net.HttpStatusCode.OK)
+                                throw new Exception(r.StatusCode + " body: " + r.Body);
 
                             allEmails = allEmails.Except(emails).ToArray();
                         }

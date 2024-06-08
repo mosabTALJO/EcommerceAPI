@@ -23,7 +23,7 @@ namespace EcommerceAPI.Core.Countries.Queries
             }
             public async Task<RequestResult<List<CountryVM>>> Handle(GetMainScreenCountriesQuery request, CancellationToken cancellationToken)
             {
-                var lst = await _countryService.Queryable().Include(c => c.GiftPriceRanges).To<CountryVM>(_mapper).ToListAsync();
+                var lst = await _countryService.Queryable().To<CountryVM>(_mapper).ToListAsync();
                 lst.ForEach(c =>
                 {
                     c.Image = _fileService.GetFileUrl(c.Image);

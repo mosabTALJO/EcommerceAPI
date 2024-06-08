@@ -39,29 +39,14 @@ namespace EcommerceAPI.Data.Models
         public double? Lng { get; set; }
         public bool IsArchived { get; set; }
         public ICollection<OrderItem> OrderItems { get; set; }
-        //public int? ShipmentId { get; set; }
-        //public Shipment Shipment { get; set; }
-        public int? GiftId { get; set; }
-        public Gift Gift { get; set; }
-        public bool IsGiftTaken { get; set; }
-        [NotMapped]
-        public double TotalTLPrice { get; set; }
         public double DiscountAmount { get; set; }
-        public ProductNotFound? ProductNotFound { get; set; }
         public OrderDeviceType? OrderDeviceType { get; set; }
         public virtual ICollection<OrderPayment> OrderPayments { get; set; }
         public double SpecialDiscount { get; set; }
         public CaptureStatus CaptureStatus { get; set; }
     }
     public enum CaptureStatus { Pending, Captured, Released }
-    public enum PaymentGateway { Iyzico, MyFatoorah }
-    public enum ProductNotFound
-    {
-        CallMe = 0,
-        SendSimilarProduct = 1,
-        RefundOnly = 2,
-        RefundAndNotify = 3,
-    }
+    public enum PaymentGateway { Iyzico, MyFatoorah, PayTab }
     public enum OrderDeviceType
     {
         None = 0,

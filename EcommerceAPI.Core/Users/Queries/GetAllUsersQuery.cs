@@ -37,7 +37,7 @@ namespace EcommerceAPI.Core.Users.Queries
                 var result = new List<UserVM>();
                 foreach (var x in users)
                 {
-                    var m = new UserVM { DisplayName = x.DisplayName, Id = x.Id, IsActive = x.IsActive, PhoneNumber = x.PhoneNumber, Email = x.Email, UserType = x.UserType, Country = x.Country, CustomerBalance = x.CustomerBalance, };
+                    var m = new UserVM { DisplayName = x.DisplayName, Id = x.Id, IsActive = x.IsActive, PhoneNumber = x.PhoneNumber, Email = x.Email, UserType = x.UserType, Country = x.Country, };
                     m.Claims = (await _userManager.GetClaimsAsync(x)).Select(x => (Policies)int.Parse(x.Type)).ToList();
                     result.Add(m);
                 }

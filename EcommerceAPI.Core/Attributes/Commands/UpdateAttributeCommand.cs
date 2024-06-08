@@ -17,7 +17,6 @@ namespace EcommerceAPI.Core.Attributes.Commands
             public UpdateAttributeCommandHandler(IAttributesService attributesService, IUnitOfWork unitOfWork)
             {
                 _attributesService = attributesService;
-                _mapper = mapper;
                 _unitOfWork = unitOfWork;
             }
 

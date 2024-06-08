@@ -22,9 +22,7 @@ namespace EcommerceAPI.Core.Carts.Command
         public string LastName { get; set; }
         public string? Currency { get; set; }
         public string? CouponCode { get; set; }
-        public string? IdCard { get; set; }
         public OrderPaymentType OrderPaymentType { get; set; }
-        public ProductNotFound? ProductNotFound { get; set; } = null;
         public OrderDeviceType? OrderDeviceType { get; set; }
         public class NoAccountPurchaseCommandHandler : IRequestHandler<NoAccountPurchaseCommand, RequestResult<NoAccountPaymentVM>>
         {
@@ -77,7 +75,6 @@ namespace EcommerceAPI.Core.Carts.Command
                         CreatedAt = DateTime.Now,
                         UserType = UserTypes.NotRegisteredCustomer,
                         Country = command.Country,
-                        IdCardImage = command.IdCard != null ? command.IdCard : null,
                     };
                     var result = await _userManager.CreateAsync(user);
                     if (!result.Succeeded)
@@ -112,7 +109,6 @@ namespace EcommerceAPI.Core.Carts.Command
                     Currency = command.Currency,
                     Country = command.Country,
                     CurrencyRate = _currencyRateService.GetCurrencyRate(command.Currency),
-                    ProductNotFound = command.ProductNotFound,
                 };
 
                 Coupon coupon = null;
@@ -121,12 +117,6 @@ namespace EcommerceAPI.Core.Carts.Command
                     coupon = _couponService.CheckCoupon(command.CouponCode, out string couponError);
                     if (coupon is null)
                         return new RequestResult<NoAccountPaymentVM>(ActionResultType.NotFound, "orders.coupon-not-found");
-
-                    if (coupon.IsForCustomerFirstOrder)
-                    {
-                        if (_userManager.FindByEmailAsync(user.Email).Result?.Orders?.Any() == true)
-                            return new RequestResult<NoAccountPaymentVM>(ActionResultType.BadRequest, "The Coupon is not applicable for the current user");
-                    }
                 }
                 string error = "";
                 bool couponExists = false;
@@ -164,7 +154,6 @@ namespace EcommerceAPI.Core.Carts.Command
 
                 o.PaymentType = command.OrderPaymentType;
                 o.OrderStatus = command.OrderPaymentType == OrderPaymentType.OnDoor ? OrderStatus.OnDoorPaymentPending : OrderStatus.Pending;
-                o.ProductNotFound = command.ProductNotFound;
                 o.OrderDeviceType = command.OrderDeviceType;
 
                 bool areProductsValid = await CartOrderOperations.CalcualteAndValidateOrderItems(_countryService, _productVariantService, _couponService, _collectionService, _currencyRateService, o, address, coupon, command.Currency);
@@ -200,17 +189,14 @@ namespace EcommerceAPI.Core.Carts.Command
                         await _orderLogService.OrderCreatedLog(o.Id, user.Id);
                         try
                         {
-                            var kwdCurrencyRate = _currencyRateService.GetCurrencyRate("kwd");
-                            var totalKwdPrice = o.TotalTLPrice * kwdCurrencyRate;
-
-                            var sendPaymentRequest = CartOrderOperations.GeneratePaymentRequest(o, user, address, totalKwdPrice);
+                            var sendPaymentRequest = CartOrderOperations.GeneratePaymentRequest(o, user, address, o.TotalSalePrice);
                             var x = await MyFatoorahHelper.SendPayment(sendPaymentRequest);
                             if (x?.IsSuccess == true)
                             {
                                 _orderPaymentService.Insert(new OrderPayment
                                 {
                                     OrderId = o.Id,
-                                    Amount = totalKwdPrice,
+                                    Amount = o.TotalSalePrice,
                                     PaymentId = "",
                                     InvoiceId = x.Data?.InvoiceId ?? 0,
                                     InvoiceStatus = "pending",//x.Data.InvoiceStatus

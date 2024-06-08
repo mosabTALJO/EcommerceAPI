@@ -31,7 +31,7 @@ namespace EcommerceAPI.Core.ProductFavorites.Queries
                     BrandName = lang == "en" ? x.Brand.NameEn : lang == "ar" ? x.Brand.NameAr : x.Brand.NameTr,
                     MainImageRow = x.MainImage,
                     Id = x.Id,
-                    SalesPrice = x.CompanyPrice.Value * x.Category.ProfitRatio.Value * query.CurrencyRate,
+                    SalesPrice = x.SalesPrice * query.CurrencyRate,
                     Discount = x.Discount > 0 ? x.Discount : x.Category.Discount > 0 ? x.Category.Discount : null,
                     TotalRate = x.TotalRate,
                     CreatedAt = x.CreatedAt,

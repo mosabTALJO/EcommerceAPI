@@ -56,7 +56,6 @@ namespace EcommerceAPI.Core.Products.Queries
 
                 if (query.Role != "Admin")
                 {
-                    item.CompanyPrice = null;
                     p.Discount = p.Discount > 0 ? p.Discount : p.Category.Discount > 0 ? p.Category.Discount : null;
                 }
                 return new RequestResult<ProductVM>(p);

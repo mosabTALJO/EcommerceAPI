@@ -81,9 +81,6 @@ namespace EcommerceAPI.Core.Orders.Commands
                         }
                         else
                         {
-                            var customer = await _userManager.FindByIdAsync(order.CustomerId);
-                            customer.CustomerBalance += oldPaidTotalPrice - order.TotalSalePrice;
-                            await _userManager.UpdateAsync(customer);
                             if (await _unitOfWork.SaveChangesAsync() < 0)
                                 return new RequestResult<bool>(ActionResultType.BadRequest, "an error occured while saving customer balance");
                         }

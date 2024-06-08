@@ -6,7 +6,7 @@ using System.Net;
 
 namespace EcommerceAPI.Shared.Helpers
 {
-    public class SendGridEmailSender : IEmailSender
+    public class SendGridEmailSender : IAppEmailSender
     {
         public SendGridEmailSender(IOptions<SendGridEmailSenderOptions> options)
         {

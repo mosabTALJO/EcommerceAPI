@@ -26,29 +26,25 @@ namespace EcommerceAPI.Core.Countries.Commands
         public string Image { get; set; }
         public bool IsActive { get; set; }
         public bool OnDoorPayment { get; set; }
-        public bool MyFatoorahPayment { get; set; }
-        public bool IsRequestIdCard { get; set; }
+        //public bool MyFatoorahPayment { get; set; }
         public string PrivacyPolicyText { get; set; }
         public ICollection<CityVM> Cities { get; set; }
-        public ICollection<GiftPriceRangeVM> GiftPriceRanges { get; set; }
 
         public class PutCountryCommandHandler : IRequestHandler<UpdateCountryCommand, RequestResult<bool>>
         {
             private readonly ICountryService _countryService;
             private readonly IUnitOfWork _unitOfWork;
             private readonly IMapper _mapper;
-            private readonly IGiftPriceRangeService _giftPriceRangeService;
-            public PutCountryCommandHandler(ICountryService countryService, IUnitOfWork unitOfWork, IMapper mapper, IGiftPriceRangeService giftPriceRangeService)
+            public PutCountryCommandHandler(ICountryService countryService, IUnitOfWork unitOfWork, IMapper mapper)
             {
                 _countryService = countryService;
                 _unitOfWork = unitOfWork;
                 _mapper = mapper;
-                _giftPriceRangeService = giftPriceRangeService;
             }
 
             public async Task<RequestResult<bool>> Handle(UpdateCountryCommand command, CancellationToken cancellationToken)
             {
-                if (await _countryService.Queryable().AsNoTracking().Include(c => c.GiftPriceRanges).ThenInclude(gr => gr.Gifts).AsNoTracking().FirstOrDefaultAsync(x => x.Id == command.Id) is Country dbCountry)
+                if (await _countryService.Queryable().AsNoTracking().AsNoTracking().FirstOrDefaultAsync(x => x.Id == command.Id) is Country dbCountry)
                 {
                     dbCountry.IsActive = command.IsActive;
                     dbCountry.BannerImage = command.BannerImage;
@@ -57,37 +53,8 @@ namespace EcommerceAPI.Core.Countries.Commands
                     dbCountry.AverageDeliveryDays = command.AverageDeliveryDays;
                     dbCountry.DeliveryLimitFixedAmount = command.DeliveryLimitFixedAmount;
                     dbCountry.OnDoorPayment = command.OnDoorPayment;
-                    dbCountry.MyFatoorahPayment = command.MyFatoorahPayment;
-                    dbCountry.IsRequestIdCard = command.IsRequestIdCard;
+                    //dbCountry.MyFatoorahPayment = command.MyFatoorahPayment;
                     dbCountry.PrivacyPolicyText = command.PrivacyPolicyText;
-
-                    var newGiftRanges = new List<GiftPriceRange>();
-                    command.GiftPriceRanges ??= [];
-                    foreach (var giftRangeVM in command.GiftPriceRanges)
-                    {
-                        var giftRange = _mapper.Map<GiftPriceRange>(giftRangeVM);
-                        if (dbCountry.GiftPriceRanges.Any(gr => gr.Id == giftRange.Id))
-                        {
-                            await _giftPriceRangeService.UpdateGiftPriceRange(giftRange, giftRange.Gifts.ToList());
-                            newGiftRanges.Add(giftRange);
-                        }
-                        else
-                        {
-                            giftRange.CountryId = dbCountry.Id;
-                            await _giftPriceRangeService.CreateGiftPriceRange(giftRange);
-                            newGiftRanges.Add(giftRange);
-                        }
-                    }
-
-                    dbCountry.GiftPriceRanges ??= new List<GiftPriceRange>();
-                    foreach (var giftRange in dbCountry.GiftPriceRanges)
-                    {
-                        if (!command.GiftPriceRanges.Any(gr => gr.Id == giftRange.Id))
-                        {
-                            await _giftPriceRangeService.DeleteGiftPriceRange(giftRange);
-                        }
-                    }
-                    dbCountry.GiftPriceRanges = newGiftRanges;
 
                     _countryService.UpdateCountryData(dbCountry, command.Cities.Select(x => _mapper.Map<City>(x)).ToArray());
 

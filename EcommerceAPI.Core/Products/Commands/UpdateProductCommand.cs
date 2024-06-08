@@ -30,9 +30,6 @@ namespace EcommerceAPI.Core.Products.Commands
         public string Weight { get; set; }
         public bool IsActive { get; set; }
         public int? OrderIndex { get; set; }
-        public string CompanyURL { get; set; }
-        public double? CompanyPrice { get; set; }
-        public string CompanyColor { get; set; }
         public List<ProductVariantVM> ProductVariants { get; set; }
         public bool OnlinePaymentOnly { get; set; }
         public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, RequestResult<bool>>
@@ -70,9 +67,7 @@ namespace EcommerceAPI.Core.Products.Commands
                     p.SalesPrice = command.SalesPrice;
                     p.IsActive = command.IsActive;
                     p.OnlinePaymentOnly = command.OnlinePaymentOnly;
-                    p.CompanyPrice = command.CompanyPrice;
                     p.ProductVariants = command.ProductVariants.Select(_mapper.Map<ProductVariant>).ToList();
-                    p.CompanyColor = command.CompanyColor;
 
                     _productService.UpdateProduct(p);
                     if (await _unitOfWork.SaveChangesAsync() > 0)

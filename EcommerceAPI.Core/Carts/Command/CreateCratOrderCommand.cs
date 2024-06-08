@@ -40,7 +40,6 @@ namespace EcommerceAPI.Core.Carts.Command
         public double SubTotalSalePrice { get; set; }
         public string GeneratedPaymentLinks { get; set; }
         public bool IsArchived { get; set; }
-        public ProductNotFound? ProductNotFound { get; set; } = null;
         public string UserId { get; set; }
         public class CreateCratOrderCommandHandler : IRequestHandler<CreateCratOrderCommand, RequestResult<bool>>
         {
@@ -83,7 +82,6 @@ namespace EcommerceAPI.Core.Carts.Command
                 }
                 o.OrderStatus = OrderStatus.OnDoorPaymentPending;
                 o.PaymentType = OrderPaymentType.OnDoor;
-                o.ProductNotFound = command.ProductNotFound;
                 o.OrderDeviceType = OrderDeviceType.DashBoard;
 
                 var country = _countryService.Queryable().FirstOrDefault(x => x.Code == command.Country);

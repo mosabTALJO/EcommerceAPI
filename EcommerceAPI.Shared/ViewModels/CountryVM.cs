@@ -18,9 +18,7 @@
         public bool IsActive { get; set; }
         public bool OnDoorPayment { get; set; }
         public bool MyFatoorahPayment { get; set; }
-        public bool IsRequestIdCard { get; set; }
         public string PrivacyPolicyText { get; set; }
         public ICollection<CityVM> Cities { get; set; }
-        public ICollection<GiftPriceRangeVM> GiftPriceRanges { get; set; }
     }
 }

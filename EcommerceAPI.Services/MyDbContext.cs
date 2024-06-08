@@ -24,12 +24,10 @@ namespace EcommerceAPI.Services
             //modelBuilder.Entity<Notification>().HasIndex(c => c.UserId);
 
             modelBuilder.Entity<Category>().HasIndex(c => c.NameTr);
-            modelBuilder.Entity<Category>().HasIndex(c => c.CompanyUrl);
             modelBuilder.Entity<Category>().HasIndex(p => p.IsActive);
             modelBuilder.Entity<Category>().HasIndex(p => p.OrderIndex);
             modelBuilder.Entity<Category>().HasQueryFilter(p => p.IsActive);
 
-            modelBuilder.Entity<Brand>().HasIndex(c => c.CompanyUrl);
             modelBuilder.Entity<Brand>().HasIndex(c => c.NameTr);
             modelBuilder.Entity<Brand>().HasIndex(c => c.NameAr);
             modelBuilder.Entity<Brand>().HasIndex(c => c.NameEn);
@@ -42,9 +40,7 @@ namespace EcommerceAPI.Services
             modelBuilder.Entity<Product>().HasIndex(p => p.NameTr);
             modelBuilder.Entity<Product>().HasIndex(p => p.SKU);
             modelBuilder.Entity<Product>().HasIndex(p => p.CreatedAt);
-            modelBuilder.Entity<Product>().HasIndex(p => p.CompanyUpdatedDate);
             modelBuilder.Entity<Product>().HasIndex(p => p.IsActive);
-            modelBuilder.Entity<Product>().HasIndex(p => p.CompanyBrand);
             modelBuilder.Entity<Product>().HasQueryFilter(p => p.IsActive);
             modelBuilder.Entity<Product>().HasIndex(p => p.DeletedAt);
             modelBuilder.Entity<Product>().HasIndex(p => p.CategoryId);

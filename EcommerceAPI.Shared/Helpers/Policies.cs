@@ -79,9 +79,6 @@
         //Shipments
         EditShipments = 29,
 
-        //Gifts
-        EditGifts = 30,
-
         //Rating
         EditRatings = 31,
 
@@ -182,9 +179,6 @@
 
         //Shipments
         public const string EditShipments = "29";
-
-        //Gifts
-        public const string EditGifts = "30";
 
         //Rating
         public const string EditRatings = "31";

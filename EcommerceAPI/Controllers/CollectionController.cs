@@ -69,7 +69,7 @@ namespace EcommerceAPI.Web.Controllers
                     BrandName = lang == "en" ? x.Brand.NameEn : lang == "ar" ? x.Brand.NameAr : x.Brand.NameTr,
                     MainImageRow = x.MainImage,
                     Id = x.Id,
-                    SalesPrice = x.CompanyPrice.Value * x.Category.ProfitRatio.Value * currencyRate,
+                    SalesPrice = x.SalesPrice * currencyRate,
                     Discount = x.Discount > 0 ? x.Discount : x.Category.Discount > 0 ? x.Category.Discount : null,
                     TotalRate = x.TotalRate,
                     CreatedAt = x.CreatedAt,
@@ -102,7 +102,6 @@ namespace EcommerceAPI.Web.Controllers
             if (c is null)
                 return NotFound("IdError");
             c.Name = item.Name?.Trim();
-            c.IsOneFree = item.IsOneFree;
 
             _collectionService.UpdateCollection(c, item.Items.Select(x => _mapper.Map<CollectionItem>(x)).ToArray());
             if (await _unitOfWork.SaveChangesAsync() > 0)

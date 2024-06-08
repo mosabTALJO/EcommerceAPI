@@ -17,9 +17,5 @@ namespace EcommerceAPI.Shared.ViewModels
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public bool IsArchived { get; set; }
-        public int? GiftId { get; set; }
-        public GiftLiteVM Gift { get; set; }
-        public bool IsGiftTaken { get; set; }
-        public ProductNotFound? ProductNotFound { get; set; }
     }
 }

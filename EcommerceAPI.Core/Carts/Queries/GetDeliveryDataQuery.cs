@@ -34,22 +34,20 @@ namespace EcommerceAPI.Core.Carts.Queries
                 var onlinePaymentOnlyExists = await _orderService.ItemsQueryable()
                     .AnyAsync(x => x.Order.OrderStatus == OrderStatus.CartOrder && x.Order.CustomerId == query.UserId && x.ProductVariant!.Product!.OnlinePaymentOnly);
 
-                bool OnDoorPayment = c?.OnDoorPayment == true && u?.IsBlackList != true && !onlinePaymentOnlyExists;
+                bool OnDoorPayment = c?.OnDoorPayment == true && !onlinePaymentOnlyExists;
                 if (!string.IsNullOrEmpty(query.CityCode))
                 {
                     var city = c.Cities.FirstOrDefault(x => x.Code == query.CityCode);
-                    if (city?.IsBlackList == true)
-                        OnDoorPayment = false;
                 }
                 var deliverData = new DeliveryData
                 {
                     FreeDeliveryAbove = c?.DeliveryLimitAmount.ToString() ?? "30",
                     DeliveryAverageDays = c?.AverageDeliveryDays.ToString() ?? "15",
                     CurrencyCode = c?.CurrencyCode ?? "KWD",
-                    MyFatoorah = c.MyFatoorahPayment,
+                    MyFatoorah = true,//c.MyFatoorahPayment,
                     OnDoorPayment = OnDoorPayment,
                 };
-                if (deliverData.OnDoorPayment && c.IsRequestIdCard == true && string.IsNullOrEmpty(u.IdCardImage))
+                if (deliverData.OnDoorPayment)
                 {
                     deliverData.RequestIdCard = true;
                     deliverData.IdCardTermsAndConditions = c.PrivacyPolicyText;

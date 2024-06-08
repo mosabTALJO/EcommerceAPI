@@ -13,9 +13,9 @@ namespace EcommerceAPI.Core.Auths.Commands
         public class ForgetPasswordCommandHandler : IRequestHandler<ForgetPasswordCommand, RequestResult<bool>>
         {
             private readonly UserManager<AppUser> _userManager;
-            private readonly IEmailSender _emailSender;
+            private readonly IAppEmailSender _emailSender;
 
-            public ForgetPasswordCommandHandler(UserManager<AppUser> userManager, IEmailSender emailSender)
+            public ForgetPasswordCommandHandler(UserManager<AppUser> userManager, IAppEmailSender emailSender)
             {
                 _userManager = userManager;
                 _emailSender = emailSender;

@@ -67,16 +67,15 @@ namespace EcommerceAPI.Core.Filterings.Queries
                 if (!string.IsNullOrEmpty(query.Search))
                 {
                     if (int.TryParse(query.Search, out int idToSearch))
-                        lst = lst.Where(x => x.Id == idToSearch || EF.Functions.Like(x.CompanyBrand, query.Search + "%") || EF.Functions.Like(x.NameEn, query.Search + "%"));
+                        lst = lst.Where(x => x.Id == idToSearch || EF.Functions.Like(x.NameEn, query.Search + "%"));
                     else
-                        lst = lst.Where(x => EF.Functions.Like(x.CompanyBrand, query.Search + "%") || EF.Functions.Like(x.NameEn, query.Search + "%"));
+                        lst = lst.Where(x => EF.Functions.Like(x.NameEn, query.Search + "%"));
                 }
 
                 return new RequestResult<Filtering>(new Filtering
                 {
                     Brands = lst.Select(x => new FilterItem { Id = x.Brand.Id.ToString(), Name = lang == "ar" ? x.Brand.NameAr : x.Brand.NameEn }).Distinct().Take(200).ToArray(),
-                    //Sizes = lst.SelectMany(x => x.ProductTypes.Select(t => new FilterItem { Id = t.Size, Name = t.Size })).Distinct().Take(200).ToArray(),
-                    Colors = lst.Where(x => !string.IsNullOrEmpty(x.CompanyColor)).Select(x => new FilterItem { Id = x.CompanyColor, Name = x.CompanyColor }).Distinct().Take(200).ToArray(),
+                    Colors = []// lst.Select(x => new FilterItem { Id = x.CompanyColor, Name = x.CompanyColor }).Distinct().Take(200).ToArray(),
                 });
             }
         }

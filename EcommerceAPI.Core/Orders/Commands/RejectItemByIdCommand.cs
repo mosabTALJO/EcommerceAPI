@@ -64,13 +64,7 @@ namespace EcommerceAPI.Core.Orders.Commands
                 _orderService.UpdateOrder(o);
 
                 if (await _unitOfWork.SaveChangesAsync() > 0)
-                {
-                    var u = await _userManager.FindByIdAsync(command.UserId);
-                    //TODO based on currency
-                    u.CustomerBalance += removedValue;
-                    await _userManager.UpdateAsync(u);
                     return new RequestResult<bool>(true);
-                }
                 return new RequestResult<bool>(ActionResultType.BadRequest, "Error");
             }
         }

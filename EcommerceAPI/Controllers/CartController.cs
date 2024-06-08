@@ -152,9 +152,7 @@ namespace EcommerceAPI.Web.Controllers
                 UserAddressId = UserAddressId,
                 Currency = Request.Headers.TryGetValue("Currency", out StringValues c) ? c.ToString() : null,
                 UserId = User.Identity?.Name,
-                ProductNotFound = (ProductNotFound?)productNotFound,
                 OrderDeviceType = Request.Headers.TryGetValue("device-type", out StringValues s) && int.TryParse(s, out int i) ? (OrderDeviceType?)i : null,
-                IdCard = idCard?.Replace("\"", ""),
             }));
         }
 
@@ -169,9 +167,7 @@ namespace EcommerceAPI.Web.Controllers
                 UserAddressId = userAddressId,
                 UserId = User.Identity?.Name,
                 Currency = Request.Headers.TryGetValue("Currency", out StringValues c) ? c.ToString() : null,
-                ProductNotFound = (ProductNotFound?)productNotFound,
                 OrderDeviceType = Request.Headers.TryGetValue("device-type", out StringValues s) && int.TryParse(s, out int i) ? (OrderDeviceType?)i : null,
-                IdCard = idCard?.Replace("\"", ""),
             }));
         }
 
@@ -185,9 +181,7 @@ namespace EcommerceAPI.Web.Controllers
                 UserAddressId = userAddressId,
                 UserId = User.Identity.Name,
                 Currency = Request.Headers.TryGetValue("Currency", out StringValues c) ? c.ToString() : null,
-                ProductNotFound = (ProductNotFound?)productNotFound,
                 OrderDeviceType = Request.Headers.TryGetValue("device-type", out StringValues s) && int.TryParse(s, out int i) ? (OrderDeviceType?)i : null,
-                IdCard = idCard?.Replace("\"", ""),
             }));
         }
 

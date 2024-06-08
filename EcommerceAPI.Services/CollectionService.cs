@@ -23,10 +23,7 @@ namespace EcommerceAPI.Services
         }
         public Dictionary<int, List<CollectionItem>> GetCollectionsByProducts(int[] productIds)
         {
-            var onFreeCollections = Repository.Queryable()
-                .Where(x => x.IsOneFree).Select(x => x.Id).ToArray();
             return _collectionItemRepos.Queryable()
-                .Where(x => onFreeCollections.Contains(x.CollectionId))
                 .Where(x => productIds.Contains(x.ProductId))
                 .ToArray()
                 .GroupBy(x => x.CollectionId)
@@ -57,11 +54,8 @@ namespace EcommerceAPI.Services
         }
         public async Task<Dictionary<int, List<CollectionItem>>> GetCollectionsByProductVariantIds(int[] productVariantIds)
         {
-            var onFreeCollections = Repository.Queryable()
-                .Where(x => x.IsOneFree).Select(x => x.Id).ToArray();
             var productIds = await _productVariantRepos.Queryable().Where(x => EF.Constant(productVariantIds).Contains(x.Id)).Select(x => x.ProductId).ToArrayAsync();
             return _collectionItemRepos.Queryable()
-                .Where(x => onFreeCollections.Contains(x.CollectionId))
                 .Where(x => productIds.Contains(x.ProductId))
                 .ToArray()
                 .GroupBy(x => x.CollectionId)

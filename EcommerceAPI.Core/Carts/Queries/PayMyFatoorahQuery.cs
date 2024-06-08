@@ -14,8 +14,6 @@ namespace EcommerceAPI.Core.Carts.Queries
         public int UserAddressId { get; set; }
         public string? UserId { get; set; }
         public string? Currency { get; set; }
-        public string? IdCard { get; set; }
-        public ProductNotFound? ProductNotFound { get; set; } = null;
         public OrderDeviceType? OrderDeviceType { get; set; } = null;
         public class PayMyFatoorahQueryHandler : IRequestHandler<PayMyFatoorahQuery, RequestResult<string>>
         {
@@ -55,13 +53,6 @@ namespace EcommerceAPI.Core.Carts.Queries
                 var u = _userManager.Users.Include(x => x.UserAddresses).FirstOrDefault(x => x.Id == query.UserId);
                 if (u is null)
                     return new RequestResult<string>(ActionResultType.NotFound, "User not found");
-                if (!string.IsNullOrEmpty(query.IdCard))
-                {
-                    u.IdCardImage = query.IdCard;
-                    var userResult = await _userManager.UpdateAsync(u);
-                    if (!userResult.Succeeded)
-                        return new RequestResult<string>(ActionResultType.BadRequest, "error while savind id card");
-                }
 
                 var o = await _orderService.GetOrderDetails(cartOrder.Id);
                 var address = u.UserAddresses?.FirstOrDefault(x => x.Id == query.UserAddressId);
@@ -83,7 +74,6 @@ namespace EcommerceAPI.Core.Carts.Queries
                         return new RequestResult<string>(ActionResultType.BadRequest, "Coupun Error: " + error);
                 }
                 o.PaymentType = OrderPaymentType.Online;
-                o.ProductNotFound = query.ProductNotFound;
                 o.OrderDeviceType = query.OrderDeviceType;
 
                 bool areProductsValid = await CartOrderOperations.CalcualteAndValidateOrderItems(_countryService, _productVariantService, _couponService, _collectionService, _currencyRateService, o, address, coupon, query.Currency);
@@ -100,17 +90,14 @@ namespace EcommerceAPI.Core.Carts.Queries
                         string myFatoorahError = "";
                         try
                         {
-                            var kwdCurrencyRate = _currencyRateService.GetCurrencyRate("kwd");
-                            var totalKwdPrice = o.TotalTLPrice * kwdCurrencyRate;
-
-                            var sendPaymentRequest = CartOrderOperations.GeneratePaymentRequest(o, u, address, totalKwdPrice);
+                            var sendPaymentRequest = CartOrderOperations.GeneratePaymentRequest(o, u, address, o.TotalSalePrice);
                             var x = await MyFatoorahHelper.SendPayment(sendPaymentRequest);
                             if (x?.IsSuccess == true)
                             {
                                 _orderPaymentService.Insert(new OrderPayment
                                 {
                                     OrderId = o.Id,
-                                    Amount = totalKwdPrice,
+                                    Amount = o.TotalSalePrice,
                                     PaymentId = "",
                                     InvoiceId = x.Data?.InvoiceId ?? 0,
                                     InvoiceStatus = "pending",//x.Data.InvoiceStatus
