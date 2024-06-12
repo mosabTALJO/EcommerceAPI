@@ -22,9 +22,7 @@ namespace EcommerceAPI.Core.Carts.Command
         public string LastName { get; set; }
         public string? Currency { get; set; }
         public string? CouponCode { get; set; }
-        public string? IdCard { get; set; }
         public OrderPaymentType OrderPaymentType { get; set; }
-        public ProductNotFound? ProductNotFound { get; set; } = null;
         public OrderDeviceType? OrderDeviceType { get; set; }
         public class NoAccountPurchaseCommandHandler : IRequestHandler<NoAccountPurchaseCommand, RequestResult<NoAccountPaymentVM>>
         {
@@ -32,20 +30,20 @@ namespace EcommerceAPI.Core.Carts.Command
             private readonly IUnitOfWork _unitOfWork;
             private readonly UserManager<AppUser> _userManager;
             private readonly ICurrencyRateService _currencyRateService;
-            private readonly IProductService _productService;
+            private readonly IProductVariantService _productVariantService;
             private readonly ICouponService _couponService;
             private readonly ICountryService _countryService;
             private readonly ICollectionService _collectionService;
             private readonly IOrderLogService _orderLogService;
             private readonly IOrderPaymentService _orderPaymentService;
             //private readonly IEmailSender _emailSender;
-            public NoAccountPurchaseCommandHandler(IOrderService orderService, IUnitOfWork unitOfWork, UserManager<AppUser> userManager, ICurrencyRateService currencyRateService, IProductService productService, ICouponService couponService, ICountryService countryService, ICollectionService collectionService, IOrderLogService orderLogService, IOrderPaymentService orderPaymentService/*, IEmailSender emailSender*/)
+            public NoAccountPurchaseCommandHandler(IOrderService orderService, IUnitOfWork unitOfWork, UserManager<AppUser> userManager, ICurrencyRateService currencyRateService, IProductVariantService productVariantService, ICouponService couponService, ICountryService countryService, ICollectionService collectionService, IOrderLogService orderLogService, IOrderPaymentService orderPaymentService/*, IEmailSender emailSender*/)
             {
                 _orderService = orderService;
                 _unitOfWork = unitOfWork;
                 _userManager = userManager;
                 _currencyRateService = currencyRateService;
-                _productService = productService;
+                _productVariantService = productVariantService;
                 _couponService = couponService;
                 _countryService = countryService;
                 _collectionService = collectionService;
@@ -77,7 +75,6 @@ namespace EcommerceAPI.Core.Carts.Command
                         CreatedAt = DateTime.Now,
                         UserType = UserTypes.NotRegisteredCustomer,
                         Country = command.Country,
-                        IdCardImage = command.IdCard != null ? command.IdCard : null,
                     };
                     var result = await _userManager.CreateAsync(user);
                     if (!result.Succeeded)
@@ -112,7 +109,6 @@ namespace EcommerceAPI.Core.Carts.Command
                     Currency = command.Currency,
                     Country = command.Country,
                     CurrencyRate = _currencyRateService.GetCurrencyRate(command.Currency),
-                    ProductNotFound = command.ProductNotFound,
                 };
 
                 Coupon coupon = null;
@@ -121,38 +117,26 @@ namespace EcommerceAPI.Core.Carts.Command
                     coupon = _couponService.CheckCoupon(command.CouponCode, out string couponError);
                     if (coupon is null)
                         return new RequestResult<NoAccountPaymentVM>(ActionResultType.NotFound, "orders.coupon-not-found");
-
-                    if (coupon.IsForCustomerFirstOrder)
-                    {
-                        if (_userManager.FindByEmailAsync(user.Email).Result?.Orders?.Any() == true)
-                            return new RequestResult<NoAccountPaymentVM>(ActionResultType.BadRequest, "The Coupon is not applicable for the current user");
-                    }
                 }
                 string error = "";
                 bool couponExists = false;
                 foreach (var item in command.Items)
                 {
-                    var oi = new OrderItem() { ProductId = item.ProductId, ProductTypeId = item.ProductTypeId, Qty = item.Quantity, OrderItemState = OrderItemState.Pending };
+                    var oi = new OrderItem() { ProductVariantId = item.ProductVariantId, Qty = item.Quantity, OrderItemState = OrderItemState.Pending };
                     o.OrderItems.Add(oi);
 
-                    var p = _productService.Queryable().Include(x => x.ProductTypes).AsNoTracking().FirstOrDefault(x => x.Id == item.ProductId);
-                    bool productExists = p != null && (!item.ProductTypeId.HasValue || p.ProductTypes.Any(x => x.Id == item.ProductTypeId));
-
-                    if (!productExists)
-                    {
+                    var pv = await _productVariantService.Queryable().Where(x => x.Id == item.ProductVariantId)
+                        .Select(x => new { x.Id, x.ProductId, x.Product.BrandId, x.Product.CategoryId }).FirstOrDefaultAsync();
+                    if (pv == null)
                         return new RequestResult<NoAccountPaymentVM>(ActionResultType.NotFound, $"item {oi.Id} is not found");
-                        //if (oi != null)
-                        //    oi.Qty = 0;
-                        //error = "ProductId not found : " + item.ProductId + "\n";
-                    }
                     else
                     {
                         if (coupon == null)
                             continue;
                         if (coupon.Type == CouponType.General
-                        || (coupon.Type == CouponType.Product && p.Id == coupon.TypeId)
-                        || (coupon.Type == CouponType.Brand && p.BrandId == coupon.TypeId)
-                        || (coupon.Type == CouponType.Category && p.CategoryId == coupon.TypeId))
+                        || (coupon.Type == CouponType.Product && pv.ProductId == coupon.TypeId)
+                        || (coupon.Type == CouponType.Brand && pv.BrandId == coupon.TypeId)
+                        || (coupon.Type == CouponType.Category && pv.CategoryId == coupon.TypeId))
                         {
                             oi.CoupunDiscount = coupon.Rate;
                             couponExists = true;
@@ -170,10 +154,9 @@ namespace EcommerceAPI.Core.Carts.Command
 
                 o.PaymentType = command.OrderPaymentType;
                 o.OrderStatus = command.OrderPaymentType == OrderPaymentType.OnDoor ? OrderStatus.OnDoorPaymentPending : OrderStatus.Pending;
-                o.ProductNotFound = command.ProductNotFound;
                 o.OrderDeviceType = command.OrderDeviceType;
 
-                bool areProductsValid = await CartOrderOperations.CalcualteAndValidateOrderItems(_countryService, _productService, _couponService, _collectionService, _currencyRateService, o, address, coupon, command.Currency);
+                bool areProductsValid = await CartOrderOperations.CalcualteAndValidateOrderItems(_countryService, _productVariantService, _couponService, _collectionService, _currencyRateService, o, address, coupon, command.Currency);
                 _orderService.CreateOrder(o);
 
                 if (await _unitOfWork.SaveChangesAsync() > 0)
@@ -206,17 +189,14 @@ namespace EcommerceAPI.Core.Carts.Command
                         await _orderLogService.OrderCreatedLog(o.Id, user.Id);
                         try
                         {
-                            var kwdCurrencyRate = _currencyRateService.GetCurrencyRate("kwd");
-                            var totalKwdPrice = o.TotalTLPrice * kwdCurrencyRate;
-
-                            var sendPaymentRequest = CartOrderOperations.GeneratePaymentRequest(o, user, address, totalKwdPrice);
+                            var sendPaymentRequest = CartOrderOperations.GeneratePaymentRequest(o, user, address, o.TotalSalePrice);
                             var x = await MyFatoorahHelper.SendPayment(sendPaymentRequest);
                             if (x?.IsSuccess == true)
                             {
                                 _orderPaymentService.Insert(new OrderPayment
                                 {
                                     OrderId = o.Id,
-                                    Amount = totalKwdPrice,
+                                    Amount = o.TotalSalePrice,
                                     PaymentId = "",
                                     InvoiceId = x.Data?.InvoiceId ?? 0,
                                     InvoiceStatus = "pending",//x.Data.InvoiceStatus

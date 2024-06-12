@@ -17,17 +17,17 @@ namespace EcommerceAPI.Core.Carts.Queries
         {
             private readonly IOrderService _orderService;
             private readonly IMapper _mapper;
-            private readonly IProductService _productService;
+            private readonly IProductVariantService _productVariantService;
             private readonly ICountryService _countryService;
             private readonly IUnitOfWork _unitOfWork;
             private readonly ICollectionService _collectionService;
             private readonly ICurrencyRateService _currencyRateService;
 
-            public GetCartByIdQueryHandler(IOrderService orderService, IMapper mapper, IProductService productService, ICountryService countryService, IUnitOfWork unitOfWork, ICollectionService collectionService, ICurrencyRateService currencyRateService)
+            public GetCartByIdQueryHandler(IOrderService orderService, IMapper mapper, IProductVariantService productVariantService, ICountryService countryService, IUnitOfWork unitOfWork, ICollectionService collectionService, ICurrencyRateService currencyRateService)
             {
                 _orderService = orderService;
                 _mapper = mapper;
-                _productService = productService;
+                _productVariantService = productVariantService;
                 _countryService = countryService;
                 _unitOfWork = unitOfWork;
                 _collectionService = collectionService;
@@ -49,12 +49,7 @@ namespace EcommerceAPI.Core.Carts.Queries
 
                 if (string.IsNullOrEmpty(dbOrder.Currency))
                     dbOrder.Currency = "KWD";
-                await CartOrderOperations.CalcualteCartItems(_countryService, _productService, _orderService, _unitOfWork, _collectionService, _currencyRateService, dbOrder);
-
-                foreach (var oi in dbOrder.OrderItems)
-                {
-                    oi.Product.CompanyURL = string.IsNullOrWhiteSpace(oi.Product.CompanyURL) || oi.Product.CompanyURL.StartsWith("https") ? oi.Product.CompanyURL : "https://www.trendyol.com" + (oi.Product.CompanyURL?.StartsWith("/") == true ? "" : "/") + oi.Product.CompanyURL;
-                }
+                await CartOrderOperations.CalcualteCartItems(_countryService, _productVariantService, _orderService, _unitOfWork, _collectionService, _currencyRateService, dbOrder);
 
                 return new RequestResult<OrderVM>(_mapper.Map<OrderVM>(dbOrder));
             }

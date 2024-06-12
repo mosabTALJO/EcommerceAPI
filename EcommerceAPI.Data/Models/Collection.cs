@@ -7,6 +7,5 @@ namespace EcommerceAPI.Data.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public ICollection<CollectionItem> Items { get; set; }
-        public bool IsOneFree { get; set; }
     }
 }

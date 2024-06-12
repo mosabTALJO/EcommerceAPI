@@ -8,10 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EcommerceAPI.Core.Products.Queries
 {
-    public class GetProductTypesQuery : IRequest<RequestResult<ProductTypeVM[]>>
+    public class GetProductVariantsQuery : IRequest<RequestResult<ProductVariantVM[]>>
     {
         public int Id { get; set; }
-        public class GetProductTypesQueryHandler : IRequestHandler<GetProductTypesQuery, RequestResult<ProductTypeVM[]>>
+        public class GetProductTypesQueryHandler : IRequestHandler<GetProductVariantsQuery, RequestResult<ProductVariantVM[]>>
         {
             private readonly IProductService _productService;
             private readonly IMapper _mapper;
@@ -21,13 +21,13 @@ namespace EcommerceAPI.Core.Products.Queries
                 _productService = productService;
                 _mapper = mapper;
             }
-            public async Task<RequestResult<ProductTypeVM[]>> Handle(GetProductTypesQuery query, CancellationToken cancellationToken)
+            public async Task<RequestResult<ProductVariantVM[]>> Handle(GetProductVariantsQuery query, CancellationToken cancellationToken)
             {
-                var items = await _productService.GetProductTypes(query.Id).To<ProductTypeVM>(_mapper).ToArrayAsync();
+                var items = await _productService.GetProductVariant(query.Id).To<ProductVariantVM>(_mapper).ToArrayAsync();
                 if (items is null)
-                    return new RequestResult<ProductTypeVM[]>(null, ActionResultType.NotFound);
+                    return new RequestResult<ProductVariantVM[]>(null, ActionResultType.NotFound);
 
-                return new RequestResult<ProductTypeVM[]>(items);
+                return new RequestResult<ProductVariantVM[]>(items);
             }
         }
     }

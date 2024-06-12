@@ -19,13 +19,9 @@ namespace EcommerceAPI.Data.Models
         public int? ParentId { get; set; }
         [JsonIgnore]
         public Category Parent { get; set; }
-        [MaxLength(200)]
-        public string CompanyUrl { get; set; }
         public bool IsActive { get; set; }
         public int? OrderIndex { get; set; }
-        public double? ProfitRatio { get; set; }
         public double? Discount { get; set; }
-        public double? DefaultWeight { get; set; }
         public ICollection<Category> Children { get; set; }
         [NotMapped]
         public string HelperName { get; set; }

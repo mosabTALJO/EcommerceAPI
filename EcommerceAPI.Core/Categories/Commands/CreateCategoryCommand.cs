@@ -31,7 +31,6 @@ namespace EcommerceAPI.Core.Categories.Commands
             public async Task<RequestResult<bool>> Handle(CreateCategoryCommand command, CancellationToken cancellationToken)
             {
                 var category = _mapper.Map<Category>(command);
-                category.ProfitRatio ??= 1.65;
                 _categoryService.Insert(category);
                 if (await _unitOfWork.SaveChangesAsync() > 0)
                     return new RequestResult<bool>(true);

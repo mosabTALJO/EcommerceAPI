@@ -49,7 +49,7 @@ namespace EcommerceAPI.Core.BaseItems
                     BrandName = lang == "en" ? x.Brand.NameEn : x.Brand.NameAr,
                     Id = x.Id,
                     MainImageRow = x.MainImage,
-                    SalesPrice = x.CompanyPrice.Value * x.Category.ProfitRatio.Value * CurrencyRate,
+                    SalesPrice = x.SalesPrice * CurrencyRate,
                     Discount = x.Discount > 0 ? x.Discount : x.Category.Discount > 0 ? x.Category.Discount : null,
                 }).ToArray();
 

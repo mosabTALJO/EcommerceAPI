@@ -19,13 +19,13 @@ namespace EcommerceAPI.Web.Controllers
         [Authorize(Policy = PoliciesText.EditCoupons)]
         [ApiExplorerSettings(GroupName = "cp")]
         public async Task<ActionResult<RequestResult<ListResponse<CouponVM>>>> Get(
-            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageNumber = 0,
             [FromQuery] int pageSize = 20,
             [FromQuery] string search = null,
             [FromQuery] string sortField = "Id",
             [FromQuery] string sortOrder = "Asc")
         {
-            return Ok(await _mediator.Send(new GetAllCouponsQuery
+            return GetActionResult(await _mediator.Send(new GetAllCouponsQuery
             {
                 PageNumber = pageNumber,
                 PageSize = pageSize,
@@ -48,7 +48,7 @@ namespace EcommerceAPI.Web.Controllers
         [ApiExplorerSettings(GroupName = "fe")]
         public async Task<ActionResult<RequestResult<CouponVM[]>>> GetUserCoupons()
         {
-            return Ok(await _mediator.Send(new GetUserCouponsQuery { UserId = User.Identity.Name }));
+            return GetActionResult(await _mediator.Send(new GetUserCouponsQuery { UserId = User.Identity.Name }));
         }
 
         [HttpPost]

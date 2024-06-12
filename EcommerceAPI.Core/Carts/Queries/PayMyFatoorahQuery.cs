@@ -14,8 +14,6 @@ namespace EcommerceAPI.Core.Carts.Queries
         public int UserAddressId { get; set; }
         public string? UserId { get; set; }
         public string? Currency { get; set; }
-        public string? IdCard { get; set; }
-        public ProductNotFound? ProductNotFound { get; set; } = null;
         public OrderDeviceType? OrderDeviceType { get; set; } = null;
         public class PayMyFatoorahQueryHandler : IRequestHandler<PayMyFatoorahQuery, RequestResult<string>>
         {
@@ -26,18 +24,18 @@ namespace EcommerceAPI.Core.Carts.Queries
             private readonly ICouponService _couponService;
             private readonly IUnitOfWork _unitOfWork;
             private readonly ICountryService _countryService;
-            private readonly IProductService _productService;
+            private readonly IProductVariantService _productVariantService;
             private readonly ICollectionService _collectionService;
             private readonly ICurrencyRateService _currencyRateService;
 
-            public PayMyFatoorahQueryHandler(IOrderService orderService, UserManager<AppUser> userManager, ICouponService couponService, IUnitOfWork unitOfWork, ICountryService countryService, IProductService productService, ICollectionService collectionService, IOrderLogService orderLogService, ICurrencyRateService currencyRateService, IOrderPaymentService orderPaymentLogService)
+            public PayMyFatoorahQueryHandler(IOrderService orderService, UserManager<AppUser> userManager, ICouponService couponService, IUnitOfWork unitOfWork, ICountryService countryService, IProductVariantService productVariantService, ICollectionService collectionService, IOrderLogService orderLogService, ICurrencyRateService currencyRateService, IOrderPaymentService orderPaymentLogService)
             {
                 _orderService = orderService;
                 _userManager = userManager;
                 _couponService = couponService;
                 _unitOfWork = unitOfWork;
                 _countryService = countryService;
-                _productService = productService;
+                _productVariantService = productVariantService;
                 _collectionService = collectionService;
                 _orderLogService = orderLogService;
                 _currencyRateService = currencyRateService;
@@ -55,13 +53,6 @@ namespace EcommerceAPI.Core.Carts.Queries
                 var u = _userManager.Users.Include(x => x.UserAddresses).FirstOrDefault(x => x.Id == query.UserId);
                 if (u is null)
                     return new RequestResult<string>(ActionResultType.NotFound, "User not found");
-                if (!string.IsNullOrEmpty(query.IdCard))
-                {
-                    u.IdCardImage = query.IdCard;
-                    var userResult = await _userManager.UpdateAsync(u);
-                    if (!userResult.Succeeded)
-                        return new RequestResult<string>(ActionResultType.BadRequest, "error while savind id card");
-                }
 
                 var o = await _orderService.GetOrderDetails(cartOrder.Id);
                 var address = u.UserAddresses?.FirstOrDefault(x => x.Id == query.UserAddressId);
@@ -83,10 +74,9 @@ namespace EcommerceAPI.Core.Carts.Queries
                         return new RequestResult<string>(ActionResultType.BadRequest, "Coupun Error: " + error);
                 }
                 o.PaymentType = OrderPaymentType.Online;
-                o.ProductNotFound = query.ProductNotFound;
                 o.OrderDeviceType = query.OrderDeviceType;
 
-                bool areProductsValid = await CartOrderOperations.CalcualteAndValidateOrderItems(_countryService, _productService, _couponService, _collectionService, _currencyRateService, o, address, coupon, query.Currency);
+                bool areProductsValid = await CartOrderOperations.CalcualteAndValidateOrderItems(_countryService, _productVariantService, _couponService, _collectionService, _currencyRateService, o, address, coupon, query.Currency);
 
                 _orderService.UpdateOrder(o, true);
                 if (await _unitOfWork.SaveChangesAsync() > 0)
@@ -100,17 +90,14 @@ namespace EcommerceAPI.Core.Carts.Queries
                         string myFatoorahError = "";
                         try
                         {
-                            var kwdCurrencyRate = _currencyRateService.GetCurrencyRate("kwd");
-                            var totalKwdPrice = o.TotalTLPrice * kwdCurrencyRate;
-
-                            var sendPaymentRequest = CartOrderOperations.GeneratePaymentRequest(o, u, address, totalKwdPrice);
+                            var sendPaymentRequest = CartOrderOperations.GeneratePaymentRequest(o, u, address, o.TotalSalePrice);
                             var x = await MyFatoorahHelper.SendPayment(sendPaymentRequest);
                             if (x?.IsSuccess == true)
                             {
                                 _orderPaymentService.Insert(new OrderPayment
                                 {
                                     OrderId = o.Id,
-                                    Amount = totalKwdPrice,
+                                    Amount = o.TotalSalePrice,
                                     PaymentId = "",
                                     InvoiceId = x.Data?.InvoiceId ?? 0,
                                     InvoiceStatus = "pending",//x.Data.InvoiceStatus

@@ -51,7 +51,7 @@ namespace EcommerceAPI.Core.Ratings.Commands
 
                 foreach (var rating in command.ProductsRates)
                 {
-                    if (order.OrderItems.Any(oi => oi.ProductId != rating.RatedItemId))
+                    if (order.OrderItems.Any(oi => oi.ProductVariantId != rating.ProductVariantID))
                         return new RequestResult<bool>(ActionResultType.BadRequest, "product not found in order");
 
                     _ratingService.Insert(new Rating
@@ -60,7 +60,7 @@ namespace EcommerceAPI.Core.Ratings.Commands
                         OrderId = order.Id,
                         Rate = rating.Rate,
                         Description = rating.Description,
-                        RatedItemId = rating.RatedItemId
+                        ProductVariantID = rating.ProductVariantID
                     });
                 }
 
@@ -72,7 +72,7 @@ namespace EcommerceAPI.Core.Ratings.Commands
                         OrderId = order.Id,
                         Rate = rating.Rate,
                         Description = rating.Description,
-                        RatedItemId = rating.RatedItemId
+                        ProductVariantID = rating.ProductVariantID
                     });
                 }
 

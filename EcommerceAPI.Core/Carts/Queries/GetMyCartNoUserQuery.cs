@@ -17,17 +17,17 @@ namespace EcommerceAPI.Core.Carts.Queries
         {
             private readonly IOrderService _orderService;
             private readonly ICountryService _countryService;
-            private readonly IProductService _productService;
+            private readonly IProductVariantService _productVariantService;
             private readonly ICollectionService _collectionService;
             private readonly IUnitOfWork _unitOfWork;
             private readonly IMapper _mapper;
             private readonly ICurrencyRateService _currencyRateService;
             private readonly ICouponService _couponService;
-            public GetMyCartNoUserQueryHandler(IOrderService orderService, ICountryService countryService, IProductService productService, IUnitOfWork unitOfWork, IMapper mapper, ICollectionService collectionService, ICurrencyRateService currencyRateService, ICouponService couponService)
+            public GetMyCartNoUserQueryHandler(IOrderService orderService, ICountryService countryService, IProductVariantService productVariantService, IUnitOfWork unitOfWork, IMapper mapper, ICollectionService collectionService, ICurrencyRateService currencyRateService, ICouponService couponService)
             {
                 _orderService = orderService;
                 _countryService = countryService;
-                _productService = productService;
+                _productVariantService = productVariantService;
                 _unitOfWork = unitOfWork;
                 _mapper = mapper;
                 _collectionService = collectionService;
@@ -53,10 +53,10 @@ namespace EcommerceAPI.Core.Carts.Queries
 
                 foreach (var item in query.Items)
                 {
-                    o.OrderItems.Add(new OrderItem { ProductId = item.ProductId, ProductTypeId = item.ProductTypeId, Qty = item.Quantity, Product = new Product { Id = item.ProductId } });
+                    o.OrderItems.Add(new OrderItem { ProductVariantId = item.ProductVariantId, Qty = item.Quantity, ProductVariant = new ProductVariant { Id = item.ProductVariantId } });
                 }
 
-                await CartOrderOperations.CalcualteCartItems(_countryService, _productService, _orderService, _unitOfWork, _collectionService, _currencyRateService, o, coupon );
+                await CartOrderOperations.CalcualteCartItems(_countryService, _productVariantService, _orderService, _unitOfWork, _collectionService, _currencyRateService, o, coupon );
                 return new RequestResult<OrderVM>(_mapper.Map<OrderVM>(o));
             }
         }

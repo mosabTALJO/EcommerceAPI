@@ -20,7 +20,6 @@ namespace EcommerceAPI.Core.Products.Commands
         public string FullDescriptionTr { get; set; }
         public int BrandId { get; set; }
         public BrandVM Brand { get; set; }
-        //public Vendor VendorId { get; set; }
         public int? CategoryId { get; set; }
         public int[] CategoryIds { get; set; }
         public double SalesPrice { get; set; }
@@ -28,14 +27,10 @@ namespace EcommerceAPI.Core.Products.Commands
         public string MainImage { get; set; }
         public List<string> Images { get; set; }
         public string SKU { get; set; }
-        public string CompanyProductID { get; set; }
         public string Weight { get; set; }
         public bool IsActive { get; set; }
         public int? OrderIndex { get; set; }
-        public string CompanyURL { get; set; }
-        public double? CompanyPrice { get; set; }
-        public string CompanyColor { get; set; }
-        public ICollection<ProductTypeVM> ProductTypes { get; set; }
+        public List<ProductVariantVM> ProductVariants { get; set; }
         public bool OnlinePaymentOnly { get; set; }
         public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, RequestResult<bool>>
         {
@@ -66,16 +61,13 @@ namespace EcommerceAPI.Core.Products.Commands
                     p.FullDescriptionTr = command.FullDescriptionTr;
                     p.BrandId = command.BrandId;
                     p.CategoryId = command.CategoryId ?? command.CategoryIds?.FirstOrDefault() ?? p.CategoryId;
-                    p.CompanyProductID = command.CompanyProductID;
                     p.Discount = command.Discount;
                     p.Images = command.Images?.Count > 0 ? string.Join(',', command.Images) : "";
                     p.MainImage = command.MainImage;
                     p.SalesPrice = command.SalesPrice;
                     p.IsActive = command.IsActive;
                     p.OnlinePaymentOnly = command.OnlinePaymentOnly;
-                    p.CompanyPrice = command.CompanyPrice;
-                    p.ProductTypes = command.ProductTypes?.Select(x => _mapper.Map<ProductType>(x)).ToList() ?? new List<ProductType>();
-                    p.CompanyColor = command.CompanyColor;
+                    p.ProductVariants = command.ProductVariants.Select(_mapper.Map<ProductVariant>).ToList();
 
                     _productService.UpdateProduct(p);
                     if (await _unitOfWork.SaveChangesAsync() > 0)

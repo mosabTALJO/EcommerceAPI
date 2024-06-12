@@ -1,10 +1,10 @@
 ﻿using EcommerceAPI.Core.Ratings.Commands;
+using EcommerceAPI.Core.Ratings.Queries;
 using EcommerceAPI.Shared.Helpers;
 using EcommerceAPI.Shared.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TrGate.Core.Ratings.Queries;
 
 namespace EcommerceAPI.Web.Controllers
 {
@@ -20,7 +20,7 @@ namespace EcommerceAPI.Web.Controllers
         [Authorize(Policy = PoliciesText.EditRatings)]
         [ApiExplorerSettings(GroupName = "cp")]
         public async Task<ActionResult<RequestResult<ListResponse<OrderRatingVM>>>> GetRatings(
-            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageNumber = 0,
             [FromQuery] int pageSize = 20,
             [FromQuery] string sortField = "CreatedAt",
             [FromQuery] string sortOrder = "Asc",

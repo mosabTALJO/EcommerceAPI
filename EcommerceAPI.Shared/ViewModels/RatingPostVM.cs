@@ -2,7 +2,7 @@
 {
     public class RatingPostVM
     {
-        public int RatedItemId { get; set; }
+        public int ProductVariantID { get; set; }
         public double Rate { get; set; }
         public string Description { get; set; }
     }

@@ -20,7 +20,6 @@ namespace EcommerceAPI.Core.Products.Queries
         public string Search { get; set; }
 
         public string Brands { get; set; }
-        public string Sizes { get; set; }
         public string Colors { get; set; }
         public string Gender { get; set; }
         public double? MinPrice { get; set; }
@@ -57,14 +56,14 @@ namespace EcommerceAPI.Core.Products.Queries
 
                 ListResponse<ProductLiteVM> result = null;
                 //Filtering used
-                if (!string.IsNullOrEmpty(query.Brands) || !string.IsNullOrEmpty(query.Sizes) || !string.IsNullOrEmpty(query.Colors) || !string.IsNullOrEmpty(query.Gender) || query.MinPrice.HasValue || query.MaxPrice.HasValue)
+                if (!string.IsNullOrEmpty(query.Brands) || !string.IsNullOrEmpty(query.Colors) || !string.IsNullOrEmpty(query.Gender) || query.MinPrice.HasValue || query.MaxPrice.HasValue)
                 {
                     if (query.CollectionId.HasValue)
                     {
                         lst = _collectionService.Queryable().AsNoTracking()
                             .Include(x => x.Items).ThenInclude(x => x.Product.Brand)
                             .Include(x => x.Items).ThenInclude(x => x.Product.Category)
-                            .Include(x => x.Items).ThenInclude(x => x.Product.ProductTypes)
+                            .Include(x => x.Items).ThenInclude(x => x.Product.ProductVariants)
                             .Where(x => x.Id == query.CollectionId)
                             .SelectMany(x => x.Items.Select(x => x.Product))
                             .OrderByDescending(x => x.Id);
@@ -93,9 +92,9 @@ namespace EcommerceAPI.Core.Products.Queries
                     if (!string.IsNullOrEmpty(query.Search))
                     {
                         if (int.TryParse(query.Search, out int idToSearch))
-                            lst = lst.Where(x => x.Id == idToSearch || x.CompanyProductID == query.Search || EF.Functions.Like(x.CompanyBrand, query.Search + "%") || EF.Functions.Like(x.NameEn, query.Search + "%"));
+                            lst = lst.Where(x => x.Id == idToSearch || EF.Functions.Like(x.NameTr, query.Search + "%"));
                         else
-                            lst = lst.Where(x => x.CompanyProductID == query.Search || EF.Functions.Like(x.CompanyBrand, query.Search + "%") || EF.Functions.Like(x.NameEn, query.Search + "%"));
+                            lst = lst.Where(x => EF.Functions.Like(x.NameTr, query.Search + "%"));
                     }
 
                     //MIN PRICe
@@ -104,11 +103,10 @@ namespace EcommerceAPI.Core.Products.Queries
                         var min = query.MinPrice.Value;
                         lst = lst.Where(x =>
                             currencyRate *
-                            x.Category.ProfitRatio.Value *
                             (
-                               x.Discount != null ? x.CompanyPrice.Value * (1 - x.Discount.Value / 100) :
-                               x.Category.Discount != null ? x.CompanyPrice.Value * (1 - x.Category.Discount.Value / 100) :
-                               x.CompanyPrice.Value
+                               x.Discount != null ? x.SalesPrice * (1 - x.Discount.Value / 100) :
+                               x.Category.Discount != null ? x.SalesPrice * (1 - x.Category.Discount.Value / 100) :
+                               x.SalesPrice
                             )
                             >= min);
                     }
@@ -118,19 +116,12 @@ namespace EcommerceAPI.Core.Products.Queries
                         var max = query.MaxPrice.Value;
                         lst = lst.Where(x =>
                              currencyRate *
-                             x.Category.ProfitRatio.Value *
                              (
-                                x.Discount != null ? x.CompanyPrice.Value * (1 - x.Discount.Value / 100) :
-                                x.Category.Discount != null ? x.CompanyPrice.Value * (1 - x.Category.Discount.Value / 100) :
-                                x.CompanyPrice.Value
+                                x.Discount != null ? x.SalesPrice * (1 - x.Discount.Value / 100) :
+                                x.Category.Discount != null ? x.SalesPrice * (1 - x.Category.Discount.Value / 100) :
+                                x.SalesPrice
                              )
                              <= max);
-                    }
-                    //SIZES
-                    if (!string.IsNullOrEmpty(query.Sizes))
-                    {
-                        var dbSizes = query.Sizes.Split(",");
-                        lst = lst.Include(x => x.ProductTypes).Where(x => x.ProductTypes.Any(s => s.StockLevel > 0 && dbSizes.Contains(s.Size)));
                     }
                     //BRANDS
                     if (!string.IsNullOrEmpty(query.Brands))
@@ -146,19 +137,19 @@ namespace EcommerceAPI.Core.Products.Queries
                     //COLORS
                     if (!string.IsNullOrEmpty(query.Colors))
                     {
-                        var dbColors = query.Colors.Split(",");
-                        lst = lst.Where(x => dbColors.Contains(x.CompanyColor));
+                        //var dbColors = query.Colors.Split(",");
+                        //lst = lst.Where(x => dbColors.Contains(x.CompanyColor));
                     }
                     //Gender
                     if (!string.IsNullOrEmpty(query.Gender))
                     {
-                        List<int> dbGender = new List<int>();
-                        foreach (var genderText in query.Gender.Split(","))
-                        {
-                            if (int.TryParse(genderText, out int g))
-                                dbGender.Add(g);
-                        }
-                        lst = lst.Where(x => x.GenderId.HasValue && dbGender.Contains(x.GenderId.Value));
+                        //List<int> dbGender = new List<int>();
+                        //foreach (var genderText in query.Gender.Split(","))
+                        //{
+                        //    if (int.TryParse(genderText, out int g))
+                        //        dbGender.Add(g);
+                        //}
+                        //lst = lst.Where(x => x.GenderId.HasValue && dbGender.Contains(x.GenderId.Value));
                     }
 
                     result = new ListResponse<ProductLiteVM>
@@ -168,7 +159,7 @@ namespace EcommerceAPI.Core.Products.Queries
                             Id = x.Id,
                             Name = lang == "en" ? x.NameEn : x.NameAr,
                             BrandName = lang == "en" ? x.Brand.NameEn : lang == "ar" ? x.Brand.NameAr : x.Brand.NameTr,
-                            SalesPrice = x.CompanyPrice.Value * x.Category.ProfitRatio.Value * currencyRate,
+                            SalesPrice = x.SalesPrice * currencyRate,
                             Discount = x.Discount != null ? x.Discount : x.Category.Discount != null ? x.Category.Discount : null,
                             MainImageRow = x.MainImage,
                             TotalRate = x.TotalRate,
@@ -188,7 +179,7 @@ namespace EcommerceAPI.Core.Products.Queries
                             lst = _collectionService.Queryable().AsNoTracking()
                                 .Include(x => x.Items).ThenInclude(x => x.Product.Brand)
                                 .Include(x => x.Items).ThenInclude(x => x.Product.Category)
-                                .Include(x => x.Items).ThenInclude(x => x.Product.ProductTypes)
+                                .Include(x => x.Items).ThenInclude(x => x.Product.ProductVariants)
                                 .Where(x => x.Id == query.CollectionId)
                                 .SelectMany(x => x.Items.Select(x => x.Product))
                                 .OrderByDescending(x => x.Id);
@@ -198,7 +189,7 @@ namespace EcommerceAPI.Core.Products.Queries
                                 Id = x.Id,
                                 Name = lang == "en" ? x.NameEn : x.NameAr,
                                 BrandName = lang == "en" ? x.Brand.NameEn : lang == "ar" ? x.Brand.NameAr : x.Brand.NameTr,
-                                SalesPrice = x.CompanyPrice.Value * x.Category.ProfitRatio.Value * currencyRate,
+                                SalesPrice = x.SalesPrice * currencyRate,
                                 Discount = x.Discount > 0 ? x.Discount : x.Category.Discount > 0 ? x.Category.Discount : null,
                                 MainImageRow = x.MainImage,
                                 TotalRate = x.TotalRate,
@@ -230,9 +221,9 @@ namespace EcommerceAPI.Core.Products.Queries
                             if (!string.IsNullOrEmpty(query.Search))
                             {
                                 if (int.TryParse(query.Search, out int idToSearch))
-                                    lst = lst.Where(x => x.Id == idToSearch || x.CompanyProductID == query.Search || EF.Functions.Like(x.CompanyBrand, query.Search + "%") || EF.Functions.Like(x.NameEn, query.Search + "%"));
+                                    lst = lst.Where(x => x.Id == idToSearch || EF.Functions.Like(x.NameTr, query.Search + "%"));
                                 else
-                                    lst = lst.Where(x => x.CompanyProductID == query.Search || EF.Functions.Like(x.CompanyBrand, query.Search + "%") || EF.Functions.Like(x.NameEn, query.Search + "%"));
+                                    lst = lst.Where(x => EF.Functions.Like(x.NameTr, query.Search + "%"));
                             }
 
                             //enable 5 products per brand if there is no other filter
@@ -321,7 +312,7 @@ namespace EcommerceAPI.Core.Products.Queries
                                         {
                                             Name = lang == "en" ? x.NameEn : lang == "ar" ? x.NameAr : x.NameTr,
                                             BrandName = lang == "en" ? x.Brand.NameEn : lang == "ar" ? x.Brand.NameAr : x.Brand.NameTr,
-                                            SalesPrice = x.CompanyPrice.Value * x.Category.ProfitRatio.Value * currencyRate,
+                                            SalesPrice = x.SalesPrice * currencyRate,
                                             Discount = x.Discount > 0 ? x.Discount : x.Category.Discount > 0 ? x.Category.Discount : null,
                                             Id = x.Id,
                                             MainImageRow = x.MainImage,
@@ -392,7 +383,7 @@ namespace EcommerceAPI.Core.Products.Queries
                                         {
                                             Name = lang == "en" ? x.NameEn : lang == "ar" ? x.NameAr : x.NameTr,
                                             BrandName = lang == "en" ? x.Brand.NameEn : lang == "ar" ? x.Brand.NameAr : x.Brand.NameTr,
-                                            SalesPrice = x.CompanyPrice.Value * x.Category.ProfitRatio.Value * currencyRate,
+                                            SalesPrice = x.SalesPrice * currencyRate,
                                             Discount = x.Discount > 0 ? x.Discount : x.Category.Discount > 0 ? x.Category.Discount : null,
                                             Id = x.Id,
                                             MainImageRow = x.MainImage,
@@ -414,7 +405,7 @@ namespace EcommerceAPI.Core.Products.Queries
                                 {
                                     Name = lang == "en" ? x.NameEn : lang == "ar" ? x.NameAr : x.NameTr,
                                     BrandName = lang == "en" ? x.Brand.NameEn : lang == "ar" ? x.Brand.NameAr : x.Brand.NameTr,
-                                    SalesPrice = x.CompanyPrice.Value * x.Category.ProfitRatio.Value * currencyRate,
+                                    SalesPrice = x.SalesPrice * currencyRate,
                                     Discount = x.Discount > 0 ? x.Discount : x.Category.Discount > 0 ? x.Category.Discount : null,
                                     Id = x.Id,
                                     MainImageRow = x.MainImage,

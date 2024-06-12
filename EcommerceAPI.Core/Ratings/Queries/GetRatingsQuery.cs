@@ -6,7 +6,7 @@ using EcommerceAPI.Shared.ViewModels;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace TrGate.Core.Ratings.Queries
+namespace EcommerceAPI.Core.Ratings.Queries
 {
     public class GetRatingsQuery : IRequest<RequestResult<ListResponse<OrderRatingVM>>>
     {

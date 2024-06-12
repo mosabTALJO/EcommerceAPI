@@ -32,9 +32,7 @@ namespace EcommerceAPI.Core.Categories.Commands
                 {
                     var dbItem = _categoryService.Queryable().First(x => x.Id == item.CategoryId);
                     dbItem.OrderIndex = item.OrderIndex;
-                    dbItem.ProfitRatio = item.ProfitRatio == 0 ? 1.25 : item.ProfitRatio;
                     dbItem.Discount = item.Discount;
-                    dbItem.DefaultWeight = item.DefaultWeight;
 
                     _categoryService.Update(dbItem);
 
@@ -42,9 +40,7 @@ namespace EcommerceAPI.Core.Categories.Commands
                     {
                         var dbItem1 = _categoryService.Queryable().First(x => x.Id == child.CategoryId);
                         dbItem1.OrderIndex = child.OrderIndex;
-                        dbItem1.ProfitRatio = child.ProfitRatio == 0 ? 1.25 : child.ProfitRatio;
                         dbItem1.Discount = child.Discount;
-                        dbItem1.DefaultWeight = child.DefaultWeight;
 
                         _categoryService.Update(dbItem1);
 
@@ -52,9 +48,7 @@ namespace EcommerceAPI.Core.Categories.Commands
                         {
                             var dbItem2 = _categoryService.Queryable().First(x => x.Id == childchild.CategoryId);
                             dbItem2.OrderIndex = childchild.OrderIndex;
-                            dbItem2.ProfitRatio = childchild.ProfitRatio == 0 ? 1.25 : childchild.ProfitRatio;
                             dbItem2.Discount = childchild.Discount;
-                            dbItem2.DefaultWeight = childchild.DefaultWeight;
 
                             _categoryService.Update(dbItem2);
                         }

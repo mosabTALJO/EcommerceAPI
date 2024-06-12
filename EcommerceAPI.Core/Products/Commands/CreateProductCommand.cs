@@ -32,21 +32,19 @@ namespace EcommerceAPI.Core.Products.Commands
         public string CompanyURL { get; set; }
         public double? CompanyPrice { get; set; }
         public string CompanyColor { get; set; }
-        public ICollection<ProductTypeVM> ProductTypes { get; set; }
+        public List<ProductVariantVM> ProductVariants { get; set; }
         public bool OnlinePaymentOnly { get; set; }
         public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, RequestResult<int>>
         {
             private readonly IProductService _productService;
             private readonly IMapper _mapper;
             private readonly IUnitOfWork _unitOfWork;
-
             public CreateProductCommandHandler(IMapper mapper, IProductService productService, IUnitOfWork unitOfWork)
             {
                 _mapper = mapper;
                 _productService = productService;
                 _unitOfWork = unitOfWork;
             }
-
             public async Task<RequestResult<int>> Handle(CreateProductCommand command, CancellationToken cancellationToken)
             {
                 var p = _mapper.Map<Product>(command);

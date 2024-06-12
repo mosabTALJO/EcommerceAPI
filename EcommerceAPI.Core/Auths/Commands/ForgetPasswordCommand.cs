@@ -1,5 +1,6 @@
 ﻿using EcommerceAPI.Data.Models;
 using EcommerceAPI.Shared.Helpers;
+using EcommerceAPI.Shared.Helpers.Abstractions;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using System.Web;
@@ -12,12 +13,12 @@ namespace EcommerceAPI.Core.Auths.Commands
         public class ForgetPasswordCommandHandler : IRequestHandler<ForgetPasswordCommand, RequestResult<bool>>
         {
             private readonly UserManager<AppUser> _userManager;
-            //private readonly IEmailSender _emailSender;
+            private readonly IAppEmailSender _emailSender;
 
-            public ForgetPasswordCommandHandler(UserManager<AppUser> userManager/*, IEmailSender emailSender*/)
+            public ForgetPasswordCommandHandler(UserManager<AppUser> userManager, IAppEmailSender emailSender)
             {
                 _userManager = userManager;
-                //_emailSender = emailSender;
+                _emailSender = emailSender;
             }
             public async Task<RequestResult<bool>> Handle(ForgetPasswordCommand command, CancellationToken cancellationToken)
             {
@@ -34,7 +35,7 @@ namespace EcommerceAPI.Core.Auths.Commands
                             <a href='{callbackUrl}'>reset your password!</a>
                             <br/><br/><br/>Thank you
                             <br/>TRGate app";
-                //await _emailSender.SendEmailAsync(command.Email, "Forget password request", msg);//look here
+                await _emailSender.SendEmailAsync(command.Email, "Forget password request", msg);
                 return new RequestResult<bool>(true);
             }
         }

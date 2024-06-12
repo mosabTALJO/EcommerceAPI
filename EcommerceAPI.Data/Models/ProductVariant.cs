@@ -1,12 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using EcommerceAPI.UnitOfWork.Trackable;
+using System.ComponentModel.DataAnnotations;
 
 namespace EcommerceAPI.Data.Models
 {
-    internal class ProductVariant
+    public class ProductVariant : Entity
     {
+        public int Id { get; set; }
+        public int ProductId { get; set; }
+        public Product? Product { get; set; }
+        [MaxLength(200)]
+        public string Name { get; set; }
+        public string FullDescription { get; set; }
+        [MaxLength(100)]
+        public string? Barcode { get; set; }
+        public int StockLevel { get; set; }
+        public double SalesPrice { get; set; }
+        public double? Discount { get; set; }
+        [MaxLength(400)]
+        public string MainImage { get; set; }
+        [MaxLength(5000)]
+        public string Images { get; set; }
+        [MaxLength(50)]
+        public string SKU { get; set; }
+        public bool IsActive { get; set; } = true;
+        public List<ProductVariantAttribute> Attributes { get; set; } = [];
     }
 }

@@ -15,16 +15,16 @@ namespace EcommerceAPI.Core.Carts.Command
         public class AddCouponCommandHandler : IRequestHandler<AddCouponCommand, RequestResult<bool>>
         {
             private readonly IOrderService _orderService;
-            private readonly IProductService _productService;
+            private readonly IProductVariantService _productVariantService;
             private readonly ICouponService _couponService;
             private readonly IUnitOfWork _unitOfWork;
             private readonly UserManager<AppUser> _userManager;
 
-            public AddCouponCommandHandler(IUnitOfWork unitOfWork, ICouponService couponService, IProductService productService, IOrderService orderService, UserManager<AppUser> userManager)
+            public AddCouponCommandHandler(IUnitOfWork unitOfWork, ICouponService couponService, IProductVariantService productVariantService, IOrderService orderService, UserManager<AppUser> userManager)
             {
                 _unitOfWork = unitOfWork;
                 _couponService = couponService;
-                _productService = productService;
+                _productVariantService = productVariantService;
                 _orderService = orderService;
                 _userManager = userManager;
             }
@@ -43,25 +43,18 @@ namespace EcommerceAPI.Core.Carts.Command
                 if (coupon is null)
                     return new RequestResult<bool>(ActionResultType.NotFound, "orders.coupon-not-found");
 
-                if (coupon.IsForCustomerFirstOrder)
-                {
-                    if (_orderService.Queryable().Any(o => o.CustomerId == order.CustomerId && o.OrderStatus > OrderStatus.Pending))
-                        return new RequestResult<bool>(ActionResultType.BadRequest, "The Coupon is not applicable for the current user");
-                }
-
                 bool couponExists = false;
                 foreach (var oi in order.OrderItems)
                 {
-                    var p = _productService.Queryable().Include(x => x.ProductTypes).AsNoTracking().FirstOrDefault(x => x.Id == oi.ProductId);
-                    if (p is null)
-                        continue;
-                    if (oi.ProductTypeId.HasValue && !p.ProductTypes.Any(x => x.Id == oi.ProductTypeId))
+                    var pv = await _productVariantService.Queryable().Where(x => x.Id == oi.ProductVariantId)
+                        .Select(x => new { x.Id, x.ProductId, x.Product!.BrandId, x.Product.CategoryId }).FirstOrDefaultAsync();
+                    if (pv is null)
                         continue;
 
                     if (coupon.Type == CouponType.General
-                    || coupon.Type == CouponType.Product && p.Id == coupon.TypeId
-                    || coupon.Type == CouponType.Brand && p.BrandId == coupon.TypeId
-                    || coupon.Type == CouponType.Category && p.CategoryId == coupon.TypeId)
+                    || coupon.Type == CouponType.Product && pv.ProductId == coupon.TypeId
+                    || coupon.Type == CouponType.Brand && pv.BrandId == coupon.TypeId
+                    || coupon.Type == CouponType.Category && pv.CategoryId == coupon.TypeId)
                     {
                         oi.CoupunDiscount = coupon.Rate;
                         couponExists = true;

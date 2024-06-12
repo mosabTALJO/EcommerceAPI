@@ -12,7 +12,6 @@ namespace EcommerceAPI.Shared.ViewModels
         public string OldPassword { get; set; }
         public string Password { get; set; }
         public bool IsActive { get; set; }
-        public double CustomerBalance { get; set; }
         public string Country { get; set; }
         public UserTypes UserType { get; set; }
         public List<Policies> Claims { get; set; }

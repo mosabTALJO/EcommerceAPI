@@ -31,25 +31,23 @@ namespace EcommerceAPI.Core.Carts.Queries
 
                 var c = _countryService.Queryable().AsNoTracking().Include(x => x.Cities).FirstOrDefault(x => x.Code == query.CountryCode);
                 var u = await _userManager.FindByIdAsync(query.UserId);
-                var cartOrder = _orderService.Queryable().Include(x => x.OrderItems).ThenInclude(x => x.Product).AsNoTracking()
-                    .FirstOrDefault(x => x.OrderStatus == OrderStatus.CartOrder && x.CustomerId == query.UserId);
+                var onlinePaymentOnlyExists = await _orderService.ItemsQueryable()
+                    .AnyAsync(x => x.Order.OrderStatus == OrderStatus.CartOrder && x.Order.CustomerId == query.UserId && x.ProductVariant!.Product!.OnlinePaymentOnly);
 
-                bool OnDoorPayment = c?.OnDoorPayment == true && u?.IsBlackList != true && cartOrder?.OrderItems?.Any(x => x.Product.OnlinePaymentOnly) != true;
+                bool OnDoorPayment = c?.OnDoorPayment == true && !onlinePaymentOnlyExists;
                 if (!string.IsNullOrEmpty(query.CityCode))
                 {
                     var city = c.Cities.FirstOrDefault(x => x.Code == query.CityCode);
-                    if (city?.IsBlackList == true)
-                        OnDoorPayment = false;
                 }
                 var deliverData = new DeliveryData
                 {
                     FreeDeliveryAbove = c?.DeliveryLimitAmount.ToString() ?? "30",
                     DeliveryAverageDays = c?.AverageDeliveryDays.ToString() ?? "15",
                     CurrencyCode = c?.CurrencyCode ?? "KWD",
-                    MyFatoorah = c.MyFatoorahPayment,
+                    MyFatoorah = true,//c.MyFatoorahPayment,
                     OnDoorPayment = OnDoorPayment,
                 };
-                if (deliverData.OnDoorPayment && c.IsRequestIdCard == true && string.IsNullOrEmpty(u.IdCardImage))
+                if (deliverData.OnDoorPayment)
                 {
                     deliverData.RequestIdCard = true;
                     deliverData.IdCardTermsAndConditions = c.PrivacyPolicyText;

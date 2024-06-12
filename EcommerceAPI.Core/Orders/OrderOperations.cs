@@ -15,37 +15,11 @@ namespace EcommerceAPI.Core.Orders
 
            return orderTotalWithoutDelivary >= freeDeliveryAmount ? 0 : deliveryLimitFixedAmount + Math.Round(orderTotalWithoutDelivary * deliveryLimitPercent / 100, 3);
         }
-        public static async Task EditOrderItemsCalculation(ICountryService _countryService, ICollectionService _collectionService, Order order)
-        {
-            var c = await _countryService.Queryable().AsNoTracking().FirstOrDefaultAsync(x => x.CurrencyCode.ToLower() == order.Currency.ToLower()) ??
-                await _countryService.Queryable().AsNoTracking().FirstOrDefaultAsync(x => x.CurrencyCode.ToLower() == "kwd");
-
-            double totalWithoutCuponDiscount = 0;
-            double totalWithCuponDiscount = 0;
-
-            foreach (var item in order.OrderItems)
-                item.RemainingQtyForDiscount = 0;
-            CartOrderOperations.AddCollectionDiscounts(_collectionService, order);
-
-            foreach (var oi in order.OrderItems)
-            {
-                totalWithoutCuponDiscount += oi.SalePrice * oi.Qty;
-                oi.DiscountAmount = Math.Round(oi.DiscountAmount * oi.SalePrice, 3); //convert the DiscountAmount from Qty to money
-                oi.TotalSalePrice = Math.Round(oi.Qty * oi.SalePrice - oi.DiscountAmount, 3); //**********************
-                totalWithCuponDiscount += oi.TotalSalePrice;
-                order.DiscountAmount += oi.DiscountAmount;
-            }
-            order.SubTotalSalePrice = totalWithoutCuponDiscount;
-            order.DeliveryPrice = OrderOperations.CalculateOrderDeliveryPrice(totalWithCuponDiscount, c);
-            order.TotalSalePrice = totalWithCuponDiscount + order.DeliveryPrice;
-        }
         public static OrderItem CloneItem(OrderItem itemToClone)
         {
             return new OrderItem
             {
                 Id = 0,
-                ProductId = itemToClone.ProductId,
-                Product = itemToClone.Product,
                 AcceptedDate = itemToClone.AcceptedDate,
                 CancelDate = itemToClone.CancelDate,
                 CompleteRemove = itemToClone.CompleteRemove,
@@ -66,8 +40,8 @@ namespace EcommerceAPI.Core.Orders
                 ProductCompanyPrice = itemToClone.ProductCompanyPrice,
                 ProductDiscount = itemToClone.ProductDiscount,
                 ProductSalesPrice = itemToClone.ProductSalesPrice,
-                ProductType = itemToClone.ProductType,
-                ProductTypeId = itemToClone.ProductTypeId,
+                ProductVariant = itemToClone.ProductVariant,
+                ProductVariantId = itemToClone.ProductVariantId,
                 ProductUrl = itemToClone.ProductUrl,
                 Qty = itemToClone.Qty,
                 RemainingQtyForDiscount = itemToClone.RemainingQtyForDiscount,
@@ -75,8 +49,8 @@ namespace EcommerceAPI.Core.Orders
                 ReturnReason = itemToClone.ReturnReason,
                 SalePrice = itemToClone.SalePrice,
                 SalePriceNoKDV = itemToClone.SalePriceNoKDV,
-                Shipment = itemToClone.Shipment,
-                ShipmentId = itemToClone.ShipmentId,
+                //Shipment = itemToClone.Shipment,
+                //ShipmentId = itemToClone.ShipmentId,
                 ShippingCode = itemToClone.ShippingCode,
                 ShippingCompany = itemToClone.ShippingCompany,
                 ShippingDate = itemToClone.ShippingDate,

@@ -1,5 +1,6 @@
 using EcommerceAPI.Core;
 using EcommerceAPI.Data.Models;
+using EcommerceAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +19,8 @@ builder.Services.AddSwaggerGen();
 var coreAssembly = AppDomain.CurrentDomain.Load("EcommerceAPI.Core");
 builder.Services.AddAutoMapper(typeof(Program).Assembly, coreAssembly);
 
-builder.Services.AddDbContext<MyDbContext>(x => x.UseNpgsql(""));
+//builder.Services.AddScoped<DbContext, MyDbContext>();
+builder.Services.AddDbContext<MyDbContext>(x => x.UseNpgsql("Host=localhost; Database=Ecommerce; Username=postgres; Password=123456lolo"));
 
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {

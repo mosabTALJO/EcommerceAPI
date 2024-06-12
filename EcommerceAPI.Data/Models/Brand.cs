@@ -17,11 +17,7 @@ namespace EcommerceAPI.Data.Models
         [MaxLength(60)]
         public string Image { get; set; }
         public string Icon { get; set; }
-        [MaxLength(200)]
-        public string CompanyUrl { get; set; }
         public bool IsActive { get; set; }
         public int? OrderIndex { get; set; }
-        [NotMapped]
-        public int ProductsCount { get; set; }
     }
 }

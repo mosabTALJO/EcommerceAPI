@@ -1,4 +1,5 @@
 ﻿using EcommerceAPI.Data;
+using EcommerceAPI.Services;
 using EcommerceAPI.Shared.Helpers;
 using EcommerceAPI.Shared.ViewModels;
 using MediatR;

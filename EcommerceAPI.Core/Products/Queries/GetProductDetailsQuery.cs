@@ -33,7 +33,7 @@ namespace EcommerceAPI.Core.Products.Queries
                 var item = await _productService.Queryable().IgnoreQueryFilters()
                 .Include(x => x.Category)
                 .Include(x => x.Brand)
-                .Include(x => x.ProductTypes)
+                .Include(x => x.ProductVariants)
                 .Where(x => query.Role == "Admin" || x.IsActive)
                 .Where(x => !x.DeletedAt.HasValue).FirstOrDefaultAsync(x => x.Id == query.Id);
                 if (item is null)
@@ -56,9 +56,6 @@ namespace EcommerceAPI.Core.Products.Queries
 
                 if (query.Role != "Admin")
                 {
-                    item.CompanyPrice = null;
-                    item.CompanyURL = null;
-                    item.CompanyProductID = null;
                     p.Discount = p.Discount > 0 ? p.Discount : p.Category.Discount > 0 ? p.Category.Discount : null;
                 }
                 return new RequestResult<ProductVM>(p);

@@ -34,17 +34,12 @@ namespace EcommerceAPI.Shared.ViewModels
         public double SubTotalSalePrice { get; set; }
         public string GeneratedPaymentLinks { get; set; }
         public bool IsArchived { get; set; }
-        public int? GiftId { get; set; }
-        public GiftLiteVM Gift { get; set; }
-        public bool IsGiftTaken { get; set; }
         public double DiscountAmount { get; set; }
         public RatingVM[] Ratings { get; set; }
         public bool CanRate { get; set; } = true;
-        public ProductNotFound? ProductNotFound { get; set; }
         public OrderDeviceType? OrderDeviceType { get; set; }
         public ICollection<OrderPaymentVM> OrderPayments { get; set; }
         public double SpecialDiscount { get; set; }
-        public string IdCard { get; set; }
         public CaptureStatus CaptureStatus { get; set; }
     }
 }

@@ -14,19 +14,19 @@ namespace EcommerceAPI.Core.Carts.Queries
         public class GetDeliveryDataNoUserQueryHandler : IRequestHandler<GetDeliveryDataNoUserQuery, RequestResult<DeliveryData>>
         {
             private readonly ICountryService _countryService;
-            private readonly IProductService _productService;
+            private readonly IProductVariantService _productVariantService;
 
-            public GetDeliveryDataNoUserQueryHandler(ICountryService countryService, IProductService productService)
+            public GetDeliveryDataNoUserQueryHandler(ICountryService countryService, IProductVariantService productVariantService)
             {
                 _countryService = countryService;
-                _productService = productService;
+                _productVariantService = productVariantService;
             }
 
             public async Task<RequestResult<DeliveryData>> Handle(GetDeliveryDataNoUserQuery query, CancellationToken cancellationToken)
             {
                 var c = _countryService.Queryable().AsNoTracking().Include(x => x.Cities).FirstOrDefault(x => x.Code == query.CountryCode);
-                var productIds = query.Items.Select(x => x.ProductId).ToList();
-                var products = await _productService.Queryable().AsNoTracking().Where(x => productIds.Contains(x.Id)).ToArrayAsync();
+                var productVariantIds = query.Items.Select(x => x.ProductVariantId).ToList();
+                var onlinePaymentOnly = await _productVariantService.Queryable().AnyAsync(x => productVariantIds.Contains(x.Id) && x.Product!.OnlinePaymentOnly);
                 var city = c.Cities.FirstOrDefault(x => x.Code == query.CityCode);
 
                 var deliverData = new DeliveryData
@@ -34,10 +34,10 @@ namespace EcommerceAPI.Core.Carts.Queries
                     FreeDeliveryAbove = c?.DeliveryLimitAmount.ToString() ?? "30",
                     DeliveryAverageDays = c?.AverageDeliveryDays.ToString() ?? "15",
                     CurrencyCode = c?.CurrencyCode ?? "KWD",
-                    MyFatoorah = c.MyFatoorahPayment,
-                    OnDoorPayment = c.OnDoorPayment && !products.Any(x => x.OnlinePaymentOnly) && city?.IsBlackList != true,
+                    MyFatoorah = true,//c.MyFatoorahPayment,
+                    OnDoorPayment = c.OnDoorPayment && !onlinePaymentOnly,
                 };
-                if (deliverData.OnDoorPayment && c.IsRequestIdCard == true)
+                if (deliverData.OnDoorPayment)
                 {
                     deliverData.RequestIdCard = true;
                     deliverData.IdCardTermsAndConditions = c.PrivacyPolicyText;

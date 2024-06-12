@@ -19,8 +19,6 @@ namespace EcommerceAPI.Core.Customers.Commands
         public string Country { get; set; }
         public UserTypes UserType { get; set; }
         public List<Policies> Claims { get; set; }
-        public bool IsBlackList { get; set; }
-        public string IdCardImage { get; set; }
 
         public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, RequestResult<bool>>
         {
@@ -41,8 +39,6 @@ namespace EcommerceAPI.Core.Customers.Commands
                 u.PhoneNumber = command.PhoneNumber;
                 u.Email = command.Email;
                 u.UserName = command.Email;
-                u.IsBlackList = command.IsBlackList;
-                u.IdCardImage = command.IdCardImage;
 
                 if (!string.IsNullOrEmpty(command.Password) && !await _userManager.CheckPasswordAsync(u, command.Password))
                 {
