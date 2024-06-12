@@ -19,7 +19,11 @@ builder.Services.AddSwaggerGen();
 var coreAssembly = AppDomain.CurrentDomain.Load("EcommerceAPI.Core");
 builder.Services.AddAutoMapper(typeof(Program).Assembly, coreAssembly);
 
-builder.Services.AddDbContext<MyDbContext>(x => x.UseNpgsql(""));
+//builder.Services.AddScoped<DbContext, MyDbContext>();
+//builder.Services.AddDbContext<MyDbContext>(x => x.UseNpgsql("postgres://postgres:123456lolo@localhost:5432/Ecommerce"));
+//builder.Services.AddDbContext<MyDbContext>(x => x.UseNpgsql("postgres://YourUserName:YourPassword@YourHostname:5432/YourDatabaseName"));
+builder.Services.AddDbContext<MyDbContext>(x => x.UseNpgsql("Host=localhost; Database=Ecommerce; Username=postgres; Password=123456lolo"));
+//builder.Services.AddDbContext<MyDbContext>(x => x.UseNpgsql("Host=localhost; Database=postgres; Username=postgres; Password=123456lolo"));
 
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {
