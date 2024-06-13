@@ -30,17 +30,17 @@ namespace EcommerceAPI.Web.AddressScrapping
         {
             string jsonData = File.ReadAllText(gaziantepDistrictsPath);
             var ilces = JsonSerializer.Deserialize<IlceCollection>(jsonData);
-            foreach (var ilce in ilces?.Property1 ?? [])
-            {
-                District district = new()
-                {
-                    CityId = ,
-                    IsDelivery = false,
-                    Name = ilce.bilesenAdi,
-                    KimlikNo = ilce.kimlikNo,
-                };
-                dbContext.
-            }
+            //foreach (var ilce in ilces?.Property1 ?? [])
+            //{
+            //    District district = new()
+            //    {
+            //        CityId = ,
+            //        IsDelivery = false,
+            //        Name = ilce.bilesenAdi,
+            //        KimlikNo = ilce.kimlikNo,
+            //    };
+            //    dbContext.
+            //}
         }
         public static async Task ScrapNeighborhoods(int districtKimlikNo)
         {
@@ -52,7 +52,7 @@ namespace EcommerceAPI.Web.AddressScrapping
             {
                 Neighborhood district = new()
                 {
-                    DistrictId = ,
+                    //DistrictId = ,
                     IsDelivery = false,
                     Name = mahalle.bilesenAdi,
                 };
