@@ -11,5 +11,6 @@ namespace EcommerceAPI.Data.Models
         public bool IsDelivery { get; set; }
         public int CityId { get; set; }
         public City City { get; set; }
+        public int KimlikNo { get; set; }
     }
 }

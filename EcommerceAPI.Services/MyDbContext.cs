@@ -113,10 +113,11 @@ namespace EcommerceAPI.Services
         public DbSet<OrderCategoryBrand> OrderCategoryBrands { get; set; }
         public DbSet<CollectionItem> CollectionItems { get; set; }
         public DbSet<Collection> Collections { get; set; }
-        //public DbSet<Shipment> Shipments { get; set; }
         public DbSet<OrderLog> OrderLogs { get; set; }
         public DbSet<OrderPayment> OrderPayments { get; set; }
         public DbSet<Inventory> Inventories { get; set; }
         public DbSet<InventoryItem> InventoryItems { get; set; }
+        public DbSet<District> Districts { get; set; }
+        public DbSet<Neighborhood> Neighborhoods { get; set; }
     }
 }
