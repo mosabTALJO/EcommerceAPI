@@ -14,9 +14,9 @@ namespace EcommerceAPI.Services
 
     public class BrandService : Service<Brand>, IBrandService
     {
-        ITrackableRepository<Product> _pRepo;
-        ITrackableRepository<Category> _cRepo;
-        public BrandService(ITrackableRepository<Brand> repo, ITrackableRepository<Category> cRepo, ITrackableRepository<Product> pRepo) : base(repo)
+        IRepository<Product> _pRepo;
+        IRepository<Category> _cRepo;
+        public BrandService(IRepository<Brand> repo, IRepository<Category> cRepo, IRepository<Product> pRepo) : base(repo)
         {
             _pRepo = pRepo;
             _cRepo = cRepo;

@@ -27,12 +27,12 @@ namespace EcommerceAPI.Services
 
     public class OrderService : Service<Order>, IOrderService
     {
-        ITrackableRepository<OrderItem> _orderItemRepo;
-        ITrackableRepository<Product> _productRepo;
-        //ITrackableRepository<ProductType> _productTypeRepo;
-        ITrackableRepository<ProductVariant> _productVariantRepo;
-        public OrderService(ITrackableRepository<Order> repo, ITrackableRepository<OrderItem> orderItemRepo,
-            /*ITrackableRepository<ProductType> productTypeRepo*/ITrackableRepository<ProductVariant> productVariantRepo, ITrackableRepository<Product> productRepo) : base(repo)
+        IRepository<OrderItem> _orderItemRepo;
+        IRepository<Product> _productRepo;
+        //IRepository<ProductType> _productTypeRepo;
+        IRepository<ProductVariant> _productVariantRepo;
+        public OrderService(IRepository<Order> repo, IRepository<OrderItem> orderItemRepo,
+            /*IRepository<ProductType> productTypeRepo*/IRepository<ProductVariant> productVariantRepo, IRepository<Product> productRepo) : base(repo)
         {
             _orderItemRepo = orderItemRepo;
             _productRepo = productRepo;

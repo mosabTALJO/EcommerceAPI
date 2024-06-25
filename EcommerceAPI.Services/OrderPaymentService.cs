@@ -9,7 +9,7 @@ namespace EcommerceAPI.Services
     }
     public class OrderPaymentService : Service<OrderPayment>, IOrderPaymentService
     {
-        public OrderPaymentService(ITrackableRepository<OrderPayment> repo) : base(repo)
+        public OrderPaymentService(IRepository<OrderPayment> repo) : base(repo)
         {
         }
     }

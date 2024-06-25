@@ -14,10 +14,10 @@ namespace EcommerceAPI.Services
         {
             _httpContextAccessor = httpContextAccessor;
         }
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    optionsBuilder.UseNpgsql(@"Host=myserver;Username=mylogin;Password=mypass;Database=mydatabase");
-        //}
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseNpgsql(@"Host=localhost; Database=Ecommerce; Username=ecomm; Password=aser@sWwer##4as");
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //To Add Index

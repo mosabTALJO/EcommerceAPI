@@ -9,7 +9,7 @@ namespace EcommerceAPI.Services
     }
     public class RatingService : Service<Rating>, IRatingService
     {
-        public RatingService(ITrackableRepository<Rating> repo) : base(repo)
+        public RatingService(IRepository<Rating> repo) : base(repo)
         {
         }
     }

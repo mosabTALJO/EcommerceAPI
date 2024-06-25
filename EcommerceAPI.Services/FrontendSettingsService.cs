@@ -9,7 +9,7 @@ namespace EcommerceAPI.Services
     }
     public class FrontendSettingsService : Service<FrontendSetting>, IFrontendSettingsService
     {
-        public FrontendSettingsService(ITrackableRepository<FrontendSetting> repository) : base(repository)
+        public FrontendSettingsService(IRepository<FrontendSetting> repository) : base(repository)
         {
         }
     }

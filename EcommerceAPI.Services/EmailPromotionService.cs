@@ -10,7 +10,7 @@ namespace EcommerceAPI.Services
 
     public class EmailPromotionService : Service<EmailPromotion>, IEmailPromotionService
     {
-        public EmailPromotionService(ITrackableRepository<EmailPromotion> repo) : base(repo)
+        public EmailPromotionService(IRepository<EmailPromotion> repo) : base(repo)
         {
 
         }

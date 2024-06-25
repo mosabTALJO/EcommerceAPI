@@ -11,7 +11,7 @@ namespace EcommerceAPI.Services
 
     public class UserAddressService : Service<UserAddress>, IUserAddressService
     {
-        public UserAddressService(ITrackableRepository<UserAddress> repo) : base(repo)
+        public UserAddressService(IRepository<UserAddress> repo) : base(repo)
         {
 
         }

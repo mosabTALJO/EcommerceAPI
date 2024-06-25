@@ -3,7 +3,7 @@
     public class RequestResult<T>
     {
         public ActionResultType ActionResultType { get; set; }
-        public bool Success => !string.IsNullOrWhiteSpace(ErrorText);
+        public bool Success => string.IsNullOrWhiteSpace(ErrorText);
         public string ErrorText { get; set; }
         public T? Data { get; set; }
         public RequestResult(T? data, ActionResultType actionResultType = ActionResultType.OK, string error = "")

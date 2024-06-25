@@ -1,23 +1,119 @@
-using EcommerceAPI.Core;
+using EcommerceAPI.Core.Extentions;
 using EcommerceAPI.Data.Models;
+using EcommerceAPI.Seeds;
 using EcommerceAPI.Services;
+using EcommerceAPI.Shared.Helpers;
+using EcommerceAPI.Shared.Helpers.Abstractions;
+using EcommerceAPI.UnitOfWork.Abstractions;
+using EcommerceAPI.UnitOfWork.EF;
+using EcommerceAPI.UnitOfWork.Services;
+using EcommerceAPI.Web.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 using System.Text;
 
+TokenValidationParameters tokenValidationParameters;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddMemoryCache();
 
-builder.Services.AddSwaggerGen(option =>
+builder.Services.AddScoped<DbContext, MyDbContext>();
+
+foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
 {
-    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
-    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assembly));
+}
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<IUserAddressService, UserAddressService>();
+builder.Services.AddScoped<IBrandService, BrandService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ICountryService, CountryService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICouponService, CouponService>();
+builder.Services.AddScoped<IProductFavoriteService, ProductFavoriteService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<ICurrencyRateService, CurrencyRateService>();
+builder.Services.AddScoped<IOrderCategoryBrandService, OrderCategoryBrandService>();
+builder.Services.AddScoped<ISettingsService, SettingsService>();
+builder.Services.AddScoped<ICollectionService, CollectionService>();
+builder.Services.AddScoped<IEmailPromotionService, EmailPromotionService>();
+builder.Services.AddScoped<IBaseItemService, BaseItemService>();
+builder.Services.AddScoped<IRatingService, RatingService>();
+builder.Services.AddScoped<IFrontendSettingsService, FrontendSettingsService>();
+builder.Services.AddScoped<IOrderLogService, OrderLogService>();
+builder.Services.AddScoped<IOrderPaymentService, OrderPaymentService>();
+builder.Services.AddScoped<IAttributesService, AttributesService>();
+builder.Services.AddScoped<IAppEmailSender, SendGridEmailSender>();
+builder.Services.AddScoped<IProductVariantService, ProductVariantService>();
+
+
+//////////////////////////////
+
+tokenValidationParameters = new TokenValidationParameters()
+{
+    ValidateIssuer = true,
+    ValidateAudience = true,
+    ValidateLifetime = true,
+    ValidateIssuerSigningKey = true,
+    ValidAudience = builder.Configuration["Jwt:Site"],
+    ValidIssuer = builder.Configuration["Jwt:Site"],
+    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SigningKey"]))
+};
+
+builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
+{
+    options.Password.RequiredLength = 6;
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+})
+   .AddEntityFrameworkStores<MyDbContext>()
+   .AddDefaultTokenProviders();
+
+builder.Services.Configure<DataProtectionTokenProviderOptions>(opt => opt.TokenLifespan = TimeSpan.FromHours(2));
+
+builder.Services.AddAuthorization(option =>
+{
+    foreach (Policies p in Enum.GetValues(typeof(Policies)))
+        option.AddPolicy(p.GetPolicyNumber(), policy => policy.AddRequirements(new AdminHasAccessRequirement(p.GetPolicyNumber())));
+});
+builder.Services.AddScoped<IAuthorizationHandler, AdminHasAccessHandler>();
+
+builder.Services.AddAuthentication(option =>
+{
+    option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    option.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.SaveToken = true;
+    options.RequireHttpsMetadata = false;
+    options.TokenValidationParameters = tokenValidationParameters;
+});
+
+//////////////////////////////
+
+
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("cp", new OpenApiInfo { Title = "Control Panel", Version = "cp" });
+    c.SwaggerDoc("fe", new OpenApiInfo { Title = "Mobile", Version = "fe" });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
         Description = "Please enter a valid token",
@@ -26,7 +122,7 @@ builder.Services.AddSwaggerGen(option =>
         BearerFormat = "JWT",
         Scheme = "Bearer"
     });
-    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
             new OpenApiSecurityScheme
@@ -57,28 +153,31 @@ builder.Services.AddCors(options =>
                .AllowCredentials();
     });
 });
-builder.Services.AddAuthorization();
-builder.Services.AddDbContext<MyDbContext>(x => 
-x.UseNpgsql("Host=localhost; Database=Ecommerce; Username=ecomm; Password=aser@sWwer##4as"));
-builder.Services.AddIdentityApiEndpoints<AppUser>()
-    .AddEntityFrameworkStores<MyDbContext>();
+builder.Services.AddDbContext<MyDbContext>(x => x.UseNpgsql("Host=localhost; Database=Ecommerce; Username=ecomm; Password=aser@sWwer##4as"));
 
 var app = builder.Build();
 using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
 {
     var dbContext = serviceScope.ServiceProvider.GetService<MyDbContext>();
+    var userManager = serviceScope.ServiceProvider.GetService<UserManager<AppUser>>();
+    var roleManager = serviceScope.ServiceProvider.GetService<RoleManager<IdentityRole>>();
     dbContext?.Database.Migrate();
+    MySeedInitializer.SeedData(userManager, roleManager);
 }
 
 //if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/cp/swagger.json", "Control Panel");
+        c.SwaggerEndpoint("/swagger/fe/swagger.json", "Mobile");
+    });
 }
 
 app.UseCors();
-app.MapIdentityApi<AppUser>();
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 //app.UseMiddleware<ErrorHandlerMiddleware>();
 app.MapControllers();

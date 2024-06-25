@@ -24,7 +24,7 @@ namespace EcommerceAPI.Services
     public class OrderLogService : Service<OrderLog>, IOrderLogService
     {
         private readonly UserManager<AppUser> _userManager;
-        public OrderLogService(ITrackableRepository<OrderLog> repo, UserManager<AppUser> userManager) : base(repo)
+        public OrderLogService(IRepository<OrderLog> repo, UserManager<AppUser> userManager) : base(repo)
         {
             _userManager = userManager;
         }

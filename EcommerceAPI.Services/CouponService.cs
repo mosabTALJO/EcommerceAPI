@@ -14,7 +14,7 @@ namespace EcommerceAPI.Services
 
     public class CouponService : Service<Coupon>, ICouponService
     {
-        public CouponService(ITrackableRepository<Coupon> repo) : base(repo)
+        public CouponService(IRepository<Coupon> repo) : base(repo)
         {
         }
 

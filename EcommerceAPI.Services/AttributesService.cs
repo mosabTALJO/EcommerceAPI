@@ -11,8 +11,8 @@ namespace EcommerceAPI.Services
 
     public class AttributesService : Service<ProductAttribute>, IAttributesService
     {
-        ITrackableRepository<ProductVariantAttribute> _productVariantAttribRepo;
-        public AttributesService(ITrackableRepository<ProductAttribute> repo, ITrackableRepository<ProductVariantAttribute> productVariantAttribRepo) : base(repo)
+        IRepository<ProductVariantAttribute> _productVariantAttribRepo;
+        public AttributesService(IRepository<ProductAttribute> repo, IRepository<ProductVariantAttribute> productVariantAttribRepo) : base(repo)
         {
             _productVariantAttribRepo = productVariantAttribRepo;
         }

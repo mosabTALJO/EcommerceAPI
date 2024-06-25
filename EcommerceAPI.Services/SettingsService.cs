@@ -15,7 +15,7 @@ namespace EcommerceAPI.Services
         private readonly IUnitOfWork unitOfWork;
         private readonly MyDbContext _mySqlContext;
 
-        public SettingsService(ITrackableRepository<Settings> repo, IUnitOfWork unitOfWork, MyDbContext mySqlContext) : base(repo)
+        public SettingsService(IRepository<Settings> repo, IUnitOfWork unitOfWork, MyDbContext mySqlContext) : base(repo)
         {
             this.unitOfWork = unitOfWork;
             _mySqlContext = mySqlContext;

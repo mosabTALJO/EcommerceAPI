@@ -21,9 +21,9 @@ namespace EcommerceAPI.Services
 
     public class CategoryService : Service<Category>, ICategoryService
     {
-        ITrackableRepository<Product> _pRepo;
+        IRepository<Product> _pRepo;
         readonly ILogger<CategoryService> _logger;
-        public CategoryService(ITrackableRepository<Category> repo, ITrackableRepository<Product> pRepo, ILogger<CategoryService> logger) : base(repo)
+        public CategoryService(IRepository<Category> repo, IRepository<Product> pRepo, ILogger<CategoryService> logger) : base(repo)
         {
             _pRepo = pRepo;
             _logger = logger;

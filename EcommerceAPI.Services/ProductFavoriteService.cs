@@ -11,7 +11,7 @@ namespace EcommerceAPI.Services
 
     public class ProductFavoriteService : Service<ProductFavorite>, IProductFavoriteService
     {
-        public ProductFavoriteService(ITrackableRepository<ProductFavorite> repo) : base(repo)
+        public ProductFavoriteService(IRepository<ProductFavorite> repo) : base(repo)
         {
 
         }

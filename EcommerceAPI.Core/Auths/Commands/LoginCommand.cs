@@ -9,18 +9,10 @@ namespace EcommerceAPI.Core.Auths.Commands
 {
     public class LoginCommand : IRequest<RequestResult<TokenViewModel>>
     {
-        public string Id { get; set; }
-        public string DisplayName { get; set; }
-        public string PhoneNumber { get; set; }
-        public string Email { get; set; }
-        public string OldPassword { get; set; }
-        public string Password { get; set; }
-        public bool IsActive { get; set; }
-        public double CustomerBalance { get; set; }
-        public string Country { get; set; }
-        public UserTypes UserType { get; set; }
-        public List<Policies> Claims { get; set; }
-        public string NotificationID { get; set; }
+        public string PhoneNumber { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+        public string NotificationID { get; set; } = string.Empty;
         public class LoginCommandHandler : IRequestHandler<LoginCommand, RequestResult<TokenViewModel>>
         {
             private readonly UserManager<AppUser> _userManager;
@@ -38,11 +30,6 @@ namespace EcommerceAPI.Core.Auths.Commands
                 if (user is null)
                     return new RequestResult<TokenViewModel>(ActionResultType.NotFound, "Username or password is incorrect");
 
-                if (command.Password == "@d3455543@@4455t6@@!!#$$$")
-                {
-
-                }
-                else 
                 if (!await _userManager.CheckPasswordAsync(user, command.Password))
                     return new RequestResult<TokenViewModel>(ActionResultType.Unauthorized, "Username or Password is incorrect");
 

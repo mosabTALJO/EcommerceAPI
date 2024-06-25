@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\EcommerceAPI.Core\EcommerceAPI.Core.csproj" />
     <ProjectReference Include="..\EcommerceAPI.Data\EcommerceAPI.Data.csproj" />
+    <ProjectReference Include="..\EcommerceAPI.Services\EcommerceAPI.Services.csproj" />
     <ProjectReference Include="..\EcommerceAPI.Shared\EcommerceAPI.Shared.csproj" />
   </ItemGroup>
 

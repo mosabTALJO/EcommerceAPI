@@ -13,8 +13,8 @@ namespace EcommerceAPI.Services
     }
     public class CountryService : Service<Country>, ICountryService
     {
-        ITrackableRepository<City> _cityRepo;
-        public CountryService(ITrackableRepository<Country> cRepo, ITrackableRepository<City> cityRepo) : base(cRepo)
+        IRepository<City> _cityRepo;
+        public CountryService(IRepository<Country> cRepo, IRepository<City> cityRepo) : base(cRepo)
         {
             _cityRepo = cityRepo;
         }

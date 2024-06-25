@@ -11,7 +11,7 @@ namespace EcommerceAPI.Services
 
     public class BaseItemService : Service<BaseItem>, IBaseItemService
     {
-        public BaseItemService(ITrackableRepository<BaseItem> repo) : base(repo)
+        public BaseItemService(IRepository<BaseItem> repo) : base(repo)
         {
 
         }

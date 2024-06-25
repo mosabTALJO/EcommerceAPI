@@ -11,7 +11,7 @@ namespace EcommerceAPI.Services
 
     public class ProductVariantService : Service<ProductVariant>, IProductVariantService
     {
-        public ProductVariantService(ITrackableRepository<ProductVariant> repository) : base(repository)
+        public ProductVariantService(IRepository<ProductVariant> repository) : base(repository)
         {
         }
     }

@@ -14,7 +14,7 @@ namespace EcommerceAPI.Services
 
     public class NotificationService : Service<Notification>, INotificationService
     {
-        public NotificationService(ITrackableRepository<Notification> repo) : base(repo)
+        public NotificationService(IRepository<Notification> repo) : base(repo)
         {
 
         }

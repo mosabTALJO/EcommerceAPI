@@ -20,7 +20,7 @@ namespace EcommerceAPI.Services
     public class CurrencyRateService : Service<CurrencyRate>, ICurrencyRateService
     {
         readonly IMemoryCache _cache;
-        public CurrencyRateService(ITrackableRepository<CurrencyRate> repo, IMemoryCache cache) : base(repo)
+        public CurrencyRateService(IRepository<CurrencyRate> repo, IMemoryCache cache) : base(repo)
         {
             _cache = cache;
         }

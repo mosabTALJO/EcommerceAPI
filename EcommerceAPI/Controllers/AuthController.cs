@@ -16,9 +16,9 @@ namespace EcommerceAPI.Web.Controllers
 
         [Route("/api/login")] // /login
         [HttpPost]
-        public async Task<ActionResult<RequestResult<TokenViewModel>>> Login([FromBody] LoginCommand command, [FromQuery] string NotificationID)
+        public async Task<ActionResult<RequestResult<TokenViewModel>>> Login([FromBody] LoginCommand command, [FromQuery] string? NotificationID = null)
         {
-            command.NotificationID = NotificationID;
+            command.NotificationID = NotificationID ?? "";
             return GetActionResult(await _mediator.Send(command));
         }
 

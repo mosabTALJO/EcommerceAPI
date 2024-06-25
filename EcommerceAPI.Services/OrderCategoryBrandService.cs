@@ -11,7 +11,7 @@ namespace EcommerceAPI.Services
 
     public class OrderCategoryBrandService : Service<OrderCategoryBrand>, IOrderCategoryBrandService
     {
-        public OrderCategoryBrandService(ITrackableRepository<OrderCategoryBrand> repo) : base(repo)
+        public OrderCategoryBrandService(IRepository<OrderCategoryBrand> repo) : base(repo)
         {
         }
     }

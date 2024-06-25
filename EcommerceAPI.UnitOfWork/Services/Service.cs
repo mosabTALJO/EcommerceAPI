@@ -5,9 +5,9 @@ namespace EcommerceAPI.UnitOfWork.Services
 {
     public abstract class Service<TEntity> : IService<TEntity> where TEntity : class, ITrackable
     {
-        protected readonly ITrackableRepository<TEntity> Repository;
+        protected readonly IRepository<TEntity> Repository;
 
-        protected Service(ITrackableRepository<TEntity> repository)
+        protected Service(IRepository<TEntity> repository)
             => Repository = repository;
 
         public virtual void Attach(TEntity item)
@@ -54,18 +54,6 @@ namespace EcommerceAPI.UnitOfWork.Services
 
         public virtual void Update(TEntity item)
             => Repository.Update(item);
-
-        public virtual void ApplyChanges(params TEntity[] entities)
-            => Repository.ApplyChanges(entities);
-
-        public virtual void AcceptChanges(params TEntity[] entities)
-            => Repository.AcceptChanges(entities);
-
-        public virtual void DetachEntities(params TEntity[] entities)
-            => Repository.DetachEntities(entities);
-
-        public virtual async Task LoadRelatedEntities(params TEntity[] entities)
-            => await Repository.LoadRelatedEntities(entities);
 
         //public virtual IQueryable<TEntity> QueryableSql(string sql, params object[] parameters)
         //    => Repository.QueryableSql(sql, parameters);

@@ -14,9 +14,9 @@ namespace EcommerceAPI.Services
 
     public class CollectionService : Service<Collection>, ICollectionService
     {
-        private ITrackableRepository<CollectionItem> _collectionItemRepos;
-        private ITrackableRepository<ProductVariant> _productVariantRepos;
-        public CollectionService(ITrackableRepository<Collection> repo, ITrackableRepository<CollectionItem> collectionItemRepos, ITrackableRepository<ProductVariant> productVariantRepos) : base(repo)
+        private IRepository<CollectionItem> _collectionItemRepos;
+        private IRepository<ProductVariant> _productVariantRepos;
+        public CollectionService(IRepository<Collection> repo, IRepository<CollectionItem> collectionItemRepos, IRepository<ProductVariant> productVariantRepos) : base(repo)
         {
             _collectionItemRepos = collectionItemRepos;
             _productVariantRepos = productVariantRepos;

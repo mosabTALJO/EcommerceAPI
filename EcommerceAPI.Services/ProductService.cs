@@ -17,13 +17,13 @@ namespace EcommerceAPI.Services
 
     public class ProductService : Service<Product>, IProductService
     {
-        ITrackableRepository<ProductVariant> _productVariantRepo;
-        ITrackableRepository<OrderItem> _orderItemRepo;
-        ITrackableRepository<ProductVariantAttribute> _productVariantAttributeRepo;
-        public ProductService(ITrackableRepository<Product> repo, 
-            ITrackableRepository<ProductVariant> productVariantRepo, 
-            ITrackableRepository<OrderItem> orderItemRepo, 
-            ITrackableRepository<ProductVariantAttribute> productVariantAttributeRepo) : base(repo)
+        IRepository<ProductVariant> _productVariantRepo;
+        IRepository<OrderItem> _orderItemRepo;
+        IRepository<ProductVariantAttribute> _productVariantAttributeRepo;
+        public ProductService(IRepository<Product> repo, 
+            IRepository<ProductVariant> productVariantRepo, 
+            IRepository<OrderItem> orderItemRepo, 
+            IRepository<ProductVariantAttribute> productVariantAttributeRepo) : base(repo)
         {
             _productVariantRepo = productVariantRepo;
             _orderItemRepo = orderItemRepo;

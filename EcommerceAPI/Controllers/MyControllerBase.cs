@@ -11,7 +11,6 @@ namespace EcommerceAPI.Web.Controllers
     public class MyControllerBase : ControllerBase
     {
         public readonly IMediator _mediator;
-
         public MyControllerBase(IMediator mediator = null)
         {
             _mediator = mediator;
