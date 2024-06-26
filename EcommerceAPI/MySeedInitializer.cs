@@ -2,17 +2,20 @@
 using EcommerceAPI.Data.Models;
 using EcommerceAPI.Shared.Helpers;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Caching.Memory;
 using System.Security.Claims;
 namespace EcommerceAPI.Seeds
 {
     public class MySeedInitializer
     {
         public static void SeedData(UserManager<AppUser> userManager,
-            RoleManager<IdentityRole> roleManager
+            RoleManager<IdentityRole> roleManager,
+            IMemoryCache memoryCache
             )
         {
             SeedRoles(roleManager).Wait();
             SeedUsers(userManager).Wait();
+            RefreshMemoryCache(userManager, memoryCache).Wait();
         }
 
         private static async Task SeedUsers(UserManager<AppUser> userManager)
@@ -64,6 +67,17 @@ namespace EcommerceAPI.Seeds
         {
             if (!await roleManager.RoleExistsAsync("Customer"))
                 await roleManager.CreateAsync(new IdentityRole("Customer"));
+        }
+
+        private static async Task RefreshMemoryCache(UserManager<AppUser> userManager, IMemoryCache memoryCache)
+        {
+            var us = userManager.Users.ToList();
+            foreach (var u in us)
+            {
+                var cs = await userManager.GetClaimsAsync(u);
+                memoryCache.Remove(u.Id);
+                memoryCache.Set(u.Id, cs.Select(e => e.Type).ToArray());
+            }
         }
     }
 }

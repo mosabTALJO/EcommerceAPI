@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -161,9 +162,10 @@ using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>(
 {
     var dbContext = serviceScope.ServiceProvider.GetService<MyDbContext>();
     var userManager = serviceScope.ServiceProvider.GetService<UserManager<AppUser>>();
+    var memoryCache = serviceScope.ServiceProvider.GetService<IMemoryCache>();
     var roleManager = serviceScope.ServiceProvider.GetService<RoleManager<IdentityRole>>();
     dbContext?.Database.Migrate();
-    MySeedInitializer.SeedData(userManager, roleManager);
+    MySeedInitializer.SeedData(userManager, roleManager, memoryCache);
 }
 
 //if (app.Environment.IsDevelopment())
