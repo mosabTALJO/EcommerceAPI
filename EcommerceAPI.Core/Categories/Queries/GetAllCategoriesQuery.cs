@@ -11,7 +11,7 @@ namespace EcommerceAPI.Core.Categories.Queries
     {
         public int PageNumber { get; set; } = 0;
         public int PageSize { get; set; } = 20;
-        public string Search { get; set; } = null;
+        public string? Search { get; set; } = null;
         public string SortField { get; set; } = "Id";
         public string SortOrder { get; set; } = "Asc";
         public class GetAllCategoriesQueryHandler : IRequestHandler<GetAllCategoriesQuery, RequestResult<ListResponse<CategoryVM>>>

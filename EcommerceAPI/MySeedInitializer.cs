@@ -17,10 +17,10 @@ namespace EcommerceAPI.Seeds
 
         private static async Task SeedUsers(UserManager<AppUser> userManager)
         {
-            var user = userManager.Users.FirstOrDefault(x => x.Email == "admin@trgatestore.com");
+            var user = userManager.Users.FirstOrDefault(x => x.Email == "admin@ecommerce.com");
             if (user is null)
             {
-                user = new AppUser { UserName = "admin", DisplayName = "Admin", Email = "admin@trgatestore.com", IsActive = true, SecurityStamp = Guid.NewGuid().ToString() };
+                user = new AppUser { UserName = "adminecommerce", DisplayName = "Admin", Email = "admin@ecommerce.com", IsActive = true, SecurityStamp = Guid.NewGuid().ToString() };
                 await userManager.CreateAsync(user, "P@ssw0rd");
             }
             //Remove currenct policies
@@ -32,10 +32,10 @@ namespace EcommerceAPI.Seeds
             await userManager.AddClaimsAsync(user, claims);
 
 
-            var user1 = userManager.Users.FirstOrDefault(x => x.Email == "msh@trgatestore.com");
+            var user1 = userManager.Users.FirstOrDefault(x => x.Email == "msh@ecommerce.com");
             if (user1 is null)
             {
-                user1 = new AppUser { UserName = "msh", DisplayName = "MSH", Email = "msh@trgatestore.com", IsActive = true, SecurityStamp = Guid.NewGuid().ToString() };
+                user1 = new AppUser { UserName = "mshecommerce", DisplayName = "MSH", Email = "msh@ecommerce.com", IsActive = true, SecurityStamp = Guid.NewGuid().ToString() };
                 await userManager.CreateAsync(user1, "P@ssw0rd111");
             }
             //Remove currenct policies

@@ -12,7 +12,7 @@ namespace EcommerceAPI.Core.Filterings.Queries
         public int? CategoryId { get; set; } = null;
         public int? CollectionId { get; set; } = null;
         public int? BrandId { get; set; } = null;
-        public string Search { get; set; } = null;
+        public string? Search { get; set; } = null;
         public class GetProductsFilteringQueryHandler : IRequestHandler<GetProductsFilteringQuery, RequestResult<Filtering>>
         {
             private readonly IProductService _productService;
@@ -31,7 +31,7 @@ namespace EcommerceAPI.Core.Filterings.Queries
                     return new RequestResult<Filtering>(new Filtering());
 
                 var lang = CultureInfo.CurrentCulture?.TwoLetterISOLanguageName ?? "en";
-                IQueryable<Product> lst = null;
+                IQueryable<Product>? lst = null;
                 if (query.CollectionId.HasValue)
                 {
                     lst = _collectionService.Queryable().AsNoTracking()
@@ -82,14 +82,14 @@ namespace EcommerceAPI.Core.Filterings.Queries
     }
     public class Filtering
     {
-        public FilterItem[] Brands { get; set; }
+        public FilterItem[] Brands { get; set; } = [];
         //public FilterItem[] Sizes { get; set; }
-        public FilterItem[] Colors { get; set; }
+        public FilterItem[] Colors { get; set; } = [];
     }
     public class FilterItem
     {
-        public string Id { get; set; }
-        public string Name { get; set; }
+        public string Id { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
         public bool IsSelected { get; set; }
     }
 }

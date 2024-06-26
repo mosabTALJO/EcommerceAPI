@@ -15,7 +15,7 @@ namespace EcommerceAPI.Data.Models
         public int OrderIndex { get; set; }
 
         //json helper that contains the data based on the BaseType
-        public string Data { get; set; }
+        public string? Data { get; set; }
     }
     public enum BaseItemTypes { ProductsSet, BrandsSet, CategoriesSet, SingleBanner, MultipleBanners }
 

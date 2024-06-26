@@ -12,17 +12,16 @@ namespace EcommerceAPI.Core.BaseItems.Command
         public int Id { get; set; }
         public int IsHomeOrCategory { get; set; }//0 Home
         public BaseItemTypes BaseItemType { get; set; }
-        public string NameEn { get; set; }
-        public string NameAr { get; set; }
+        public string NameEn { get; set; } = string.Empty;
+        public string NameAr { get; set; } = string.Empty;
         public bool IsWeb { get; set; }
         public bool IsPhone { get; set; }
-        public int OrderIndex { get; set; }
 
-        public BaseItemCategory[] Categories { get; set; }
-        public BaseItemBrand[] Brands { get; set; }
-        public BaseItemBrandProduct[] Products { get; set; }
-        public SingleBanner SingleBanner { get; set; }
-        public BaseItemMultipleBanners MultipleBanners { get; set; }
+        public BaseItemCategory[] Categories { get; set; } = [];
+        public BaseItemBrand[] Brands { get; set; } = [];
+        public BaseItemBrandProduct[] Products { get; set; } = [];
+        public SingleBanner SingleBanner { get; set; } = new();
+        public BaseItemMultipleBanners MultipleBanners { get; set; } = new();
         public class UpdateBaseItemCommandHandler : IRequestHandler<UpdateBaseItemCommand, RequestResult<bool>>
         {
             private readonly IBaseItemService _baseItemService;
@@ -36,7 +35,9 @@ namespace EcommerceAPI.Core.BaseItems.Command
             public async Task<RequestResult<bool>> Handle(UpdateBaseItemCommand command, CancellationToken cancellationToken)
             {
                 var dbItem = _baseItemService.Queryable().FirstOrDefault(x => x.Id == command.Id);
-
+                if (dbItem == null)
+                    return new RequestResult<bool>(ActionResultType.NotFound, "Error");
+                
                 dbItem.BaseItemType = command.BaseItemType;
                 dbItem.IsHomeOrCategory = command.IsHomeOrCategory;
                 dbItem.IsWeb = command.IsWeb;
@@ -44,7 +45,7 @@ namespace EcommerceAPI.Core.BaseItems.Command
                 dbItem.NameAr = command.NameAr;
                 dbItem.NameEn = command.NameEn;
 
-                dbItem.Data = null;
+                dbItem.Data = string.Empty;
                 if (command.BaseItemType == BaseItemTypes.BrandsSet)
                     dbItem.Data = JsonSerializer.Serialize(command.Brands);
                 else if (command.BaseItemType == BaseItemTypes.CategoriesSet)

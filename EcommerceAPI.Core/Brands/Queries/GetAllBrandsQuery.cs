@@ -13,7 +13,7 @@ namespace EcommerceAPI.Core.Brands.Queries
         public int PageNumber { get; set; } = 0;
         public int PageSize { get; set; } = 20;
         public int? CategoryId { get; set; } = null;
-        public string Search { get; set; } = null;
+        public string? Search { get; set; } = null;
         public string SortField { get; set; } = "ProductsCount";
         public string SortOrder { get; set; } = "Asc";
         public bool IncludeDeleted { get; set; } = false;

@@ -31,6 +31,7 @@ builder.Services.AddScoped<DbContext, MyDbContext>();
 foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
 {
     builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assembly));
+    builder.Services.AddAutoMapper(assembly);
 }
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
@@ -179,7 +180,7 @@ app.UseCors();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-//app.UseMiddleware<ErrorHandlerMiddleware>();
+app.UseMiddleware<ErrorHandlerMiddleware>();
 app.MapControllers();
 
 app.Run();

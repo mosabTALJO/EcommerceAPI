@@ -10,7 +10,7 @@ namespace EcommerceAPI.Core.EmailPromotions.Queries
 {
     public class GetAllEmailPromotionsQuery : IRequest<RequestResult<ListResponse<EmailPromotionLiteVM>>>
     {
-        public string Subject { get; set; } = null;
+        public string? Subject { get; set; } = null;
         public int PageNumber { get; set; } = 0;
         public int PageSize { get; set; } = 20;
         public class GetAllEmailPromotionsQueryHandler : IRequestHandler<GetAllEmailPromotionsQuery, RequestResult<ListResponse<EmailPromotionLiteVM>>>

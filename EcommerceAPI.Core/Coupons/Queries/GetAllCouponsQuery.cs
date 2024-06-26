@@ -14,7 +14,7 @@ namespace EcommerceAPI.Core.Coupons.Queries
     {
         public int PageNumber { get; set; }
         public int PageSize { get; set; } = 20;
-        public string Search { get; set; } = null;
+        public string? Search { get; set; } = null;
         public string SortField { get; set; } = "Id";
         public string SortOrder { get; set; } = "Asc";
         public class GetAllCouponsQueryHandler : IRequestHandler<GetAllCouponsQuery, RequestResult<ListResponse<CouponVM>>>
