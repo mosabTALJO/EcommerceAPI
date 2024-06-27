@@ -10,14 +10,14 @@ namespace EcommerceAPI.Core.Categories.Commands
     public class UpdateCategoryCommand : IRequest<RequestResult<bool>>
     {
         public int Id { get; set; }
-        public string NameAr { get; set; }
-        public string NameEn { get; set; }
-        public string NameTr { get; set; }
-        public string Image { get; set; }
+        public string NameAr { get; set; } = string.Empty;
+        public string NameEn { get; set; } = string.Empty;
+        public string NameTr { get; set; } = string.Empty;
+        public string Image { get; set; } = string.Empty;
         public int? ParentId { get; set; }
         public bool IsActive { get; set; }
         public int? OrderIndex { get; set; }
-        public ICollection<UpdateCategoryCommand> Children { get; set; }
+        public ICollection<UpdateCategoryCommand>? Children { get; set; }
         public class PutCategoryCommandHandler : IRequestHandler<UpdateCategoryCommand, RequestResult<bool>>
         {
             private readonly ICategoryService _categoryService;

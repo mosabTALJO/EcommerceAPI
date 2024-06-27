@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EcommerceAPI.Core.Extentions;
 using EcommerceAPI.Services;
 using EcommerceAPI.Shared.Helpers;
 using EcommerceAPI.Shared.ViewModels;
@@ -9,7 +10,7 @@ namespace EcommerceAPI.Core.Categories.Queries
 {
     public class GetAllCategoriesQuery : IRequest<RequestResult<ListResponse<CategoryVM>>>
     {
-        public int PageNumber { get; set; } = 0;
+        public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 20;
         public string? Search { get; set; } = null;
         public string SortField { get; set; } = "Id";
@@ -25,6 +26,7 @@ namespace EcommerceAPI.Core.Categories.Queries
             }
             public async Task<RequestResult<ListResponse<CategoryVM>>> Handle(GetAllCategoriesQuery query, CancellationToken cancellationToken)
             {
+                query.PageNumber = query.PageNumber.PagingNumber();
                 var lst = _categoryService.Queryable().IgnoreQueryFilters().Include(x => x.Parent).ThenInclude(x => x.Parent).AsNoTracking();
                 if (!string.IsNullOrEmpty(query.Search))
                 {

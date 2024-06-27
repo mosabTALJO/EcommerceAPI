@@ -11,14 +11,12 @@ namespace EcommerceAPI.Services
     {
         Task AddNotification(Notification notification, DateTime? ScheduledDate = null);
     }
-
     public class NotificationService : Service<Notification>, INotificationService
     {
         public NotificationService(IRepository<Notification> repo) : base(repo)
         {
 
         }
-
         public async Task AddNotification(Notification notification, DateTime? ScheduledDate = null)
         {
             if (FirebaseApp.DefaultInstance == null)
@@ -53,29 +51,4 @@ namespace EcommerceAPI.Services
                 await messaging.SendAsync(message);
         }
     }
-
-
-    //public class OneSignalNotification
-    //{
-    //    public string app_id { get; set; } = "00f7edbe-f7d4-4e8b-a5b0-5c0ebb505e20";
-    //    public Dictionary<string, string> contents { get; set; }
-    //    public bool content_available { get; set; } = true;
-    //}
-    //public class TopicNotification : OneSignalNotification
-    //{
-    //    public TopicNotification(OneSignalNotification n)
-    //    {
-    //        this.contents = n.contents;
-    //    }
-    //    public string[] included_segments { get; set; }
-    //}
-    //public class OneSignalUserNotification : OneSignalNotification
-    //{
-    //    public OneSignalUserNotification(OneSignalNotification n)
-    //    {
-    //        this.contents = n.contents;
-    //    }
-    //    public string[] include_player_ids { get; set; }
-    //    public string channel_for_external_user_ids { get; init; } = "push";
-    //}
 }

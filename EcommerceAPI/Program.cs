@@ -6,7 +6,6 @@ using EcommerceAPI.Shared.Helpers;
 using EcommerceAPI.Shared.Helpers.Abstractions;
 using EcommerceAPI.UnitOfWork.Abstractions;
 using EcommerceAPI.UnitOfWork.EF;
-using EcommerceAPI.UnitOfWork.Services;
 using EcommerceAPI.Web.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -14,10 +13,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Reflection;
 using System.Text;
 
 TokenValidationParameters tokenValidationParameters;
@@ -158,14 +155,17 @@ builder.Services.AddCors(options =>
 builder.Services.AddDbContext<MyDbContext>(x => x.UseNpgsql("Host=localhost; Database=Ecommerce; Username=ecomm; Password=aser@sWwer##4as"));
 
 var app = builder.Build();
-using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
+if (!builder.Environment.IsDevelopment())
 {
-    var dbContext = serviceScope.ServiceProvider.GetService<MyDbContext>();
-    var userManager = serviceScope.ServiceProvider.GetService<UserManager<AppUser>>();
-    var memoryCache = serviceScope.ServiceProvider.GetService<IMemoryCache>();
-    var roleManager = serviceScope.ServiceProvider.GetService<RoleManager<IdentityRole>>();
-    dbContext?.Database.Migrate();
-    MySeedInitializer.SeedData(userManager, roleManager, memoryCache);
+    using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
+    {
+        var dbContext = serviceScope.ServiceProvider.GetService<MyDbContext>();
+        var userManager = serviceScope.ServiceProvider.GetService<UserManager<AppUser>>();
+        var memoryCache = serviceScope.ServiceProvider.GetService<IMemoryCache>();
+        var roleManager = serviceScope.ServiceProvider.GetService<RoleManager<IdentityRole>>();
+        dbContext?.Database.Migrate();
+        MySeedInitializer.SeedData(userManager, roleManager, memoryCache);
+    }
 }
 
 //if (app.Environment.IsDevelopment())

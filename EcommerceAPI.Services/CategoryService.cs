@@ -1,14 +1,7 @@
 ﻿using EcommerceAPI.Data.Models;
 using EcommerceAPI.UnitOfWork.Abstractions;
-using EcommerceAPI.UnitOfWork.EF;
 using EcommerceAPI.UnitOfWork.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EcommerceAPI.Services
 {

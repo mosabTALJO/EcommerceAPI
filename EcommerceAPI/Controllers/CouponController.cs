@@ -19,7 +19,7 @@ namespace EcommerceAPI.Web.Controllers
         [Authorize(Policy = PoliciesText.EditCoupons)]
         [ApiExplorerSettings(GroupName = "cp")]
         public async Task<ActionResult<RequestResult<ListResponse<CouponVM>>>> Get(
-            [FromQuery] int pageNumber = 0,
+            [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 20,
             [FromQuery] string search = null,
             [FromQuery] string sortField = "Id",

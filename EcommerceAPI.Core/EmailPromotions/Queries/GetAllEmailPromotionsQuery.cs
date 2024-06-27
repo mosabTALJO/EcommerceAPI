@@ -11,7 +11,7 @@ namespace EcommerceAPI.Core.EmailPromotions.Queries
     public class GetAllEmailPromotionsQuery : IRequest<RequestResult<ListResponse<EmailPromotionLiteVM>>>
     {
         public string? Subject { get; set; } = null;
-        public int PageNumber { get; set; } = 0;
+        public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 20;
         public class GetAllEmailPromotionsQueryHandler : IRequestHandler<GetAllEmailPromotionsQuery, RequestResult<ListResponse<EmailPromotionLiteVM>>>
         {
@@ -26,6 +26,7 @@ namespace EcommerceAPI.Core.EmailPromotions.Queries
 
             public async Task<RequestResult<ListResponse<EmailPromotionLiteVM>>> Handle(GetAllEmailPromotionsQuery query, CancellationToken cancellationToken)
             {
+                query.PageNumber = query.PageNumber.PagingNumber();
                 var result = _emailPromotionService.Queryable().OrderByDescending(x => x.CreatedAt).AsNoTracking().Where(x => string.IsNullOrEmpty(query.Subject) || x.Subject.Contains(query.Subject))
                             .To<EmailPromotionLiteVM>(_mapper);
 

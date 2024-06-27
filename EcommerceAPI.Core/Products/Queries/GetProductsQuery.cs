@@ -12,7 +12,7 @@ namespace EcommerceAPI.Core.Products.Queries
 {
     public class GetProductsQuery : IRequest<RequestResult<ListResponse<ProductLiteVM>>>
     {
-        public int PageNumber { get; set; }
+        public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; }
         public int? CategoryId { get; set; }
         public int? CollectionId { get; set; }
@@ -50,6 +50,7 @@ namespace EcommerceAPI.Core.Products.Queries
 
             public async Task<RequestResult<ListResponse<ProductLiteVM>>> Handle(GetProductsQuery query, CancellationToken cancellationToken)
             {
+                query.PageNumber = query.PageNumber.PagingNumber();
                 IQueryable<Product> lst = null;
                 var lang = CultureInfo.CurrentCulture?.TwoLetterISOLanguageName ?? "en";
                 var currencyRate = _currencyRateService.GetCurrencyRate(query.Currency);

@@ -9,10 +9,10 @@ namespace EcommerceAPI.Core.Coupons.Commands
 {
     public class CreateCouponCommand : IRequest<RequestResult<int>>
     {
-        public string Code { get; set; }
-        public string NameAr { get; set; }
-        public string NameEn { get; set; }
-        public string NameTr { get; set; }
+        public string Code { get; set; } = string.Empty;
+        public string NameAr { get; set; } = string.Empty;
+        public string NameEn { get; set; } = string.Empty;
+        public string NameTr { get; set; } = string.Empty;
         public DateTime ExpireDate { get; set; }
         public int Count { get; set; }
         public int RemainingCount { get; set; }
@@ -20,7 +20,7 @@ namespace EcommerceAPI.Core.Coupons.Commands
         public bool IsActive { get; set; }
         public CouponType Type { get; set; }
         public int? TypeId { get; set; }
-        public string TypeName { get; set; }
+        public string TypeName { get; set; } = string.Empty;
         public string? CustomerId { get; set; }
         public string TypeText => Type == CouponType.General ? "General" :
             Type == CouponType.Brand ? "Brand" : Type == CouponType.Category ? "Category" : "Product";

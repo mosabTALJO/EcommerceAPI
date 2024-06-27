@@ -19,7 +19,7 @@ namespace EcommerceAPI.Web.Controllers
         [HttpGet]
         [Authorize(Policy = PoliciesText.EditCategories)]
         public async Task<ActionResult<RequestResult<ListResponse<CategoryVM>>>> Get(
-            [FromQuery] int pageNumber = 0,
+            [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 20,
             [FromQuery] string search = null,
             [FromQuery] string sortField = "Id",

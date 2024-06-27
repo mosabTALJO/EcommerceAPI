@@ -10,11 +10,11 @@ namespace EcommerceAPI.Core.Brands.Queries
 {
     public class GetAllBrandsQuery : IRequest<RequestResult<ListResponse<BrandVM>>>
     {
-        public int PageNumber { get; set; } = 0;
+        public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 20;
         public int? CategoryId { get; set; } = null;
         public string? Search { get; set; } = null;
-        public string SortField { get; set; } = "ProductsCount";
+        public string SortField { get; set; } = "NameEN";
         public string SortOrder { get; set; } = "Asc";
         public bool IncludeDeleted { get; set; } = false;
         public class GetAllBrandsQueryHandler : IRequestHandler<GetAllBrandsQuery, RequestResult<ListResponse<BrandVM>>>
@@ -30,6 +30,7 @@ namespace EcommerceAPI.Core.Brands.Queries
             }
             public async Task<RequestResult<ListResponse<BrandVM>>> Handle(GetAllBrandsQuery query, CancellationToken cancellationToken)
             {
+                query.PageNumber = query.PageNumber.PagingNumber();
                 var lst = _brandService.Queryable().Where(x => query.IncludeDeleted ? true : x.IsActive);
 
                 if (!string.IsNullOrEmpty(query.Search))

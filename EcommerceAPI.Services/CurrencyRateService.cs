@@ -28,12 +28,12 @@ namespace EcommerceAPI.Services
         public double GetCurrencyRate(string currency)
         {
             currency ??= "kwd";
-            var key = "CurrencyChange_" + currency?.ToLower();
+            var key = "CurrencyChange_" + currency.ToLower();
             if (!_cache.TryGetValue(key, out double rateValue))
             {
                 var currencyType = GetTypeFromCurrency(currency.ToLower());
                 var rateRecord = Repository.Queryable().FirstOrDefault(x => x.Type == currencyType);
-                rateValue = rateRecord.Rate * rateRecord.FeeRate;
+                rateValue = rateRecord == null ? 0 : rateRecord.Rate * rateRecord.FeeRate;
 
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
                     .SetSlidingExpiration(TimeSpan.FromHours(1));

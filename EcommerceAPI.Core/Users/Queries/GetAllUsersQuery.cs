@@ -10,7 +10,7 @@ namespace EcommerceAPI.Core.Users.Queries
 {
     public class GetAllUsersQuery : IRequest<RequestResult<ListResponse<UserVM>>>
     {
-        public int PageNumber { get; set; }
+        public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; }
         public string Search { get; set; }
         public string SortField { get; set; }
@@ -26,6 +26,7 @@ namespace EcommerceAPI.Core.Users.Queries
 
             public async Task<RequestResult<ListResponse<UserVM>>> Handle(GetAllUsersQuery query, CancellationToken cancellationToken)
             {
+                query.PageNumber = query.PageNumber.PagingNumber();
                 var lst = _userManager.Users.Where(x => x.UserType == UserTypes.Admin);
                 if (!string.IsNullOrEmpty(query.Search))
                     lst = lst.Where(x => x.DisplayName.Contains(query.Search) || x.Email.Contains(query.Search) || x.PhoneNumber.Contains(query.Search));

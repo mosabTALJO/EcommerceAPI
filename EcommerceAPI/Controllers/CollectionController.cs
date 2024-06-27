@@ -34,11 +34,12 @@ namespace EcommerceAPI.Web.Controllers
         [HttpGet]
         [Authorize(Policy = PoliciesText.EditCollections)]
         public async Task<ActionResult<ListResponse<CollectionVM>>> Get(
-            [FromQuery] int pageNumber = 0,
+            [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 20,
             [FromQuery] string search = null
             )
         {
+            pageNumber = pageNumber.PagingNumber();
             var lst = _collectionService.Queryable();
             if (!string.IsNullOrEmpty(search))
                 lst = lst.Where(x => x.Name.Contains(search));

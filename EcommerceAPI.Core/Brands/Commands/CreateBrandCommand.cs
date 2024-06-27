@@ -9,13 +9,13 @@ namespace EcommerceAPI.Core.Brands.Commands
 {
     public class CreateBrandCommand : IRequest<RequestResult<int>>
     {
-        public string NameAr { get; set; }
-        public string NameEn { get; set; }
-        public string NameTr { get; set; }
-        public string Image { get; set; }
-        public string Icon { get; set; }
+        public string NameAr { get; set; } = string.Empty;
+        public string NameEn { get; set; } = string.Empty;
+        public string NameTr { get; set; } = string.Empty;
+        public string Image { get; set; } = string.Empty;
+        public string Icon { get; set; } = string.Empty;
         public bool IsActive { get; set; }
-        public int OrderIndex { get; set; }
+        public int? OrderIndex { get; set; } = null;
         public class CreateBrandCommandHandler : IRequestHandler<CreateBrandCommand, RequestResult<int>>
         {
             private readonly IBrandService _brandService;

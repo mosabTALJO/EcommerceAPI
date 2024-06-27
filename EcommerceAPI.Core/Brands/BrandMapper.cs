@@ -9,7 +9,8 @@ namespace EcommerceAPI.Core.Brands
     {
         public BrandMapper()
         {
-            CreateMap<Brand, BrandVM>().ReverseMap();
+            CreateMap<Brand, BrandVM>().ForMember(dst => dst.ProductsCount, ex => ex.Ignore());
+            CreateMap<BrandVM, Brand>();
             CreateMap<Brand, CreateBrandCommand>().ReverseMap();
             CreateMap<Brand, UpdateBrandCommand>().ReverseMap();
         }

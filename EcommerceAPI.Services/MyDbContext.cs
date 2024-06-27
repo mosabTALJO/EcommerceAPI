@@ -26,14 +26,14 @@ namespace EcommerceAPI.Services
             modelBuilder.Entity<Category>().HasIndex(c => c.NameTr);
             modelBuilder.Entity<Category>().HasIndex(p => p.IsActive);
             modelBuilder.Entity<Category>().HasIndex(p => p.OrderIndex);
-            modelBuilder.Entity<Category>().HasQueryFilter(p => p.IsActive);
+            //modelBuilder.Entity<Category>().HasQueryFilter(p => p.IsActive);
 
             modelBuilder.Entity<Brand>().HasIndex(c => c.NameTr);
             modelBuilder.Entity<Brand>().HasIndex(c => c.NameAr);
             modelBuilder.Entity<Brand>().HasIndex(c => c.NameEn);
             modelBuilder.Entity<Brand>().HasIndex(p => p.OrderIndex);
             modelBuilder.Entity<Brand>().HasIndex(p => p.IsActive);
-            modelBuilder.Entity<Brand>().HasQueryFilter(p => p.IsActive);
+            //modelBuilder.Entity<Brand>().HasQueryFilter(p => p.IsActive);
 
             modelBuilder.Entity<Product>().HasIndex(p => p.NameEn);
             modelBuilder.Entity<Product>().HasIndex(p => p.NameAr);
@@ -41,7 +41,7 @@ namespace EcommerceAPI.Services
             modelBuilder.Entity<Product>().HasIndex(p => p.SKU);
             modelBuilder.Entity<Product>().HasIndex(p => p.CreatedAt);
             modelBuilder.Entity<Product>().HasIndex(p => p.IsActive);
-            modelBuilder.Entity<Product>().HasQueryFilter(p => p.IsActive);
+            //modelBuilder.Entity<Product>().HasQueryFilter(p => p.IsActive);
             modelBuilder.Entity<Product>().HasIndex(p => p.DeletedAt);
             modelBuilder.Entity<Product>().HasIndex(p => p.CategoryId);
 
@@ -87,6 +87,10 @@ namespace EcommerceAPI.Services
                         }
                     }
                 }
+                else if (entry.Entity is IMyTrackable entity2)
+                {
+
+                }
             }
         }
         public override int SaveChanges()
@@ -119,5 +123,10 @@ namespace EcommerceAPI.Services
         public DbSet<InventoryItem> InventoryItems { get; set; }
         public DbSet<District> Districts { get; set; }
         public DbSet<Neighborhood> Neighborhoods { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<EmailPromotion> EmailPromotions { get; set; }
+        public DbSet<Rating> Ratings { get; set; }
+        public DbSet<BaseItem> BaseItems { get; set; }
+        public DbSet<FrontendSetting> FrontendSettings { get; set; }
     }
 }

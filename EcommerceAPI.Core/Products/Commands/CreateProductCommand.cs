@@ -18,21 +18,15 @@ namespace EcommerceAPI.Core.Products.Commands
         public string FullDescriptionTr { get; set; }
         public int BrandId { get; set; }
         public int CategoryId { get; set; }
-        public List<int> CategoryIds { get; set; }
         //public Vendor VendorId { get; set; }
         public double SalesPrice { get; set; }
         public double? Discount { get; set; }
         public string MainImage { get; set; }
         public List<string> Images { get; set; }
         public string SKU { get; set; }
-        public string CompanyProductID { get; set; }
-        public string Weight { get; set; }
         public bool IsActive { get; set; }
         public int? OrderIndex { get; set; }
-        public string CompanyURL { get; set; }
-        public double? CompanyPrice { get; set; }
-        public string CompanyColor { get; set; }
-        public List<ProductVariantVM> ProductVariants { get; set; }
+        public List<ProductVariantVM>? ProductVariants { get; set; }
         public bool OnlinePaymentOnly { get; set; }
         public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, RequestResult<int>>
         {

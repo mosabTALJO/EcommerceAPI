@@ -1,28 +1,32 @@
 ﻿using EcommerceAPI.Core.Brands.Commands;
 using EcommerceAPI.Core.Brands.Queries;
+using EcommerceAPI.Services;
 using EcommerceAPI.Shared.Helpers;
 using EcommerceAPI.Shared.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace EcommerceAPI.Web.Controllers
 {
     [ApiExplorerSettings(GroupName = "cp")]
     public class BrandController : MyControllerBase
     {
-        public BrandController(IMediator mediator) : base(mediator: mediator)
+        private readonly MyDbContext dbContext;
+        public BrandController(IMediator mediator, MyDbContext dbContext) : base(mediator: mediator)
         {
+            this.dbContext = dbContext;
         }
 
         // GETList api/Brand/getlist
         [HttpGet("GetList")]
         public async Task<ActionResult<RequestResult<ListResponse<BrandVM>>>> Get(
-            [FromQuery] int pageNumber = 0,
+            [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 20,
             [FromQuery] int? categoryId = null,
-            [FromQuery] string search = null,
-            [FromQuery] string sortField = "ProductsCount",
+            [FromQuery] string? search = null,
+            [FromQuery] string sortField = "NameEN",
             [FromQuery] string sortOrder = "Asc",
             [FromQuery] bool includeDeleted = false)
         {

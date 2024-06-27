@@ -11,7 +11,7 @@ namespace EcommerceAPI.Core.Notifications.Queries
 {
     public class GetAllUserIncludedNotificationsQuery : IRequest<RequestResult<ListResponse<NotificationVM>>>
     {
-        public int PageNumber { get; set; } = 0;
+        public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 20;
         public string SortField { get; set; } = "Id";
         public string SortOrder { get; set; } = "Asc";
@@ -29,6 +29,7 @@ namespace EcommerceAPI.Core.Notifications.Queries
 
             public async Task<RequestResult<ListResponse<NotificationVM>>> Handle(GetAllUserIncludedNotificationsQuery query, CancellationToken cancellationToken)
             {
+                query.PageNumber = query.PageNumber.PagingNumber();
                 var lst = _notificationService.Queryable().Include(x => x.User).Where(x => x.UserId == query.UserId);
 
                 lst = query.SortOrder?.ToLower() == "asc" ? lst.OrderBy(query.SortField) : lst.OrderByDescending(query.SortField);

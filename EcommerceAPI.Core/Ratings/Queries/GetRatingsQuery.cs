@@ -10,7 +10,7 @@ namespace EcommerceAPI.Core.Ratings.Queries
 {
     public class GetRatingsQuery : IRequest<RequestResult<ListResponse<OrderRatingVM>>>
     {
-        public int PageNumber { get; set; }
+        public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; }
         public string SortField { get; set; }
         public string SortOrder { get; set; }
@@ -30,6 +30,7 @@ namespace EcommerceAPI.Core.Ratings.Queries
 
             public async Task<RequestResult<ListResponse<OrderRatingVM>>> Handle(GetRatingsQuery query, CancellationToken cancellationToken)
             {
+                query.PageNumber = query.PageNumber.PagingNumber();
                 IQueryable<int> orderIds = _ratingService.Queryable().AsNoTracking()
                     .Where(x => query.StartDate == null || x.CreatedAt >= query.StartDate)
                     .Where(x => query.EndDate == null || x.CreatedAt <= query.EndDate)

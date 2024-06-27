@@ -5,12 +5,13 @@ using EcommerceAPI.Shared.ViewModels;
 using EcommerceAPI.Shared.Helpers;
 using EcommerceAPI.Services;
 using EcommerceAPI.Data.Models;
+using EcommerceAPI.Core.Extentions;
 
 namespace EcommerceAPI.Core.Orders.Queries
 {
     public class GetMyOrdersQuery : IRequest<RequestResult<ListResponse<OrderLiteVM>>>
     {
-        public int PageNumber { get; set; }
+        public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; }
         public string UserId { get; set; }
         public class GetMyOrdersQueryHandler : IRequestHandler<GetMyOrdersQuery, RequestResult<ListResponse<OrderLiteVM>>>
@@ -24,6 +25,7 @@ namespace EcommerceAPI.Core.Orders.Queries
             }
             public async Task<RequestResult<ListResponse<OrderLiteVM>>> Handle(GetMyOrdersQuery query, CancellationToken cancellationToken)
             {
+                query.PageNumber = query.PageNumber.PagingNumber();
                 var lst = _orderService.Queryable()
                     .Include(x => x.OrderItems).ThenInclude(x => x.ProductVariant)
                     .Include(x => x.Customer)

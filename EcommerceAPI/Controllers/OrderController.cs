@@ -21,7 +21,7 @@ namespace EcommerceAPI.Web.Controllers
         [Authorize(Policy = PoliciesText.GetOrders)]
         [ApiExplorerSettings(GroupName = "cp")]
         public async Task<ActionResult<RequestResult<ListResponse<OrderLiteVM>>>> Get(
-            [FromQuery] int pageNumber = 0,
+            [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 20,
             [FromQuery] string customerId = null,
             [FromQuery] string search = null,
@@ -52,7 +52,7 @@ namespace EcommerceAPI.Web.Controllers
         [Authorize(Roles = "Customer")]
         [ApiExplorerSettings(GroupName = "fe")]
         public async Task<ActionResult<RequestResult<ListResponse<OrderLiteVM>>>> GetMyOrders(
-            [FromQuery] int pageNumber = 0,
+            [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 20)
         {
             return GetActionResult(await _mediator.Send(new GetMyOrdersQuery

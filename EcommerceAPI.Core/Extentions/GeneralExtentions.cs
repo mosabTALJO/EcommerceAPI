@@ -29,5 +29,6 @@ namespace EcommerceAPI.Core.Extentions
             return result;
         }
         public static string GetPolicyNumber(this Policies p) => ((int)p).ToString();
+        public static int PagingNumber(this int i) => i - 1;
     }
 }

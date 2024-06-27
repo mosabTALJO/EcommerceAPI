@@ -12,7 +12,7 @@ namespace EcommerceAPI.Data.Helpers
         [NotMapped]
         public bool CompleteRemove { get; set; }
     }
-    public class SoftDeleteEntity : Entity, ITrackable, ISoftDelete
+    public class SoftDeleteEntity : Entity, ITrackable, ISoftDelete, IMyTrackable
     {
         [NotMapped]
         public bool CompleteRemove { get; set; }

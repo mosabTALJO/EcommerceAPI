@@ -4,12 +4,13 @@ using System.Globalization;
 using EcommerceAPI.Shared.ViewModels;
 using EcommerceAPI.Shared.Helpers;
 using EcommerceAPI.Services;
+using EcommerceAPI.Core.Extentions;
 
 namespace EcommerceAPI.Core.Orders.Queries
 {
     public class GetAllOrdersQuery : IRequest<RequestResult<ListResponse<OrderLiteVM>>>
     {
-        public int PageNumber { get; set; } = 0;
+        public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 20;
         public string customerId { get; set; } = null;
         public string Search { get; set; } = null;
@@ -31,6 +32,7 @@ namespace EcommerceAPI.Core.Orders.Queries
 
             public async Task<RequestResult<ListResponse<OrderLiteVM>>> Handle(GetAllOrdersQuery query, CancellationToken cancellationToken)
             {
+                query.PageNumber = query.PageNumber.PagingNumber();
                 var lst = _orderService.Queryable().AsNoTracking().Include(x => x.Customer)
                     .Where(x => !x.DeletedAt.HasValue)
                     .Where(o => o.IsArchived == query.ShowArchived);

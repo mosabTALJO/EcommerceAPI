@@ -12,7 +12,7 @@ namespace EcommerceAPI.Core.Coupons.Queries
 {
     public class GetAllCouponsQuery : IRequest<RequestResult<ListResponse<CouponVM>>>
     {
-        public int PageNumber { get; set; }
+        public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 20;
         public string? Search { get; set; } = null;
         public string SortField { get; set; } = "Id";
@@ -35,6 +35,7 @@ namespace EcommerceAPI.Core.Coupons.Queries
 
             public async Task<RequestResult<ListResponse<CouponVM>>> Handle(GetAllCouponsQuery query, CancellationToken cancellationToken)
             {
+                query.PageNumber = query.PageNumber.PagingNumber();
                 var lst = _couponService.Queryable().Where(x => !x.DeletedAt.HasValue);
                 if (!string.IsNullOrEmpty(query.Search))
                     lst = lst.Where(x => x.NameAr.Contains(query.Search) || x.NameEn.Contains(query.Search) || x.NameTr.Contains(query.Search));
