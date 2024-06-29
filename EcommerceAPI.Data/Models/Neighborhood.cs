@@ -1,9 +1,8 @@
-﻿using EcommerceAPI.UnitOfWork.Trackable;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace EcommerceAPI.Data.Models
 {
-    public class Neighborhood : Entity
+    public class Neighborhood
     {
         public int Id { get; set; }
         [MaxLength(200)]

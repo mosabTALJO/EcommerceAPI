@@ -1,9 +1,8 @@
-﻿using EcommerceAPI.UnitOfWork.Trackable;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EcommerceAPI.Data.Models
 {
-    public class CurrencyRate : Entity
+    public class CurrencyRate
     {
         public int Id { get; set; }
         public string Title { get; set; }

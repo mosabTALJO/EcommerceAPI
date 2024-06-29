@@ -1,6 +1,4 @@
-﻿using EcommerceAPI.UnitOfWork.Abstractions;
-using EcommerceAPI.UnitOfWork.Trackable;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
 namespace EcommerceAPI.Data.Helpers
@@ -12,7 +10,7 @@ namespace EcommerceAPI.Data.Helpers
         [NotMapped]
         public bool CompleteRemove { get; set; }
     }
-    public class SoftDeleteEntity : Entity, IMyTrackable, ISoftDelete
+    public class SoftDeleteEntity : IMyTrackable, ISoftDelete
     {
         [NotMapped]
         public bool CompleteRemove { get; set; }

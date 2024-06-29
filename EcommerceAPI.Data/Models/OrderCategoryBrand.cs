@@ -1,8 +1,7 @@
-﻿using EcommerceAPI.UnitOfWork.Trackable;
-
+﻿
 namespace EcommerceAPI.Data.Models
 {
-    public class OrderCategoryBrand : Entity
+    public class OrderCategoryBrand
     {
         public int Id { get; set; }
         public int CategoryId { get; set; }

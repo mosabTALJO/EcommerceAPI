@@ -13,8 +13,6 @@
         public BrandVM Brand { get; set; }
         public int? CategoryId { get; set; }
         public CategoryVM Category { get; set; }
-        //public Vendor VendorId { get; set; }
-        //public dynamic Vendor => new { name = Enum.GetName(typeof(Vendor), VendorId) };
         public double SalesPrice { get; set; }
         public double FinalSalesPrice => Math.Round(SalesPrice - SalesPrice * (Discount ?? 0) / 100, 1);
         public double? Discount { get; set; }
@@ -25,17 +23,6 @@
         public string Weight { get; set; }
         public bool IsActive { get; set; }
         public bool IsFavorite { get; set; }
-        public List<int> CategoryIds => [CategoryId ?? 0];
-        public List<ProductCategoryVM> ProductCategories =>
-            [
-                new ProductCategoryVM {
-                    CategoryId = CategoryId ?? 0,
-                    CategoryNameEn = Category?.NameEn,
-                    CategoryNameTr = Category?.NameTr,
-                    CategoryNameAr = Category?.NameAr
-                }
-            ];
-
         public ICollection<ProductVariantVM> ProductVariants { get; set; }
         public bool OnlinePaymentOnly { get; set; }
     }

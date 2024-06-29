@@ -1,9 +1,8 @@
-﻿using EcommerceAPI.UnitOfWork.Trackable;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace EcommerceAPI.Data.Models
 {
-    public class ProductVariant : Entity
+    public class ProductVariant
     {
         public int Id { get; set; }
         public int ProductId { get; set; }

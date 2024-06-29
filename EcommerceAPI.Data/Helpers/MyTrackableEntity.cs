@@ -1,5 +1,4 @@
-﻿using EcommerceAPI.UnitOfWork.Trackable;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -15,7 +14,7 @@ namespace EcommerceAPI.Data.Helpers
         bool UpdateCreatedAt { get; set; }
     }
 
-    public class TrackableEntity : Entity, IMyTrackable
+    public class TrackableEntity : IMyTrackable
     {
         public DateTime CreatedAt { get; set; }
         [MaxLength(40)]

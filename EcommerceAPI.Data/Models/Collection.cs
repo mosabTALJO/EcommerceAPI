@@ -1,8 +1,6 @@
-﻿using EcommerceAPI.UnitOfWork.Trackable;
-
-namespace EcommerceAPI.Data.Models
+﻿namespace EcommerceAPI.Data.Models
 {
-    public class Collection : Entity
+    public class Collection
     {
         public int Id { get; set; }
         public string Name { get; set; }

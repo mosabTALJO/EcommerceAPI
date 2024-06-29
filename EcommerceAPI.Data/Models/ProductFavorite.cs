@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using EcommerceAPI.UnitOfWork.Trackable;
 
 namespace EcommerceAPI.Data.Models
 {
-    public class ProductFavorite : Entity
+    public class ProductFavorite
     {
         public int Id { get; set; }
         [ForeignKey("Product")]

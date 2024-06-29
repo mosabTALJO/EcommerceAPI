@@ -1,8 +1,6 @@
-﻿using EcommerceAPI.UnitOfWork.Trackable;
-
-namespace EcommerceAPI.Data.Models
+﻿namespace EcommerceAPI.Data.Models
 {
-    public class InventoryItem : Entity
+    public class InventoryItem
     {
         public int Id { get; set; }
         public DateTime InDate { get; set; }
