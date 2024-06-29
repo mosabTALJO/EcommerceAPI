@@ -55,7 +55,6 @@ namespace EcommerceAPI.Core.Orders
                 ShippingCompany = itemToClone.ShippingCompany,
                 ShippingDate = itemToClone.ShippingDate,
                 TotalSalePrice = itemToClone.TotalSalePrice,
-                TrackingState = itemToClone.TrackingState,
                 UpdateCreatedAt = itemToClone.UpdateCreatedAt,
                 UpdatedAt = itemToClone.UpdatedAt,
                 UpdatedBy = itemToClone.UpdatedBy

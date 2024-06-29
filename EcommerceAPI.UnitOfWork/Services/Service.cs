@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace EcommerceAPI.UnitOfWork.Services
 {
-    public abstract class Service<TEntity> : IService<TEntity> where TEntity : class, ITrackable
+    public abstract class Service<TEntity> : IService<TEntity> where TEntity : class
     {
         protected readonly IRepository<TEntity> Repository;
 

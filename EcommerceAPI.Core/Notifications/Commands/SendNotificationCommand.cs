@@ -12,13 +12,13 @@ namespace EcommerceAPI.Core.Notifications.Commands
     public class SendNotificationCommand : IRequest<RequestResult<int>>
     {
         public int Id { get; set; }
-        public string UserId { get; set; }
-        public AppUser User { get; set; }
-        public string Topic { get; set; }
-        public string Title { get; set; }
-        public string Text { get; set; }
-        public string Image { get; set; }
-        public string Url { get; set; }
+        public string? UserId { get; set; }
+        public AppUser? User { get; set; }
+        public string? Topic { get; set; } = string.Empty;
+        public string? Title { get; set; } = string.Empty;
+        public string? Text { get; set; } = string.Empty;
+        public string? Image { get; set; } = string.Empty;
+        public string? Url { get; set; } = string.Empty;
         public int? CategoryId { get; set; }
         public int? BrandId { get; set; }
         public int? CollectionId { get; set; }

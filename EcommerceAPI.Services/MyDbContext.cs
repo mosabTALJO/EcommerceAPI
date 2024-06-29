@@ -128,5 +128,6 @@ namespace EcommerceAPI.Services
         public DbSet<Rating> Ratings { get; set; }
         public DbSet<BaseItem> BaseItems { get; set; }
         public DbSet<FrontendSetting> FrontendSettings { get; set; }
+        public DbSet<Settings> Settings { get; set; }
     }
 }

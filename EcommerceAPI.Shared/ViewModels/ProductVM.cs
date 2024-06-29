@@ -24,9 +24,6 @@
         public string CompanyProductID { get; set; }
         public string Weight { get; set; }
         public bool IsActive { get; set; }
-        public string CompanyURL { get; set; }
-        public double? CompanyPrice { get; set; }
-        public string CompanyColor { get; set; }
         public bool IsFavorite { get; set; }
         public List<int> CategoryIds => [CategoryId ?? 0];
         public List<ProductCategoryVM> ProductCategories =>

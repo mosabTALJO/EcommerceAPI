@@ -8,11 +8,11 @@ namespace EcommerceAPI.Data.Helpers
     public interface ISoftDelete
     {
         DateTime? DeletedAt { get; set; }
-        string DeletedBy { get; set; }
+        string? DeletedBy { get; set; }
         [NotMapped]
         public bool CompleteRemove { get; set; }
     }
-    public class SoftDeleteEntity : Entity, ITrackable, ISoftDelete, IMyTrackable
+    public class SoftDeleteEntity : Entity, IMyTrackable, ISoftDelete
     {
         [NotMapped]
         public bool CompleteRemove { get; set; }
@@ -26,6 +26,6 @@ namespace EcommerceAPI.Data.Helpers
         public string UpdatedBy { get; set; }
         public DateTime? DeletedAt { get; set; }
         [MaxLength(40)]
-        public string DeletedBy { get; set; }
+        public string? DeletedBy { get; set; }
     }
 }

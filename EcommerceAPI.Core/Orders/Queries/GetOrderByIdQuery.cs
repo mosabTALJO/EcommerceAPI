@@ -41,7 +41,7 @@ namespace EcommerceAPI.Core.Orders.Queries
                 foreach (var oi in o.OrderItems)
                 {
                     oi.Currency = item.Currency;
-                    oi.Product.CompanyURL = string.IsNullOrWhiteSpace(oi.Product.CompanyURL) || oi.Product.CompanyURL.StartsWith("https") ? oi.Product.CompanyURL : "https://www.trendyol.com" + (oi.Product.CompanyURL?.StartsWith("/") == true ? "" : "/") + oi.Product.CompanyURL;
+                    //oi.Product.CompanyURL = string.IsNullOrWhiteSpace(oi.Product.CompanyURL) || oi.Product.CompanyURL.StartsWith("https") ? oi.Product.CompanyURL : "https://www.trendyol.com" + (oi.Product.CompanyURL?.StartsWith("/") == true ? "" : "/") + oi.Product.CompanyURL;
                 }
                 o.Ratings = await _ratingService.Queryable().AsNoTracking().Where(r => r.OrderId == o.Id).To<RatingVM>(_mapper).ToArrayAsync();
 

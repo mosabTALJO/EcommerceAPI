@@ -40,7 +40,7 @@ namespace EcommerceAPI.Core.Products.Queries
                     return new RequestResult<ProductVM>(null, ActionResultType.NotFound, "NotFound");
 
                 var p = _mapper.Map<ProductVM>(item);
-                p.CompanyURL = string.IsNullOrWhiteSpace(p.CompanyURL) || p.CompanyURL.StartsWith("https") ? p.CompanyURL : "https://www.trendyol.com" + (p.CompanyURL?.StartsWith("/") == true ? "" : "/") + p.CompanyURL;
+                //p.CompanyURL = string.IsNullOrWhiteSpace(p.CompanyURL) || p.CompanyURL.StartsWith("https") ? p.CompanyURL : "https://www.trendyol.com" + (p.CompanyURL?.StartsWith("/") == true ? "" : "/") + p.CompanyURL;
                 if (string.IsNullOrEmpty(p.NameEn)) p.NameEn = p.NameTr;
                 if (string.IsNullOrEmpty(p.NameAr)) p.NameAr = p.NameEn;
 
@@ -50,7 +50,7 @@ namespace EcommerceAPI.Core.Products.Queries
                 if (!string.IsNullOrEmpty(query.UserId))
                     p.IsFavorite = _productFavoriteService.Queryable().FirstOrDefault(x => x.ProductId == p.Id && x.AppUserId == query.UserId) != null;
 
-                p.SalesPrice = p.CompanyPrice.Value * p.Category.ProfitRatio.Value * _currencyRateService.GetCurrencyRate(query.Currency);
+                //p.SalesPrice = p.CompanyPrice.Value * p.Category.ProfitRatio.Value * _currencyRateService.GetCurrencyRate(query.Currency);
                 p.Discount = p.Discount > 0 ? p.Discount : p.Category.Discount > 0 ? p.Category.Discount : null;
                 p.Category.FullName = p.Category.NameEn;
 
