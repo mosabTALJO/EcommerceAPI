@@ -20,21 +20,15 @@ namespace EcommerceAPI.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<RequestResult<int>>> Post([FromBody] ProductAttributeVM attributeVM)
-        {
-            return GetActionResult(await _mediator.Send(new CreateAttributeCommand { ProductAttributeVM = attributeVM }));
-        }
+        public async Task<ActionResult<RequestResult<int>>> Post([FromBody] CreateAttributeCommand attributeVM) =>
+            GetActionResult(await _mediator.Send(attributeVM));
 
         [HttpPut]
-        public async Task<ActionResult<RequestResult<bool>>> Put([FromBody] ProductAttributeVM attributeVM)
-        {
-            return GetActionResult(await _mediator.Send(new UpdateAttributeCommand { ProductAttributeVM = attributeVM }));
-        }
+        public async Task<ActionResult<RequestResult<bool>>> Put([FromBody] ProductAttributeVM attributeVM) =>
+            GetActionResult(await _mediator.Send(new UpdateAttributeCommand { ProductAttributeVM = attributeVM }));
 
         [HttpDelete]
-        public async Task<ActionResult<RequestResult<bool>>> Delete(int id)
-        {
-            return GetActionResult(await _mediator.Send(new DeleteAttributeCommand { ID = id }));
-        }
+        public async Task<ActionResult<RequestResult<bool>>> Delete(int id) =>
+            GetActionResult(await _mediator.Send(new DeleteAttributeCommand { ID = id }));
     }
 }

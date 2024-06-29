@@ -21,11 +21,12 @@ namespace EcommerceAPI.Core.Attributes.Commands
 
             public async Task<RequestResult<bool>> Handle(DeleteAttributeCommand request, CancellationToken cancellationToken)
             {
-                if (await _attributesService.ProductVariantAttributes.AnyAsync(x => x.ProductAttributeID == request.ID))
-                    return new RequestResult<bool>(ActionResultType.BadRequest, "This attribute is used by other variants!");
                 var dbAttribute = await _attributesService.Queryable().AsNoTracking().FirstOrDefaultAsync(x => x.ID == request.ID);
                 if (dbAttribute == null)
                     return new RequestResult<bool>(ActionResultType.NotFound);
+
+                if (!await _attributesService.HasRelatedVariants(request.ID))
+                    dbAttribute.CompleteRemove = true;
 
                 _attributesService.Delete(dbAttribute);
                 if (await _unitOfWork.SaveChangesAsync() > 0)

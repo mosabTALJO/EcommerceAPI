@@ -9,7 +9,7 @@ namespace EcommerceAPI.Core.Attributes
         public AttributesMapper()
         {
             CreateMap<ProductAttribute, ProductAttributeVM>().ReverseMap();
-            CreateMap<ProductVariantAttribute, ProductVariantAttributeVM>().ForMember(dst => dst.AttributeName, ex => ex.MapFrom(src => src.ProductAttribute!.Name));
+            CreateMap<ProductVariantAttribute, ProductVariantAttributeVM>().ForMember(dst => dst.AttributeName, ex => ex.MapFrom(src => src.ProductAttribute!.NameAr));
             CreateMap<ProductVariantAttributeVM, ProductVariantAttribute>();
         }
     }

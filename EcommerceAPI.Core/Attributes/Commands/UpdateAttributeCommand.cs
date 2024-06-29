@@ -26,7 +26,10 @@ namespace EcommerceAPI.Core.Attributes.Commands
                 if (dbAttribute == null)
                     return new RequestResult<bool>(ActionResultType.NotFound);
 
-                dbAttribute.Name = request.ProductAttributeVM.Name;
+                dbAttribute.NameAr = request.ProductAttributeVM.NameAr;
+                dbAttribute.NameEn = request.ProductAttributeVM.NameEn;
+                dbAttribute.NameTr = request.ProductAttributeVM.NameTr;
+
                 _attributesService.Update(dbAttribute);
                 if (await _unitOfWork.SaveChangesAsync() > 0)
                     return new RequestResult<bool>(true);

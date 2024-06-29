@@ -3,7 +3,8 @@
     public class ProductAttributeVM
     {
         public int ID { get; set; }
-        public required string Name { get; set; }
-        //public List<ProductVariantAttributeVM> ProductVariantAttributes { get; set; } = [];
+        public required string NameAr { get; set; }
+        public required string NameTr { get; set; }
+        public required string NameEn { get; set; }
     }
 }

@@ -1,12 +1,13 @@
 ﻿using EcommerceAPI.Data.Models;
 using EcommerceAPI.UnitOfWork.Abstractions;
 using EcommerceAPI.UnitOfWork.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace EcommerceAPI.Services
 {
     public interface IAttributesService : IService<ProductAttribute>
     {
-        public IQueryable<ProductVariantAttribute> ProductVariantAttributes { get; }
+        public Task<bool> HasRelatedVariants(int AttributeId);
     }
 
     public class AttributesService : Service<ProductAttribute>, IAttributesService
@@ -16,6 +17,8 @@ namespace EcommerceAPI.Services
         {
             _productVariantAttribRepo = productVariantAttribRepo;
         }
-        public IQueryable<ProductVariantAttribute> ProductVariantAttributes => _productVariantAttribRepo.Queryable();
+
+        public async Task<bool> HasRelatedVariants(int AttributeId) =>
+            await _productVariantAttribRepo.Queryable().AnyAsync(x => x.ProductAttributeID == AttributeId);
     }
 }

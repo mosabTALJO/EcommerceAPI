@@ -1377,9 +1377,43 @@ namespace EcommerceAPI.Services.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
 
-                    b.Property<string>("Name")
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DeletedBy")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
+
+                    b.Property<string>("NameAr")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("NameEn")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("NameTr")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
 
                     b.HasKey("ID");
 
@@ -1962,7 +1996,7 @@ namespace EcommerceAPI.Services.Migrations
             modelBuilder.Entity("EcommerceAPI.Data.Models.ProductVariantAttribute", b =>
                 {
                     b.HasOne("EcommerceAPI.Data.Models.ProductAttribute", "ProductAttribute")
-                        .WithMany("ProductVariantAttributes")
+                        .WithMany()
                         .HasForeignKey("ProductAttributeID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -2099,11 +2133,6 @@ namespace EcommerceAPI.Services.Migrations
             modelBuilder.Entity("EcommerceAPI.Data.Models.Product", b =>
                 {
                     b.Navigation("ProductVariants");
-                });
-
-            modelBuilder.Entity("EcommerceAPI.Data.Models.ProductAttribute", b =>
-                {
-                    b.Navigation("ProductVariantAttributes");
                 });
 
             modelBuilder.Entity("EcommerceAPI.Data.Models.ProductVariant", b =>
