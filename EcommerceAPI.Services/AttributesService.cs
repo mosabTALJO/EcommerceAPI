@@ -8,6 +8,7 @@ namespace EcommerceAPI.Services
     public interface IAttributesService : IService<ProductAttribute>
     {
         public Task<bool> HasRelatedVariants(int AttributeId);
+        public Task<string[]> GetAttribiteValues(int AttributeId);
     }
 
     public class AttributesService : Service<ProductAttribute>, IAttributesService
@@ -17,6 +18,9 @@ namespace EcommerceAPI.Services
         {
             _productVariantAttribRepo = productVariantAttribRepo;
         }
+
+        public async Task<string[]> GetAttribiteValues(int AttributeId) =>
+            await _productVariantAttribRepo.Queryable().Where(x => x.ProductAttributeID == AttributeId).Select(x => x.Value).Distinct().ToArrayAsync();
 
         public async Task<bool> HasRelatedVariants(int AttributeId) =>
             await _productVariantAttribRepo.Queryable().AnyAsync(x => x.ProductAttributeID == AttributeId);

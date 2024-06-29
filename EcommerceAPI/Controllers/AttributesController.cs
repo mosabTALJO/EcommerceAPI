@@ -14,10 +14,12 @@ namespace EcommerceAPI.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<RequestResult<ProductAttributeVM[]>>> GetAttributes()
-        {
-            return GetActionResult(await _mediator.Send(new GetAttributesQuery()));
-        }
+        public async Task<ActionResult<RequestResult<ProductAttributeVM[]>>> GetAttributes([FromQuery] string search) =>
+            GetActionResult(await _mediator.Send(new GetAttributesQuery() { search = search }));
+
+        [HttpGet("GetAttributeValues/{id}")]
+        public async Task<ActionResult<RequestResult<string[]>>> GetAttributeValues(int id) =>
+            GetActionResult(await _mediator.Send(new GetAttributeValuesQuery { Id = id }));
 
         [HttpPost]
         public async Task<ActionResult<RequestResult<int>>> Post([FromBody] CreateAttributeCommand attributeVM) =>
