@@ -10,7 +10,7 @@ namespace EcommerceAPI.Core.Products
         public ProductMapper()
         {
             CreateMap<Product, ProductLiteVM>()
-                .ForMember(dst => dst.MainImageRow, opt => opt.MapFrom(src => src.MainImage))
+                .ForMember(dst => dst.MainImage, opt => opt.MapFrom(src => src.MainImage))
                 .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.NameEn))
                 .ForMember(dst => dst.BrandName, opt => opt.MapFrom(src => src.Brand.NameEn));
 

@@ -41,7 +41,7 @@ namespace EcommerceAPI.Core.Products.Queries
                     SalesPrice = x.SalesPrice * currencyRate,
                     Discount = x.Discount > 0 ? x.Discount : x.Category.Discount > 0 ? x.Category.Discount : null,
                     Id = x.Id,
-                    MainImageRow = x.MainImage,
+                    MainImage = x.MainImage,
                     TotalRate = x.TotalRate,
                     CreatedAt = x.CreatedAt,
                     //VendorId = x.VendorId,

@@ -10,7 +10,7 @@ namespace EcommerceAPI.Core.Attributes.Queries
 {
     public class GetAttributesQuery : IRequest<RequestResult<ProductAttributeVM[]>>
     {
-        public required string search { get; set; }
+        public string Search { get; set; } = string.Empty;
         public class GetAttributesQueryHandler : IRequestHandler<GetAttributesQuery, RequestResult<ProductAttributeVM[]>>
         {
             private readonly IAttributesService _attributesService;
@@ -22,7 +22,7 @@ namespace EcommerceAPI.Core.Attributes.Queries
             }
             public async Task<RequestResult<ProductAttributeVM[]>> Handle(GetAttributesQuery request, CancellationToken cancellationToken) =>
                 new RequestResult<ProductAttributeVM[]>(await _attributesService.Queryable()
-                    .Where(x => x.NameAr.Contains(request.search) || x.NameEn.Contains(request.search) || x.NameTr.Contains(request.search))
+                    .Where(x => x.NameAr.Contains(request.Search) || x.NameEn.Contains(request.Search) || x.NameTr.Contains(request.Search))
                     .To<ProductAttributeVM>(_mapper).ToArrayAsync());
         }
     }

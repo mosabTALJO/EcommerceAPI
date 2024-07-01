@@ -70,8 +70,6 @@ namespace EcommerceAPI.Core.Carts
                     }
                 }
 
-                oi.ProductVariant.MainImage = string.IsNullOrWhiteSpace(oi.ProductVariant.MainImage) || oi.ProductVariant.MainImage.StartsWith("https") ? oi.ProductVariant.MainImage : $"https://cdn.dsmcdn.com/mnresize/{600}/{500}" + oi.ProductVariant.MainImage;
-
                 //Calcualte Prices
                 oi.ProductSalesPrice = pv.SalesPrice * order.CurrencyRate;
                 oi.ProductDiscount = pv.Discount > 0 ? pv.Discount : pv.CategoryDiscount > 0 ? pv.CategoryDiscount : null;

@@ -16,12 +16,10 @@ namespace EcommerceAPI.Core.Attributes.Commands
         public class CreateAttributeCommandHandler : IRequestHandler<CreateAttributeCommand, RequestResult<int>>
         {
             private readonly IAttributesService _attributesService;
-            private readonly IMapper _mapper;
             private readonly IUnitOfWork _unitOfWork;
-            public CreateAttributeCommandHandler(IAttributesService attributesService, IMapper mapper, IUnitOfWork unitOfWork)
+            public CreateAttributeCommandHandler(IAttributesService attributesService, IUnitOfWork unitOfWork)
             {
                 _attributesService = attributesService;
-                _mapper = mapper;
                 _unitOfWork = unitOfWork;
             }
 

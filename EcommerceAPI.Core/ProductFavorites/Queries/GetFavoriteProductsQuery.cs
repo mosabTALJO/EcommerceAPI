@@ -29,7 +29,7 @@ namespace EcommerceAPI.Core.ProductFavorites.Queries
                 {
                     Name = lang == "en" ? x.NameEn : lang == "ar" ? x.NameAr : x.NameTr,
                     BrandName = lang == "en" ? x.Brand.NameEn : lang == "ar" ? x.Brand.NameAr : x.Brand.NameTr,
-                    MainImageRow = x.MainImage,
+                    MainImage = x.MainImage,
                     Id = x.Id,
                     SalesPrice = x.SalesPrice * query.CurrencyRate,
                     Discount = x.Discount > 0 ? x.Discount : x.Category.Discount > 0 ? x.Category.Discount : null,

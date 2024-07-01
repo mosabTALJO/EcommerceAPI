@@ -49,11 +49,7 @@ namespace EcommerceAPI.Core.Orders.Queries
                     .To<OrderVM>(_mapper).ToListAsync();
 
                 foreach (var o in result)
-                {
                     o.OrderItems = o.OrderItems.Where(x => !x.ShipmentId.HasValue && x.OrderItemState == OrderItemState.InStock).ToList();
-                    foreach (var oi in o.OrderItems)
-                        oi.Product.MainImage = string.IsNullOrWhiteSpace(oi.Product.MainImage) || oi.Product.MainImage.StartsWith("https") ? oi.Product.MainImage : $"https://cdn.dsmcdn.com/mnresize/{600}/{500}" + oi.Product.MainImage;
-                }
                 return new RequestResult<List<OrderVM>>(result);
             }
         }
