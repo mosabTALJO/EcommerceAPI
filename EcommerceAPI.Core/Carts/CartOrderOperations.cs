@@ -216,7 +216,7 @@ namespace EcommerceAPI.Core.Carts
                 CustomerMobile = userAddress.PhoneNumber.Substring(mobileCountryCode.Length),
                 CustomerEmail = appUser.Email,
                 //CustomerCivilId = "",
-                ExpiryDate = DateTime.Now.AddYears(1),
+                ExpiryDate = DateTime.UtcNow.AddYears(1),
             };
         }
         public static bool IsPhoneNumber(string number) =>

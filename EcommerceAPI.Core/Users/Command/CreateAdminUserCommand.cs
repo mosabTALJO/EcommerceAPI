@@ -41,7 +41,7 @@ namespace EcommerceAPI.Core.Users.Command
                     IsActive = true,
                     SecurityStamp = Guid.NewGuid().ToString(),
                     CreatedUser = command.UserId ?? "Admin",
-                    CreatedAt = DateTime.Now,
+                    CreatedAt = DateTime.UtcNow,
                     UserType = UserTypes.Admin,
                 };
 

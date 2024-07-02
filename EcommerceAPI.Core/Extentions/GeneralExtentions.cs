@@ -21,7 +21,7 @@ namespace EcommerceAPI.Core.Extentions
             // setting cache entries with options
             memoryCache.Set(Key, result, new MemoryCacheEntryOptions
             {
-                AbsoluteExpiration = expiration ?? DateTime.Now.AddSeconds(10),
+                AbsoluteExpiration = expiration ?? DateTime.UtcNow.AddSeconds(10),
                 Priority = CacheItemPriority.High,
                 SlidingExpiration = TimeSpan.FromHours(1)
             });

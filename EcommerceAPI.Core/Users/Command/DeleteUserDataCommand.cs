@@ -23,7 +23,7 @@ namespace EcommerceAPI.Core.Users.Command
                 if (!u.IsActive)
                     throw new Exception("The user is not active");
 
-                var t = "deletedOn" + DateTime.Now.ToString("yyyMMddhhmmss");
+                var t = "deletedOn" + DateTime.UtcNow.ToString("yyyMMddhhmmss");
                 u.Email += t;
                 u.UserName = u.Email;
                 u.AppleId += t;

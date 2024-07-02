@@ -20,9 +20,9 @@ namespace EcommerceAPI.Core.Statistics.Queries
             {
                 return new RequestResult<DayWeekMonth>(new DayWeekMonth
                 {
-                    Day = await _userManager.Users.Where(x => x.CreatedAt >= DateTime.Now.AddDays(-1)).CountAsync(),
-                    Week = await _userManager.Users.Where(x => x.CreatedAt >= DateTime.Now.AddDays(-7)).CountAsync(),
-                    Month = await _userManager.Users.Where(x => x.CreatedAt >= DateTime.Now.AddDays(-30)).CountAsync(),
+                    Day = await _userManager.Users.Where(x => x.CreatedAt >= DateTime.UtcNow.AddDays(-1)).CountAsync(),
+                    Week = await _userManager.Users.Where(x => x.CreatedAt >= DateTime.UtcNow.AddDays(-7)).CountAsync(),
+                    Month = await _userManager.Users.Where(x => x.CreatedAt >= DateTime.UtcNow.AddDays(-30)).CountAsync(),
                 });
             }
         }

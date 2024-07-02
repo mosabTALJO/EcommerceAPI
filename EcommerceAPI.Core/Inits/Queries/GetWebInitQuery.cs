@@ -137,7 +137,7 @@ namespace EcommerceAPI.Core.Inits.Queries
                         init.Categories.Add(_mapper.Map<CategoryVM>(cat));
                     }
                     return init;
-                }, DateTime.Now.AddSeconds(10));
+                }, DateTime.UtcNow.AddSeconds(10));
 
                 //Calculate IsFavorite
                 if (query.Role == "Customer")

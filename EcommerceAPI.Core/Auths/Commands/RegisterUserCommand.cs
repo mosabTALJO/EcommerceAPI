@@ -37,7 +37,7 @@ namespace EcommerceAPI.Core.Auths.Commands
                     DisplayName = command.DisplayName,
                     IsActive = true,
                     SecurityStamp = Guid.NewGuid().ToString(),
-                    CreatedAt = DateTime.Now,
+                    CreatedAt = DateTime.UtcNow,
                     UserType = UserTypes.Customer,
                     NotificationID = command.NotificationID,
                     //Gender = model.Gender,
