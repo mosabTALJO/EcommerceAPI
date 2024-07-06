@@ -56,7 +56,7 @@ namespace EcommerceAPI.Services
                 NameAr = "",
                 NameEn = "",
                 NameTr = "",
-                ExpireDate = DateTime.Now.AddDays(7),
+                ExpireDate = DateTime.UtcNow.AddDays(7),
                 Count = 1,
                 RemainingCount = 1,
                 IsActive = true,

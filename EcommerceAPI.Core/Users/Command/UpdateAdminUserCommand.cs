@@ -11,17 +11,13 @@ namespace EcommerceAPI.Core.Users.Command
     public class UpdateAdminUserCommand : IRequest<RequestResult<bool>>
     {
         public string Id { get; set; }
-        public string DisplayName { get; set; }
-        public string PhoneNumber { get; set; }
+        public string DisplayName { get; set; } = string.Empty;
+        public string PhoneNumber { get; set; } = string.Empty;
         public string Email { get; set; }
-        public string OldPassword { get; set; }
-        public string Password { get; set; }
+        public string? Password { get; set; } = string.Empty;
         public bool IsActive { get; set; }
-        public double CustomerBalance { get; set; }
-        public string Country { get; set; }
-        public UserTypes UserType { get; set; }
-        public List<Policies> Claims { get; set; }
-        public string UserId { get; set; }
+        public List<Policies>? Claims { get; set; }
+        public string UserId { get; set; } = string.Empty;
         public class UpdateAdminUserCommandHandler : IRequestHandler<UpdateAdminUserCommand, RequestResult<bool>>
         {
             private readonly UserManager<AppUser> _userManager;
@@ -33,13 +29,23 @@ namespace EcommerceAPI.Core.Users.Command
             }
             public async Task<RequestResult<bool>> Handle(UpdateAdminUserCommand command, CancellationToken cancellationToken)
             {
+                var currentUser = await _userManager.FindByIdAsync(command.UserId);
+                if (currentUser is null)
+                    return new RequestResult<bool>(ActionResultType.NotFound, "currentUser NotFound");
+
+                var currentUserClaims = await _userManager.GetClaimsAsync(currentUser);
+                if (currentUserClaims == null)
+                    return new RequestResult<bool>(ActionResultType.BadRequest, $"oldClaims null");
+                if (currentUserClaims.Count == 0)
+                    return new RequestResult<bool>(ActionResultType.BadRequest, $"oldClaims empty");
+                if (!currentUserClaims.Any(x => x.Type == PoliciesText.EditAdmins))
+                    return new RequestResult<bool>(ActionResultType.BadRequest, $"you are not authorized to make changes - {string.Join(',', currentUserClaims.Select(x => x.Type))}");
+
                 var u = await _userManager.FindByIdAsync(command.Id);
                 if (u is null)
                     return new RequestResult<bool>(ActionResultType.NotFound, "NotFound");
 
                 var oldClaims = await _userManager.GetClaimsAsync(u);
-                if (oldClaims?.Any(x => x.Value == PoliciesText.EditAdmins) != true)
-                    return new RequestResult<bool>(ActionResultType.BadRequest, "you are not authorized to make changes");
 
                 if (u.UserName != "admin")
                 {
@@ -79,7 +85,8 @@ namespace EcommerceAPI.Core.Users.Command
                     await _userManager.AddClaimsAsync(u, claims);
 
                     _memoryCache.Remove(command.Id);
-                    _memoryCache.Set(command.Id, command.Claims.Select(e => e.GetPolicyNumber()).ToArray());
+                    if (command.Claims != null)
+                        _memoryCache.Set(command.Id, command.Claims.Select(e => e.GetPolicyNumber()).ToArray());
                     return new RequestResult<bool>(true);
                 }
                 return

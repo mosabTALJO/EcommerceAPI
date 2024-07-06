@@ -10,11 +10,11 @@ namespace EcommerceAPI.Core.BaseItems.Command
 {
     public class CreateBaseItemCommand : IRequest<RequestResult<int>>
     {
-        //public int Id { get; set; }
         public int IsHomeOrCategory { get; set; }//0 Home
         public BaseItemTypes BaseItemType { get; set; }
         public string NameEn { get; set; }
-        public string NameAr { get; set; }
+        public string NameAr { get; set; } = string.Empty;
+        public string NameTr { get; set; } = string.Empty;
         public bool IsWeb { get; set; }
         public bool IsPhone { get; set; }
         public int OrderIndex { get; set; }

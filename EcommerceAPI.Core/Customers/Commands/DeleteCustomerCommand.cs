@@ -33,7 +33,7 @@ namespace EcommerceAPI.Core.Customers.Commands
                         return new RequestResult<bool>(true);
                 }
 
-                var t = "deletedOn" + DateTime.Now.ToString("yyyMMddhhmmss");
+                var t = "deletedOn" + DateTime.UtcNow.ToString("yyyMMddhhmmss");
                 u.Email = u.Email + t;
                 u.UserName = u.Email;
                 u.AppleId = u.AppleId + t;

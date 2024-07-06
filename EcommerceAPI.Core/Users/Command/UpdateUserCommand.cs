@@ -16,8 +16,8 @@ namespace EcommerceAPI.Core.Users.Command
         public bool IsActive { get; set; }
         public string Country { get; set; }
         public UserTypes UserType { get; set; }
-        public List<Policies> Claims { get; set; }
-        public string UserId { get; set; }
+        public List<Policies>? Claims { get; set; }
+        public string UserId { get; set; } = string.Empty;
         public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, RequestResult<bool>>
         {
             private readonly UserManager<AppUser> _userManager;

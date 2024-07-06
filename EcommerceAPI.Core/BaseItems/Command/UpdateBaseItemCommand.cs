@@ -12,16 +12,17 @@ namespace EcommerceAPI.Core.BaseItems.Command
         public int Id { get; set; }
         public int IsHomeOrCategory { get; set; }//0 Home
         public BaseItemTypes BaseItemType { get; set; }
-        public string NameEn { get; set; } = string.Empty;
+        public string NameEn { get; set; }
         public string NameAr { get; set; } = string.Empty;
+        public string NameTr { get; set; } = string.Empty;
         public bool IsWeb { get; set; }
         public bool IsPhone { get; set; }
 
-        public BaseItemCategory[] Categories { get; set; } = [];
-        public BaseItemBrand[] Brands { get; set; } = [];
-        public BaseItemBrandProduct[] Products { get; set; } = [];
-        public SingleBanner SingleBanner { get; set; } = new();
-        public BaseItemMultipleBanners MultipleBanners { get; set; } = new();
+        public BaseItemCategory[]? Categories { get; set; } = [];
+        public BaseItemBrand[]? Brands { get; set; } = [];
+        public BaseItemBrandProduct[]? Products { get; set; } = [];
+        public SingleBanner? SingleBanner { get; set; } = new();
+        public BaseItemMultipleBanners? MultipleBanners { get; set; } = new();
         public class UpdateBaseItemCommandHandler : IRequestHandler<UpdateBaseItemCommand, RequestResult<bool>>
         {
             private readonly IBaseItemService _baseItemService;

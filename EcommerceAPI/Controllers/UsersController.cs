@@ -41,7 +41,6 @@ namespace EcommerceAPI.Web.Controllers
         [Route("GetAllUsers")]
         [ApiExplorerSettings(GroupName = "cp")]
         public async Task<ActionResult<RequestResult<ListResponse<UserVM>>>> Get(
-
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 20,
             [FromQuery] string search = null,
@@ -84,7 +83,7 @@ namespace EcommerceAPI.Web.Controllers
         public async Task<ActionResult<RequestResult<bool>>> UpdateAdminUser(string id, [FromBody] UpdateAdminUserCommand command)
         {
             command.Id = id;
-            command.UserId = User.Identity.Name;
+            command.UserId = User.Identity!.Name!;
             return GetActionResult(await _mediator.Send(command));
         }
 
@@ -94,7 +93,7 @@ namespace EcommerceAPI.Web.Controllers
         [ApiExplorerSettings(GroupName = "cp")]
         public async Task<ActionResult<RequestResult<bool>>> DeleteAdminUser(string id)
         {
-            return GetActionResult(await _mediator.Send(new DeleteAdminUserCommand { Id = id }));
+            return GetActionResult(await _mediator.Send(new DeleteAdminUserCommand { Id = id, UserId = User.Identity!.Name! }));
         }
 
         // GET api/users

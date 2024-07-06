@@ -128,7 +128,7 @@ namespace EcommerceAPI.Core.Inits.Queries
                     }
 
                     return init;
-                }, DateTime.Now.AddSeconds(10));
+                }, DateTime.UtcNow.AddSeconds(10));
 
                 //Calculate IsFavorite
                 if (query.Role == "Customer")

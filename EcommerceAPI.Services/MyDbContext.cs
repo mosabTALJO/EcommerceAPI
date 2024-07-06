@@ -3,6 +3,7 @@ using EcommerceAPI.Data.Models;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace EcommerceAPI.Services
 {
@@ -16,7 +17,10 @@ namespace EcommerceAPI.Services
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql(@"Host=localhost; Database=Ecommerce; Username=ecomm; Password=aser@sWwer##4as");
+            if (Debugger.IsAttached)
+                optionsBuilder.UseNpgsql(@"Host=localhost; Database=Ecommerce; Username=postgres; Password=123456lolo");
+            else
+                optionsBuilder.UseNpgsql(@"Host=localhost; Database=Ecommerce; Username=ecomm; Password=aser@sWwer##4as");
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

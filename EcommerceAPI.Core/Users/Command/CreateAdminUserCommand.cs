@@ -10,18 +10,17 @@ namespace EcommerceAPI.Core.Users.Command
 {
     public class CreateAdminUserCommand : IRequest<RequestResult<string>>
     {
-        public string Id { get; set; }
-        public string DisplayName { get; set; }
+        public string DisplayName { get; set; } = string.Empty;
         public string PhoneNumber { get; set; }
-        public string Email { get; set; }
-        public string OldPassword { get; set; }
+        public string Email { get; set; } = string.Empty;
+        public string OldPassword { get; set; } = string.Empty;
         public string Password { get; set; }
         public bool IsActive { get; set; }
         public double CustomerBalance { get; set; }
-        public string Country { get; set; }
+        public string Country { get; set; } = string.Empty;
         public UserTypes UserType { get; set; }
         public List<Policies> Claims { get; set; }
-        public string UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
         public class CreateAdminUserCommandHandler : IRequestHandler<CreateAdminUserCommand, RequestResult<string>>
         {
             private readonly UserManager<AppUser> _userManager;
@@ -42,7 +41,7 @@ namespace EcommerceAPI.Core.Users.Command
                     IsActive = true,
                     SecurityStamp = Guid.NewGuid().ToString(),
                     CreatedUser = command.UserId ?? "Admin",
-                    CreatedAt = DateTime.Now,
+                    CreatedAt = DateTime.UtcNow,
                     UserType = UserTypes.Admin,
                 };
 

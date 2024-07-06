@@ -24,14 +24,14 @@ namespace EcommerceAPI.Data.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Image { get; set; }
+        public string Image { get; set; } = string.Empty;
     }
     public class BaseItemBrand
     {
         public int Id { get; set; }
         public int? CategoryId { get; set; }
         public string Name { get; set; }
-        public string Image { get; set; }
+        public string Image { get; set; } = string.Empty;
     }
     public class BaseItemBrandProduct
     {
@@ -41,8 +41,7 @@ namespace EcommerceAPI.Data.Models
         public double SalesPrice { get; set; }
         public double? Discount { get; set; }
         public double FinalSalesPrice => Math.Round(SalesPrice - SalesPrice * (Discount ?? 0) / 100, 1);
-        public string MainImageRow { get; set; }
-        public string MainImage => string.IsNullOrWhiteSpace(MainImageRow) || MainImageRow.StartsWith("https") ? MainImageRow : $"https://cdn.dsmcdn.com/mnresize/{600}/{500}" + MainImageRow;
+        public string MainImage { get; set; } = string.Empty;
         public bool IsFavorite { get; set; }
     }
     public class BaseItemMultipleBanners
@@ -52,7 +51,7 @@ namespace EcommerceAPI.Data.Models
     }
     public class SingleBanner
     {
-        public string Image { get; set; }
+        public string Image { get; set; } = string.Empty;
         public string DirectionUrl => Direction.ProductId.HasValue || Direction.CategoryId.HasValue || Direction.BrandId.HasValue || Direction.CollectionId.HasValue ?
             "TODO: URL" + (Direction.ProductId.HasValue ? $"/{Direction.ProductId}" : $"?categoryid={Direction.CategoryId}&brandid={Direction.BrandId}&collectionid={Direction.CollectionId}") : null;
         public BannerDirection Direction { get; set; }

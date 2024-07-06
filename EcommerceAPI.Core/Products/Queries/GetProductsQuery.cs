@@ -160,12 +160,11 @@ namespace EcommerceAPI.Core.Products.Queries
                             Id = x.Id,
                             Name = lang == "en" ? x.NameEn : x.NameAr,
                             BrandName = lang == "en" ? x.Brand.NameEn : lang == "ar" ? x.Brand.NameAr : x.Brand.NameTr,
-                            SalesPrice = x.SalesPrice * currencyRate,
+                            SalesPrice = currencyRate == 0 ? x.SalesPrice : x.SalesPrice * currencyRate,
                             Discount = x.Discount != null ? x.Discount : x.Category.Discount != null ? x.Category.Discount : null,
-                            MainImageRow = x.MainImage,
+                            MainImage = x.MainImage,
                             TotalRate = x.TotalRate,
                             CreatedAt = x.CreatedAt,
-                            //VendorId = x.VendorId,
                         }).ToArrayAsync(),
                         TotalRecords = await lst.CountAsync()
                     };
@@ -190,12 +189,11 @@ namespace EcommerceAPI.Core.Products.Queries
                                 Id = x.Id,
                                 Name = lang == "en" ? x.NameEn : x.NameAr,
                                 BrandName = lang == "en" ? x.Brand.NameEn : lang == "ar" ? x.Brand.NameAr : x.Brand.NameTr,
-                                SalesPrice = x.SalesPrice * currencyRate,
+                                SalesPrice = currencyRate == 0 ? x.SalesPrice : x.SalesPrice * currencyRate,
                                 Discount = x.Discount > 0 ? x.Discount : x.Category.Discount > 0 ? x.Category.Discount : null,
-                                MainImageRow = x.MainImage,
+                                MainImage = x.MainImage,
                                 TotalRate = x.TotalRate,
                                 CreatedAt = x.CreatedAt,
-                                //VendorId = x.VendorId,
                             }).ToArrayAsync();
                             result.TotalRecords = await lst.CountAsync();
                         }
@@ -313,13 +311,12 @@ namespace EcommerceAPI.Core.Products.Queries
                                         {
                                             Name = lang == "en" ? x.NameEn : lang == "ar" ? x.NameAr : x.NameTr,
                                             BrandName = lang == "en" ? x.Brand.NameEn : lang == "ar" ? x.Brand.NameAr : x.Brand.NameTr,
-                                            SalesPrice = x.SalesPrice * currencyRate,
+                                            SalesPrice = currencyRate == 0 ? x.SalesPrice : x.SalesPrice * currencyRate,
                                             Discount = x.Discount > 0 ? x.Discount : x.Category.Discount > 0 ? x.Category.Discount : null,
                                             Id = x.Id,
-                                            MainImageRow = x.MainImage,
+                                            MainImage = x.MainImage,
                                             TotalRate = x.TotalRate,
                                             CreatedAt = x.CreatedAt,
-                                            //VendorId = x.VendorId,
                                         }).ToArray());
                                 }
 
@@ -384,13 +381,12 @@ namespace EcommerceAPI.Core.Products.Queries
                                         {
                                             Name = lang == "en" ? x.NameEn : lang == "ar" ? x.NameAr : x.NameTr,
                                             BrandName = lang == "en" ? x.Brand.NameEn : lang == "ar" ? x.Brand.NameAr : x.Brand.NameTr,
-                                            SalesPrice = x.SalesPrice * currencyRate,
+                                            SalesPrice = currencyRate == 0 ? x.SalesPrice : x.SalesPrice * currencyRate,
                                             Discount = x.Discount > 0 ? x.Discount : x.Category.Discount > 0 ? x.Category.Discount : null,
                                             Id = x.Id,
-                                            MainImageRow = x.MainImage,
+                                            MainImage = x.MainImage,
                                             TotalRate = x.TotalRate,
                                             CreatedAt = x.CreatedAt,
-                                            //VendorId = x.VendorId,
                                         }).ToArray());
                                 }
 
@@ -406,13 +402,12 @@ namespace EcommerceAPI.Core.Products.Queries
                                 {
                                     Name = lang == "en" ? x.NameEn : lang == "ar" ? x.NameAr : x.NameTr,
                                     BrandName = lang == "en" ? x.Brand.NameEn : lang == "ar" ? x.Brand.NameAr : x.Brand.NameTr,
-                                    SalesPrice = x.SalesPrice * currencyRate,
+                                    SalesPrice = currencyRate == 0 ? x.SalesPrice : x.SalesPrice * currencyRate,
                                     Discount = x.Discount > 0 ? x.Discount : x.Category.Discount > 0 ? x.Category.Discount : null,
                                     Id = x.Id,
-                                    MainImageRow = x.MainImage,
+                                    MainImage = x.MainImage,
                                     TotalRate = x.TotalRate,
                                     CreatedAt = x.CreatedAt,
-                                    //VendorId = x.VendorId,
                                 });
 
                                 result.TotalRecords = (!query.BrandId.HasValue && !query.CategoryId.HasValue && string.IsNullOrEmpty(query.Search)) ? 1000000 : await lst.CountAsync();

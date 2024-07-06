@@ -8,18 +8,12 @@ namespace EcommerceAPI.Core.Auths.Commands
 {
     public class RegisterUserCommand : IRequest<RequestResult<TokenViewModel>>
     {
-        public string Id { get; set; }
         public string DisplayName { get; set; }
-        public string PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; } = string.Empty;
         public string Email { get; set; }
-        public string OldPassword { get; set; }
         public string Password { get; set; }
-        public bool IsActive { get; set; }
-        public double CustomerBalance { get; set; }
-        public string Country { get; set; }
-        public UserTypes UserType { get; set; }
-        public List<Policies> Claims { get; set; }
-        public string NotificationID { get; set; }
+        public string Country { get; set; } = string.Empty;
+        public string NotificationID { get; set; } = string.Empty;
         public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, RequestResult<TokenViewModel>>
         {
             private readonly UserManager<AppUser> _userManager;
@@ -43,7 +37,7 @@ namespace EcommerceAPI.Core.Auths.Commands
                     DisplayName = command.DisplayName,
                     IsActive = true,
                     SecurityStamp = Guid.NewGuid().ToString(),
-                    CreatedAt = DateTime.Now,
+                    CreatedAt = DateTime.UtcNow,
                     UserType = UserTypes.Customer,
                     NotificationID = command.NotificationID,
                     //Gender = model.Gender,

@@ -72,7 +72,7 @@ namespace EcommerceAPI.Core.Carts.Command
                         DisplayName = command.FirstName + " " + command.LastName,
                         //IsActive = true,
                         SecurityStamp = Guid.NewGuid().ToString(),
-                        CreatedAt = DateTime.Now,
+                        CreatedAt = DateTime.UtcNow,
                         UserType = UserTypes.NotRegisteredCustomer,
                         Country = command.Country,
                     };

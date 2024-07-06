@@ -74,7 +74,7 @@ namespace EcommerceAPI.Services
 
             if (UpdateCreatedAt)
             {
-                o.CreatedAt = DateTime.Now;
+                o.CreatedAt = DateTime.UtcNow;
                 o.UpdateCreatedAt = true;
             }
 
