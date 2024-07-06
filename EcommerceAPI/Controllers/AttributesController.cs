@@ -14,7 +14,7 @@ namespace EcommerceAPI.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<RequestResult<ProductAttributeVM[]>>> GetAttributes([FromQuery] string search) =>
+        public async Task<ActionResult<RequestResult<ProductAttributeVM[]>>> GetAttributes([FromQuery] string? search = null) =>
             GetActionResult(await _mediator.Send(new GetAttributesQuery() { search = search }));
 
         [HttpGet("GetAttributeValues/{id}")]
