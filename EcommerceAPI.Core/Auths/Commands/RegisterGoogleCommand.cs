@@ -10,7 +10,6 @@ namespace EcommerceAPI.Core.Auths.Commands
     public class RegisterGoogleCommand : IRequest<RequestResult<TokenViewModel>>
     {
         public string IdToken { get; set; }
-        public string NotificationID { get; set; }
         public class RegisterGoogleCommandHandler : IRequestHandler<RegisterGoogleCommand, RequestResult<TokenViewModel>>
         {
             private readonly UserManager<AppUser> _userManager;
@@ -46,14 +45,12 @@ namespace EcommerceAPI.Core.Auths.Commands
                     SecurityStamp = Guid.NewGuid().ToString(),
                     CreatedAt = DateTime.UtcNow,
                     UserType = UserTypes.Customer,
-                    NotificationID = command.NotificationID,
                 };
 
                 var existing = _userManager.Users.FirstOrDefault(x => (!string.IsNullOrEmpty(sub) && x.GoogleId == sub) || (!string.IsNullOrEmpty(x.Email) && !string.IsNullOrEmpty(email) && x.Email == email));
                 if (existing != null)
                 {
                     existing.GoogleId = sub;
-                    existing.NotificationID = command.NotificationID;
                     await _userManager.UpdateAsync(existing);
                     return new RequestResult<TokenViewModel>(await TokenGenerator.CreateToken(existing, _userManager, _configuration));
                 }

@@ -9,7 +9,6 @@ namespace EcommerceAPI.Core.Auths.Commands
     public class RegisterFacebookCommand : IRequest<RequestResult<TokenViewModel>>
     {
         public string AccessToken { get; set; }
-        public string NotificationID { get; set; }
         public class RegisterFacebookCommandHandler : IRequestHandler<RegisterFacebookCommand, RequestResult<TokenViewModel>>
         {
             private readonly UserManager<AppUser> _userManager;
@@ -42,14 +41,12 @@ namespace EcommerceAPI.Core.Auths.Commands
                     SecurityStamp = Guid.NewGuid().ToString(),
                     CreatedAt = DateTime.UtcNow,
                     UserType = UserTypes.Customer,
-                    NotificationID = command.NotificationID,
                 };
 
                 var existing = _userManager.Users.FirstOrDefault(x => x.FacebookId == u.id || (!string.IsNullOrEmpty(x.Email) && x.Email == u.email));
                 if (existing != null)
                 {
                     existing.FacebookId = u.id;
-                    existing.NotificationID = command.NotificationID;
                     await _userManager.UpdateAsync(existing);
                     return new RequestResult<TokenViewModel>(await TokenGenerator.CreateToken(existing, _userManager, _configuration));
                 }

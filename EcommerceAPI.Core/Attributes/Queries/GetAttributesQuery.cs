@@ -22,7 +22,7 @@ namespace EcommerceAPI.Core.Attributes.Queries
             }
             public async Task<RequestResult<ProductAttributeVM[]>> Handle(GetAttributesQuery request, CancellationToken cancellationToken) =>
                 new RequestResult<ProductAttributeVM[]>(await _attributesService.Queryable()
-                    .Where(x => request.search == "" || x.NameAr.Contains(request.Search) || x.NameEn.Contains(request.Search) || x.NameTr.Contains(request.Search))
+                    .Where(x => request.Search == "" || x.NameAr.Contains(request.Search) || x.NameEn.Contains(request.Search) || x.NameTr.Contains(request.Search))
                     .To<ProductAttributeVM>(_mapper).ToArrayAsync());
         }
     }

@@ -16,27 +16,25 @@ namespace EcommerceAPI.Web.Controllers
 
         [Route("/api/login")] // /login
         [HttpPost]
-        public async Task<ActionResult<RequestResult<TokenViewModel>>> Login([FromBody] LoginCommand command, [FromQuery] string? NotificationID = null)
+        public async Task<ActionResult<RequestResult<TokenViewModel>>> Login([FromBody] LoginCommand command)
         {
-            command.NotificationID = NotificationID ?? "";
             return GetActionResult(await _mediator.Send(command));
         }
 
         [Route("/api/Register")]
         [HttpPost]
         [ApiExplorerSettings(GroupName = "fe")]
-        public async Task<ActionResult<RequestResult<TokenViewModel>>> Register([FromBody] RegisterUserCommand command, [FromQuery] string NotificationID)
+        public async Task<ActionResult<RequestResult<TokenViewModel>>> Register([FromBody] RegisterUserCommand command)
         {
-            command.NotificationID = NotificationID;
             return GetActionResult(await _mediator.Send(command));
         }
 
         [Route("/api/RegisterFacebook")]
         [HttpPost]
         [ApiExplorerSettings(GroupName = "fe")]
-        public async Task<ActionResult<RequestResult<TokenViewModel>>> RegisterFacebook([FromQuery] string AccessToken, [FromQuery] string NotificationID)
+        public async Task<ActionResult<RequestResult<TokenViewModel>>> RegisterFacebook([FromQuery] string AccessToken)
         {
-            return GetActionResult(await _mediator.Send(new RegisterFacebookCommand { AccessToken = AccessToken, NotificationID = NotificationID }));
+            return GetActionResult(await _mediator.Send(new RegisterFacebookCommand { AccessToken = AccessToken }));
         }
         [Route("/api/RegisterFacebook2")]
         [HttpPost]
@@ -49,9 +47,9 @@ namespace EcommerceAPI.Web.Controllers
         [Route("/api/RegisterGoogle")]
         [HttpPost]
         [ApiExplorerSettings(GroupName = "fe")]
-        public async Task<ActionResult<RequestResult<TokenViewModel>>> RegisterGoogle([FromQuery] string IdToken, [FromQuery] string NotificationID)
+        public async Task<ActionResult<RequestResult<TokenViewModel>>> RegisterGoogle([FromQuery] string IdToken)
         {
-            return GetActionResult(await _mediator.Send(new RegisterGoogleCommand { IdToken = IdToken, NotificationID = NotificationID }));
+            return GetActionResult(await _mediator.Send(new RegisterGoogleCommand { IdToken = IdToken }));
         }
         [Route("/api/RegisterGoogle2")]
         [HttpPost]
@@ -65,9 +63,9 @@ namespace EcommerceAPI.Web.Controllers
         [Route("/api/RegisterApple")]
         [HttpPost]
         [ApiExplorerSettings(GroupName = "fe")]
-        public async Task<ActionResult<RequestResult<TokenViewModel>>> RegisterApple([FromQuery] string IdToken, [FromQuery] string NotificationID)
+        public async Task<ActionResult<RequestResult<TokenViewModel>>> RegisterApple([FromQuery] string IdToken)
         {
-            return GetActionResult(await _mediator.Send(new RegisterAppleCommand { IdToken = IdToken, NotificationID = NotificationID }));
+            return GetActionResult(await _mediator.Send(new RegisterAppleCommand { IdToken = IdToken }));
         }
         [Route("/api/RegisterApple2")]
         [HttpPost]

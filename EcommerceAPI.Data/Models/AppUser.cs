@@ -13,7 +13,6 @@ namespace EcommerceAPI.Data.Models
         public string CreatedUser { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
         public UserTypes UserType { get; set; }
-        public string NotificationID { get; set; } = string.Empty;
         public string FacebookId { get; set; } = string.Empty;
         public string GoogleId { get; set; } = string.Empty;
         public string AppleId { get; set; } = string.Empty;

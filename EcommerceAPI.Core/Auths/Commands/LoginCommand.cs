@@ -12,7 +12,6 @@ namespace EcommerceAPI.Core.Auths.Commands
         public string PhoneNumber { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
-        public string NotificationID { get; set; } = string.Empty;
         public class LoginCommandHandler : IRequestHandler<LoginCommand, RequestResult<TokenViewModel>>
         {
             private readonly UserManager<AppUser> _userManager;
@@ -35,12 +34,6 @@ namespace EcommerceAPI.Core.Auths.Commands
 
                 if (!user.IsActive)
                     return new RequestResult<TokenViewModel>(ActionResultType.Unauthorized, "User not active");
-
-                if (!string.IsNullOrEmpty(command.NotificationID))
-                {
-                    user.NotificationID = command.NotificationID;
-                    await _userManager.UpdateAsync(user);
-                }
 
                 var token = await TokenGenerator.CreateToken(user, _userManager, _configuration);
                 return new RequestResult<TokenViewModel>(token);

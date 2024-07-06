@@ -13,7 +13,6 @@ namespace EcommerceAPI.Core.Auths.Commands
         public string Email { get; set; }
         public string Password { get; set; }
         public string Country { get; set; } = string.Empty;
-        public string NotificationID { get; set; } = string.Empty;
         public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, RequestResult<TokenViewModel>>
         {
             private readonly UserManager<AppUser> _userManager;
@@ -39,7 +38,6 @@ namespace EcommerceAPI.Core.Auths.Commands
                     SecurityStamp = Guid.NewGuid().ToString(),
                     CreatedAt = DateTime.UtcNow,
                     UserType = UserTypes.Customer,
-                    NotificationID = command.NotificationID,
                     //Gender = model.Gender,
                     //DOB = model.DOB,
                     Country = command.Country,
