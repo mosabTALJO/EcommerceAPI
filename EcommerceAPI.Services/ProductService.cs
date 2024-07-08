@@ -20,9 +20,9 @@ namespace EcommerceAPI.Services
         IRepository<ProductVariant> _productVariantRepo;
         IRepository<OrderItem> _orderItemRepo;
         IRepository<ProductVariantAttribute> _productVariantAttributeRepo;
-        public ProductService(IRepository<Product> repo, 
-            IRepository<ProductVariant> productVariantRepo, 
-            IRepository<OrderItem> orderItemRepo, 
+        public ProductService(IRepository<Product> repo,
+            IRepository<ProductVariant> productVariantRepo,
+            IRepository<OrderItem> orderItemRepo,
             IRepository<ProductVariantAttribute> productVariantAttributeRepo) : base(repo)
         {
             _productVariantRepo = productVariantRepo;
@@ -90,9 +90,10 @@ namespace EcommerceAPI.Services
         }
         public void DeleteProduct(Product p)
         {
-            var variantIds = p.ProductVariants.Select(x => x.Id).ToArray();
+            var variantIds = p.ProductVariants?.Select(x => x.Id).ToArray();
             _productVariantRepo.Queryable().Where(x => x.ProductId == p.Id).ExecuteDeleteAsync();
-            _productVariantAttributeRepo.Queryable().Where(x => EF.Constant(variantIds).Contains(x.ProductVariantID)).ExecuteDeleteAsync();
+            if (variantIds?.Length > 0)
+                _productVariantAttributeRepo.Queryable().Where(x => EF.Constant(variantIds).Contains(x.ProductVariantID)).ExecuteDeleteAsync();
             Delete(p);
         }
         public int[] GetCategoryProductIds(List<int> categoryIds)
