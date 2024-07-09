@@ -6,7 +6,6 @@
         public string NameAr { get; set; }
         public string NameEn { get; set; }
         public string NameTr { get; set; }
-        public string Code { get; set; }
         public bool IsBlackList { get; set; }
     }
 }

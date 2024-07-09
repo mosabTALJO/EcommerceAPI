@@ -9,7 +9,6 @@ namespace EcommerceAPI.Core.ProductFavorites.Queries
 {
     public class GetFavoriteProductsQuery : IRequest<RequestResult<ProductLiteVM[]>>
     {
-        public double CurrencyRate { get; set; }
         public string UserId { get; set; }
         public class GetFavoriteProductsQueryHandler : IRequestHandler<GetFavoriteProductsQuery, RequestResult<ProductLiteVM[]>>
         {
@@ -31,7 +30,7 @@ namespace EcommerceAPI.Core.ProductFavorites.Queries
                     BrandName = lang == "en" ? x.Brand.NameEn : lang == "ar" ? x.Brand.NameAr : x.Brand.NameTr,
                     MainImage = x.MainImage,
                     Id = x.Id,
-                    SalesPrice = x.SalesPrice * query.CurrencyRate,
+                    SalesPrice = x.SalesPrice,
                     Discount = x.Discount > 0 ? x.Discount : x.Category.Discount > 0 ? x.Category.Discount : null,
                     TotalRate = x.TotalRate,
                     CreatedAt = x.CreatedAt,

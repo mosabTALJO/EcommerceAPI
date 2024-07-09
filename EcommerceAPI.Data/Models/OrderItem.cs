@@ -11,14 +11,14 @@ namespace EcommerceAPI.Data.Models
         public OrderItemState OrderItemState { get; set; }
         public DateTime? AcceptedDate { get; set; }
         public DateTime? ShippingDate { get; set; }
-        public string ShippingCompany { get; set; }
-        public string ShippingCode { get; set; }
+        public string ShippingCompany { get; set; } = string.Empty;
+        public string ShippingCode { get; set; } = string.Empty;
         public DateTime? DeliveredDate { get; set; }
         public DateTime? ReturningDate { get; set; }
         public DateTime? CancelDate { get; set; }
         public DateTime? RejectedDate { get; set; }
         public DateTime? InStockDate { get; set; }
-        public string ReturnReason { get; set; }
+        public string ReturnReason { get; set; } = string.Empty;
         public double SalePrice { get; set; }
         public double ProductCompanyPrice { get; set; }
         public double ProductSalesPrice { get; set; }
@@ -28,8 +28,8 @@ namespace EcommerceAPI.Data.Models
         public double? CoupunDiscount { get; set; }
         public int OrderId { get; set; }
         public Order Order { get; set; }
-        public string ProductUrl { get; set; }
-        public string OrderNumber { get; set; }
+        public string ProductUrl { get; set; } = string.Empty;
+        public string OrderNumber { get; set; } = string.Empty;
         public double SalePriceNoKDV { get; set; }
         public double KDV { get; set; }
         public double DiscountAmount { get; set; }

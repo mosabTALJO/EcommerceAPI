@@ -40,14 +40,14 @@ namespace EcommerceAPI.Core.Carts.Queries
                 var cartOrder = _orderService.Queryable().Include(x => x.OrderItems).AsNoTracking()
                     .FirstOrDefault(x => x.OrderStatus == OrderStatus.CartOrder && x.CustomerId == query.UserId);
                 if (cartOrder is null)
-                    return new RequestResult<OrderVM>(ActionResultType.NotFound);
+                    return new RequestResult<OrderVM>(ActionResultType.NotFound, "No Cart");
                 var dbOrder = await _orderService.GetOrderDetails(cartOrder.Id);
                 if (dbOrder?.OrderItems?.Any() != true)
-                    return new RequestResult<OrderVM>(ActionResultType.NotFound);
+                    return new RequestResult<OrderVM>(ActionResultType.NotFound, "No OrderItems");
 
                 dbOrder.Currency = query.Currency ?? dbOrder.Currency;
                 if (string.IsNullOrEmpty(dbOrder.Currency))
-                    dbOrder.Currency = "KWD";
+                    dbOrder.Currency = "TR";
 
                 await CartOrderOperations.CalcualteCartItems(_countryService, _productVariantService, _orderService, _unitOfWork, _collectionService, _currencyRateService, dbOrder);
                 return new RequestResult<OrderVM>(_mapper.Map<OrderVM>(dbOrder));

@@ -83,19 +83,19 @@ namespace EcommerceAPI.Web.Controllers
             }));
         }
 
-        [HttpGet("GetDeliveryData/{CountryCode}/{CityCode?}")]
+        [HttpGet("GetDeliveryData/{CountryId}/{CityCode?}")]
         [Authorize(Roles = "Customer")]
         [ApiExplorerSettings(GroupName = "fe")]
-        public async Task<ActionResult<RequestResult<DeliveryData>>> GetDeliveryData(string CountryCode, string CityCode)
+        public async Task<ActionResult<RequestResult<DeliveryData>>> GetDeliveryData(int CountryId)
         {
-            return await _mediator.Send(new GetDeliveryDataQuery { CountryCode = CountryCode, CityCode = CityCode, UserId = User.Identity.Name });
+            return await _mediator.Send(new GetDeliveryDataQuery { CountryId = CountryId, UserId = User.Identity.Name });
         }
 
-        [HttpPost("GetDeliveryDataNoUser/{CountryCode}/{CityCode}")]
+        [HttpPost("GetDeliveryDataNoUser/{CountryId}")]
         [ApiExplorerSettings(GroupName = "fe")]
-        public async Task<ActionResult<RequestResult<DeliveryData>>> GetDeliveryDataNoUser([FromBody] CartItemVM[] items, string CountryCode, string CityCode)
+        public async Task<ActionResult<RequestResult<DeliveryData>>> GetDeliveryDataNoUser([FromBody] CartItemVM[] items, int CountryId)
         {
-            return await _mediator.Send(new GetDeliveryDataNoUserQuery { Items = items, CountryCode = CountryCode, CityCode = CityCode });
+            return await _mediator.Send(new GetDeliveryDataNoUserQuery { Items = items, CountryId = CountryId });
         }
 
         [HttpPost]

@@ -30,30 +30,6 @@ namespace EcommerceAPI.Core.Countries.Queries
 
             public async Task<RequestResult<CountryVM[]>> Handle(GetAllCountriesQuery query, CancellationToken cancellationToken)
             {
-                if (await _countryService.Queryable().AnyAsync() == false)
-                {
-                    _countryService.Insert(new()
-                    {
-                        AverageDeliveryDays = 0,
-                        Code = "TR",
-                        CurrencyCode = "TL",
-                        DeliveryLimitAmount = 0,
-                        DeliveryLimitFixedAmount = 0,
-                        DeliveryLimitPercent = 0,
-                        IsActive = true,
-                        IsDelivery = true,
-                        NameAr = "بلد الجحيش",
-                        NameEn = "Turkey",
-                        NameTr = "Türkye",
-                        Cities = [new() { NameAr = "عنتاب", NameEn = "Antep", NameTr = "Antep" }],
-                        BannerImage = "",
-                        Image = "",
-                        OnDoorPayment = true,
-                        PhoneCode = 1,
-                        PrivacyPolicyText = ""
-                    });
-                    await _unitOfWork.SaveChangesAsync();
-                }
                 var lst = _countryService.Queryable();
                 lst = query.Role != "Admin" ? lst.Where(x => x.IsActive) : lst;
 

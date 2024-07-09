@@ -13,13 +13,13 @@ namespace EcommerceAPI.Core.Carts.Command
     public class NoAccountPurchaseCommand : IRequest<RequestResult<NoAccountPaymentVM>>
     {
         public CartItemVM[] Items { get; set; }
-        public string Country { get; set; }
-        public string City { get; set; }
-        public string FullAddress { get; set; }
-        public string Email { get; set; }
-        public string PhoneNumber { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public int CountryId { get; set; }
+        public int CityId { get; set; }
+        public string FullAddress { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string PhoneNumber { get; set; } = string.Empty;
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
         public string? Currency { get; set; }
         public string? CouponCode { get; set; }
         public OrderPaymentType OrderPaymentType { get; set; }
@@ -57,10 +57,11 @@ namespace EcommerceAPI.Core.Carts.Command
                     return new RequestResult<NoAccountPaymentVM>(ActionResultType.BadRequest, "No items in cart");
 
                 if (string.IsNullOrEmpty(command?.FirstName) || string.IsNullOrEmpty(command?.LastName) || string.IsNullOrEmpty(command?.Email)
-                    || string.IsNullOrEmpty(command.PhoneNumber) || string.IsNullOrEmpty(command.FullAddress) || string.IsNullOrEmpty(command.Country)
-                    || string.IsNullOrEmpty(command.City))
+                    || string.IsNullOrEmpty(command.PhoneNumber) || string.IsNullOrEmpty(command.FullAddress) || command.CountryId <= 0
+                    || command.CityId <= 0)
                     return new RequestResult<NoAccountPaymentVM>(ActionResultType.BadRequest, "Please fill required fields required");
 
+                var c = await _countryService.Queryable().AsNoTracking().Include(x => x.Cities).FirstOrDefaultAsync(x => x.Id == command.CountryId);
                 var user = await _userManager.FindByEmailAsync(command.Email + "_NotRegistered");
                 if (user == null)
                 {
@@ -70,11 +71,10 @@ namespace EcommerceAPI.Core.Carts.Command
                         Email = command.Email + "_NotRegistered",
                         PhoneNumber = command.PhoneNumber,
                         DisplayName = command.FirstName + " " + command.LastName,
-                        //IsActive = true,
                         SecurityStamp = Guid.NewGuid().ToString(),
                         CreatedAt = DateTime.UtcNow,
                         UserType = UserTypes.NotRegisteredCustomer,
-                        Country = command.Country,
+                        Country = c.Code,
                     };
                     var result = await _userManager.CreateAsync(user);
                     if (!result.Succeeded)
@@ -87,14 +87,12 @@ namespace EcommerceAPI.Core.Carts.Command
                     FirstName = command.FirstName,
                     LastName = command.LastName,
                     PhoneNumber = command.PhoneNumber,
-                    Country = command.Country,
-                    City = command.City,
+                    CountryId = command.CountryId,
+                    CityId = command.CityId,
                     FullAddress = command.FullAddress,
                 };
                 //_userAddressService.Insert(address);
                 //await _unitOfWork.SaveChangesAsync();
-                var c = await _countryService.Queryable().AsNoTracking().Include(x => x.Cities).FirstOrDefaultAsync(x => x.Code.ToLower() == address.Country.ToLower()) ??
-                await _countryService.Queryable().AsNoTracking().Include(x => x.Cities).FirstOrDefaultAsync(x => x.Code.ToLower() == "kwd");
 
                 //if (c.IsRequestIdCard == true && string.IsNullOrEmpty(command.IdCard))
                 //    return new RequestResult<NoAccountPaymentVM>(ActionResultType.BadRequest, "you have to upload id card");
@@ -107,7 +105,7 @@ namespace EcommerceAPI.Core.Carts.Command
                     CustomerId = user.Id,
                     OrderItems = new List<OrderItem>(),
                     Currency = command.Currency,
-                    Country = command.Country,
+                    Country = c.NameEn,
                     CurrencyRate = _currencyRateService.GetCurrencyRate(command.Currency),
                 };
 

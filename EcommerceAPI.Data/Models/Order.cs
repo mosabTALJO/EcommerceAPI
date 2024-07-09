@@ -7,9 +7,9 @@ namespace EcommerceAPI.Data.Models
     public class Order : SoftDeleteEntity
     {
         public int Id { get; set; }
-        public string CustomerId { get; set; }
-        public string PaymentId { get; set; }
-        public string InvoiceId { get; set; }
+        public string CustomerId { get; set; } = string.Empty;
+        public string PaymentId { get; set; }= string.Empty;
+        public string InvoiceId { get; set; } = string.Empty;
         public AppUser Customer { get; set; }
         public double TotalSalePrice { get; set; }
         public double SubTotalSalePrice { get; set; }
@@ -17,24 +17,24 @@ namespace EcommerceAPI.Data.Models
         public double DeliveryPrice { get; set; }
         public double? CoupunDiscountRate { get; set; }
         public int? DiscountCoupunId { get; set; }
-        public string Currency { get; set; }
+        public string Currency { get; set; } = string.Empty;
         public double CurrencyRate { get; set; }
         public PaymentGateway? PaymentGateway { get; set; }
         public OrderStatus OrderStatus { get; set; }
         public OrderPaymentType PaymentType { get; set; }
 
         [MaxLength(200)]
-        public string RecipientFirstName { get; set; }
+        public string RecipientFirstName { get; set; } = string.Empty;
         [MaxLength(200)]
-        public string RecipientLastName { get; set; }
+        public string RecipientLastName { get; set; } = string.Empty;
         [MaxLength(200)]
-        public string Country { get; set; }
+        public string Country { get; set; } = string.Empty;
         [MaxLength(200)]
-        public string City { get; set; }
+        public string City { get; set; } = string.Empty;
         [MaxLength(2000)]
-        public string FullAddress { get; set; }
+        public string FullAddress { get; set; } = string.Empty;
         [MaxLength(30)]
-        public string PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; } = string.Empty;
         public double? Lat { get; set; }
         public double? Lng { get; set; }
         public bool IsArchived { get; set; }

@@ -23,8 +23,8 @@ namespace EcommerceAPI.Core.Carts
         {
             var c = _countryService.Queryable().AsNoTracking().FirstOrDefault(x => x.CurrencyCode.ToLower() == order.Currency.ToLower()) ??
                 _countryService.Queryable().AsNoTracking().FirstOrDefault(x => x.CurrencyCode.ToLower() == "kwd");
-
             order.Country = c.Code;
+
             order.CurrencyRate = _currencyRateService.GetCurrencyRate(order.Currency);
             order.PaymentGateway = PaymentGateway.MyFatoorah;
 
@@ -41,7 +41,7 @@ namespace EcommerceAPI.Core.Carts
                     {
                         x.Id,
                         x.ProductId,
-                        x.Product!.Category.IsActive,
+                        x.Product!.IsActive,
                         x.StockLevel,
                         x.Product.BrandId,
                         x.Product.CategoryId,
@@ -115,17 +115,15 @@ namespace EcommerceAPI.Core.Carts
 
             order.CurrencyRate = _currencyRateService.GetCurrencyRate(order.Currency);
             order.PaymentGateway = PaymentGateway.MyFatoorah;
-
             order.RecipientFirstName = address.FirstName;
             order.RecipientLastName = address.LastName;
             order.PhoneNumber = address.PhoneNumber;
-            order.Country = address.Country;
             order.Lat = address.Lat;
             order.Lng = address.Lng;
             order.FullAddress = address.FullAddress;
-            order.Country = c.NameEn;
-            order.City = c.Cities?.FirstOrDefault(x => c.Code == address.City)?.NameEn ?? address.City;
             order.PaymentGateway = PaymentGateway.MyFatoorah;
+            order.Country = c.NameEn;
+            order.City = c.Cities?.FirstOrDefault(x => c.Id == address.CityId)?.NameEn ?? "";
 
             bool couponExists = false;
             double totalWithoutCuponDiscount = 0;
