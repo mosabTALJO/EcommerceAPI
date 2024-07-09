@@ -106,7 +106,7 @@ namespace EcommerceAPI.Core.Carts.Command
                     OrderItems = new List<OrderItem>(),
                     Currency = command.Currency,
                     Country = c.NameEn,
-                    CurrencyRate = _currencyRateService.GetCurrencyRate(command.Currency),
+                    //CurrencyRate = _currencyRateService.GetCurrencyRate(command.Currency),
                 };
 
                 Coupon coupon = null;

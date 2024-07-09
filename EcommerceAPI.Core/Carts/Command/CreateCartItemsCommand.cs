@@ -48,7 +48,7 @@ namespace EcommerceAPI.Core.Carts.Command
 
                 o.Currency = command.Currency;
                 o.Country = command.ContainsCountryCodeKey ? command.CountryCode : _countryService.Queryable().AsNoTracking().FirstOrDefault(x => x.CurrencyCode == o.Currency)?.Code;
-                o.CurrencyRate = _currencyRateService.GetCurrencyRate(command.Currency);
+                //o.CurrencyRate = _currencyRateService.GetCurrencyRate(command.Currency);
 
                 string error = "";
                 foreach (var item in command.Items)

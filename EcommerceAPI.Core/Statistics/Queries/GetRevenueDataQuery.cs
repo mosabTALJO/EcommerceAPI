@@ -37,7 +37,7 @@ namespace EcommerceAPI.Core.Statistics.Queries
                     .Where(x => c == null || c.CurrencyCode.ToLower() == x.Currency.ToLower())
                     .Where(x => request.From == null || x.CreatedAt >= request.From)
                     .Where(x => request.To == null || x.CreatedAt <= request.To)
-                    .Select(x => new { x.CurrencyRate, x.CreatedAt, x.DeliveryPrice, x.TotalSalePrice, x.SubTotalSalePrice, x.OrderItems })
+                    .Select(x => new { /*x.CurrencyRate, */x.CreatedAt, x.DeliveryPrice, x.TotalSalePrice, x.SubTotalSalePrice, x.OrderItems })
                     .ToArray()
                     .GroupBy(g => new { g.CreatedAt.Year, g.CreatedAt.Month }).ToArray();
 

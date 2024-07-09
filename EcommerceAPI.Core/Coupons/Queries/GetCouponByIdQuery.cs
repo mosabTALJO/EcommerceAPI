@@ -36,7 +36,7 @@ namespace EcommerceAPI.Core.Coupons.Queries
                 var couponVM = _mapper.Map<CouponVM>(coupon);
                 couponVM.CustomersCount = lst.Count();
                 couponVM.PaidCustomersCount = lst.Where(o => o.OrderStatus > 0).Count();
-                couponVM.TotalSales = lst.Where(o => o.OrderStatus > OrderStatus.Pending).Sum(o => o.TotalSalePrice / o.CurrencyRate);
+                couponVM.TotalSales = lst.Where(o => o.OrderStatus > OrderStatus.Pending).Sum(o => o.TotalSalePrice /*/ o.CurrencyRate*/);
 
                 return new RequestResult<CouponVM>(couponVM);
             }
