@@ -29,7 +29,7 @@ namespace EcommerceAPI.Data.Models
         public bool IsActive { get; set; } = true;
         public double SalesPrice { get; set; }
         public double? Discount { get; set; }
-        public ICollection<ProductVariant> ProductVariants { get; set; }
+        public ICollection<ProductVariant>? ProductVariants { get; set; }
         public bool OnlinePaymentOnly { get; set; }
     }
 }

@@ -123,7 +123,6 @@ namespace EcommerceAPI.Web.Controllers
                 return BadRequest("Unable to find the country from: " + clientIpAddress);
             }
         }
-
         public static string GetClientIP(HttpRequest request)
         {
             try
@@ -140,9 +139,6 @@ namespace EcommerceAPI.Web.Controllers
             }
             catch { return null; }
         }
-
-
-
         public class IpData
         {
             //public string ip { get; set; }
@@ -155,6 +151,5 @@ namespace EcommerceAPI.Web.Controllers
             //public string timezone { get; set; }
             //public string readme { get; set; }
         }
-
     }
 }
