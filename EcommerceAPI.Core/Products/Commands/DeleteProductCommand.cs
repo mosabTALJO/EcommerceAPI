@@ -27,7 +27,7 @@ namespace EcommerceAPI.Core.Products.Commands
                     if (item.DeletedAt.HasValue)
                         return new RequestResult<bool>(false, ActionResultType.BadRequest, "DeletedItem");
 
-                    _productService.DeleteProduct(item);
+                    await _productService.DeleteProduct(item);
                     if (await _unitOfWork.SaveChangesAsync() > 0)
                         return new RequestResult<bool>(true);
                 }

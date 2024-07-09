@@ -1281,15 +1281,12 @@ namespace EcommerceAPI.Services.Migrations
                         .HasColumnType("double precision");
 
                     b.Property<string>("FullDescriptionAr")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("FullDescriptionEn")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("FullDescriptionTr")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Images")
@@ -1306,7 +1303,6 @@ namespace EcommerceAPI.Services.Migrations
                         .HasColumnType("character varying(400)");
 
                     b.Property<string>("NameAr")
-                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
@@ -1316,7 +1312,6 @@ namespace EcommerceAPI.Services.Migrations
                         .HasColumnType("character varying(200)");
 
                     b.Property<string>("NameTr")
-                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 

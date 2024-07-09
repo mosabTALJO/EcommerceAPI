@@ -8,9 +8,8 @@ namespace EcommerceAPI.Services
     public interface IProductService : IService<Product>
     {
         void CreateProduct(Product p);
-        void UpdateProduct(Product p);
-        void DeleteProduct(Product p);
-        int[] GetCategoryProductIds(List<int> categoryIds);
+        Task UpdateProduct(Product p);
+        Task DeleteProduct(Product p);
         IQueryable<Product>? GetRelatedProducts(int id, string lang, double currencyRate);
         IQueryable<ProductVariant> GetProductVariant(int productId);
     }
@@ -29,7 +28,6 @@ namespace EcommerceAPI.Services
             _orderItemRepo = orderItemRepo;
             _productVariantAttributeRepo = productVariantAttributeRepo;
         }
-
         public void CreateProduct(Product p)
         {
             Insert(p);
@@ -44,13 +42,12 @@ namespace EcommerceAPI.Services
                 }
             }
         }
-
-        public void UpdateProduct(Product p)
+        public async Task UpdateProduct(Product p)
         {
             var dbVariants = _productVariantRepo.Queryable().Where(x => x.ProductId == p.Id).ToList();
             foreach (var dbVariant in dbVariants)
             {
-                var variant = p.ProductVariants.FirstOrDefault(x => x.Id == dbVariant.Id);
+                var variant = p.ProductVariants?.FirstOrDefault(x => x.Id == dbVariant.Id);
                 if (variant == null)
                 {
                     if (_orderItemRepo.Queryable().Any(oi => oi.ProductVariantId == dbVariant.Id))
@@ -58,7 +55,7 @@ namespace EcommerceAPI.Services
                     else
                     {
                         _productVariantRepo.Delete(dbVariant);
-                        _productVariantAttributeRepo.Queryable().Where(x => x.ProductVariantID == dbVariant.Id).ExecuteDeleteAsync();
+                        await _productVariantAttributeRepo.Queryable().Where(x => x.ProductVariantID == dbVariant.Id).ExecuteDeleteAsync();
                     }
                 }
                 else
@@ -76,7 +73,7 @@ namespace EcommerceAPI.Services
                     _productVariantRepo.Update(dbVariant);
                 }
             }
-            foreach (var pv in p.ProductVariants.Where(x => x.Id == 0))
+            foreach (var pv in p.ProductVariants?.Where(x => x.Id == 0) ?? [])
             {
                 pv.ProductId = p.Id;
                 _productVariantRepo.Insert(pv);
@@ -88,17 +85,13 @@ namespace EcommerceAPI.Services
             }
             Update(p);
         }
-        public void DeleteProduct(Product p)
+        public async Task DeleteProduct(Product p)
         {
             var variantIds = p.ProductVariants?.Select(x => x.Id).ToArray();
-            _productVariantRepo.Queryable().Where(x => x.ProductId == p.Id).ExecuteDeleteAsync();
+            await _productVariantRepo.Queryable().Where(x => x.ProductId == p.Id).ExecuteDeleteAsync();
             if (variantIds?.Length > 0)
-                _productVariantAttributeRepo.Queryable().Where(x => EF.Constant(variantIds).Contains(x.ProductVariantID)).ExecuteDeleteAsync();
+                await _productVariantAttributeRepo.Queryable().Where(x => EF.Constant(variantIds).Contains(x.ProductVariantID)).ExecuteDeleteAsync();
             Delete(p);
-        }
-        public int[] GetCategoryProductIds(List<int> categoryIds)
-        {
-            return Repository.Queryable().Where(x => x.CategoryId != null && categoryIds.Contains(x.CategoryId.Value)).Select(x => x.Id).ToArray();
         }
         public IQueryable<Product>? GetRelatedProducts(int productId, string lang, double currencyRate)
         {

@@ -410,7 +410,7 @@ namespace EcommerceAPI.Core.Products.Queries
                                     CreatedAt = x.CreatedAt,
                                 });
 
-                                result.TotalRecords = (!query.BrandId.HasValue && !query.CategoryId.HasValue && string.IsNullOrEmpty(query.Search)) ? 1000000 : await lst.CountAsync();
+                                result.TotalRecords = await lst.CountAsync(); //(!query.BrandId.HasValue && !query.CategoryId.HasValue && string.IsNullOrEmpty(query.Search)) ? 1000000 : await lst.CountAsync();
                                 result.Items = await lstResult.Skip(query.PageSize * query.PageNumber).Take(query.PageSize).ToArrayAsync();
                             }
                         }

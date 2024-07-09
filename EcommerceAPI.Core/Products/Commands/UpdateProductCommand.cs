@@ -12,24 +12,20 @@ namespace EcommerceAPI.Core.Products.Commands
     public class UpdateProductCommand : IRequest<RequestResult<bool>>
     {
         public int Id { get; set; }
-        public string NameAr { get; set; }
+        public string? NameAr { get; set; } = string.Empty;
         public string NameEn { get; set; }
-        public string NameTr { get; set; }
-        public string FullDescriptionAr { get; set; }
-        public string FullDescriptionEn { get; set; }
-        public string FullDescriptionTr { get; set; }
+        public string? NameTr { get; set; } = string.Empty;
+        public string? FullDescriptionAr { get; set; }
+        public string? FullDescriptionEn { get; set; }
+        public string? FullDescriptionTr { get; set; }
         public int BrandId { get; set; }
-        public BrandVM Brand { get; set; }
         public int? CategoryId { get; set; }
-        public int[] CategoryIds { get; set; }
+        public int[]? CategoryIds { get; set; }
         public double SalesPrice { get; set; }
         public double? Discount { get; set; }
         public string MainImage { get; set; }
         public List<string> Images { get; set; }
-        public string SKU { get; set; }
-        public string Weight { get; set; }
         public bool IsActive { get; set; }
-        public int? OrderIndex { get; set; }
         public List<ProductVariantVM> ProductVariants { get; set; }
         public bool OnlinePaymentOnly { get; set; }
         public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, RequestResult<bool>>
@@ -52,10 +48,10 @@ namespace EcommerceAPI.Core.Products.Commands
                         return new RequestResult<bool>(false, ActionResultType.BadRequest, "DeletedItem");
 
                     //remove main image from the list
-                    command.Images = command.Images?.Where(x => x != command.MainImage && x != "").ToList();
-                    p.NameAr = command.NameAr;
+                    command.Images = command.Images?.Where(x => x != command.MainImage && x != "").ToList() ?? [];
+                    p.NameAr = command.NameAr ?? "";
                     p.NameEn = command.NameEn;
-                    p.NameTr = command.NameTr;
+                    p.NameTr = command.NameTr ?? "";
                     p.FullDescriptionAr = command.FullDescriptionAr;
                     p.FullDescriptionEn = command.FullDescriptionEn;
                     p.FullDescriptionTr = command.FullDescriptionTr;
@@ -69,7 +65,7 @@ namespace EcommerceAPI.Core.Products.Commands
                     p.OnlinePaymentOnly = command.OnlinePaymentOnly;
                     p.ProductVariants = command.ProductVariants.Select(_mapper.Map<ProductVariant>).ToList();
 
-                    _productService.UpdateProduct(p);
+                    await _productService.UpdateProduct(p);
                     if (await _unitOfWork.SaveChangesAsync() > 0)
                         return new RequestResult<bool>(true);
                 }

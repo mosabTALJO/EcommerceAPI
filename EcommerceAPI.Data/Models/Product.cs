@@ -9,14 +9,14 @@ namespace EcommerceAPI.Data.Models
         public int? CategoryId { get; set; }
         public Category Category { get; set; }
         [MaxLength(200)]
-        public string NameAr { get; set; }
+        public string? NameAr { get; set; }
         [MaxLength(200)]
         public string NameEn { get; set; }
         [MaxLength(200)]
-        public string NameTr { get; set; }
-        public string FullDescriptionAr { get; set; }
-        public string FullDescriptionEn { get; set; }
-        public string FullDescriptionTr { get; set; }
+        public string? NameTr { get; set; }
+        public string? FullDescriptionAr { get; set; }
+        public string? FullDescriptionEn { get; set; }
+        public string? FullDescriptionTr { get; set; }
         public int? BrandId { get; set; }
         public Brand Brand { get; set; }
         [MaxLength(400)]

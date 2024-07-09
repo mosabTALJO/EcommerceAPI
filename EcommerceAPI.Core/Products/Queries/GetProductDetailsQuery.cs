@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EcommerceAPI.Core.Extentions;
 using EcommerceAPI.Data.Models;
 using EcommerceAPI.Services;
 using EcommerceAPI.Shared.Helpers;
@@ -30,16 +31,14 @@ namespace EcommerceAPI.Core.Products.Queries
             }
             public async Task<RequestResult<ProductVM>> Handle(GetProductDetailsQuery query, CancellationToken cancellationToken)
             {
-                var item = await _productService.Queryable().IgnoreQueryFilters()
-                .Include(x => x.Category)
-                .Include(x => x.Brand)
-                .Include(x => x.ProductVariants).ThenInclude(x => x.Attributes)
+                var p = await _productService.Queryable().IgnoreQueryFilters()
                 .Where(x => query.Role == "Admin" || x.IsActive)
-                .Where(x => !x.DeletedAt.HasValue).FirstOrDefaultAsync(x => x.Id == query.Id);
-                if (item is null)
+                .Where(x => !x.DeletedAt.HasValue)
+                .To<ProductVM>(_mapper)
+                .FirstOrDefaultAsync(x => x.Id == query.Id);
+                if (p == null)
                     return new RequestResult<ProductVM>(null, ActionResultType.NotFound, "NotFound");
 
-                var p = _mapper.Map<ProductVM>(item);
                 //p.CompanyURL = string.IsNullOrWhiteSpace(p.CompanyURL) || p.CompanyURL.StartsWith("https") ? p.CompanyURL : "https://www.trendyol.com" + (p.CompanyURL?.StartsWith("/") == true ? "" : "/") + p.CompanyURL;
                 if (string.IsNullOrEmpty(p.NameEn)) p.NameEn = p.NameTr;
                 if (string.IsNullOrEmpty(p.NameAr)) p.NameAr = p.NameEn;
@@ -60,7 +59,6 @@ namespace EcommerceAPI.Core.Products.Queries
                 }
                 return new RequestResult<ProductVM>(p);
             }
-
             private void CleanImages(ProductVM p, string role)
             {
                 if (string.IsNullOrWhiteSpace(p.MainImage))

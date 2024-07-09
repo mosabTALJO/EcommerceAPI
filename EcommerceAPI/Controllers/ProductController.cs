@@ -28,7 +28,6 @@ namespace EcommerceAPI.Web.Controllers
             [FromQuery] int? collectionId = null,
             [FromQuery] int? brandId = null,
             [FromQuery] string search = null,
-
             [FromQuery] string brands = null,
             [FromQuery] string sizes = null,
             [FromQuery] string colors = null,
