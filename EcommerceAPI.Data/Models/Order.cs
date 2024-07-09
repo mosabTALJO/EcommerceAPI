@@ -18,7 +18,7 @@ namespace EcommerceAPI.Data.Models
         public double? CoupunDiscountRate { get; set; }
         public int? DiscountCoupunId { get; set; }
         public string Currency { get; set; } = string.Empty;
-        public double CurrencyRate { get; set; }
+        //public double CurrencyRate { get; set; }
         public PaymentGateway? PaymentGateway { get; set; }
         public OrderStatus OrderStatus { get; set; }
         public OrderPaymentType PaymentType { get; set; }

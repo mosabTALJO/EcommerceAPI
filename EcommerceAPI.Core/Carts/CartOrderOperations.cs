@@ -24,8 +24,6 @@ namespace EcommerceAPI.Core.Carts
             var c = _countryService.Queryable().AsNoTracking().FirstOrDefault(x => x.CurrencyCode.ToLower() == order.Currency.ToLower()) ??
                 _countryService.Queryable().AsNoTracking().FirstOrDefault(x => x.CurrencyCode.ToLower() == "kwd");
             order.Country = c.Code;
-
-            order.CurrencyRate = _currencyRateService.GetCurrencyRate(order.Currency);
             order.PaymentGateway = PaymentGateway.MyFatoorah;
 
             double totalWithoutCuponDiscount = 0;
@@ -71,7 +69,7 @@ namespace EcommerceAPI.Core.Carts
                 }
 
                 //Calcualte Prices
-                oi.ProductSalesPrice = pv.SalesPrice * order.CurrencyRate;
+                oi.ProductSalesPrice = pv.SalesPrice;
                 oi.ProductDiscount = pv.Discount > 0 ? pv.Discount : pv.CategoryDiscount > 0 ? pv.CategoryDiscount : null;
                 oi.SalePrice = oi.ProductSalesPrice - oi.ProductSalesPrice * (oi.ProductDiscount ?? 0) / 100;
 
@@ -113,8 +111,6 @@ namespace EcommerceAPI.Core.Carts
             var c = await _countryService.Queryable().AsNoTracking().FirstOrDefaultAsync(x => x.CurrencyCode.ToLower() == order.Currency.ToLower()) ??
                 await _countryService.Queryable().AsNoTracking().FirstOrDefaultAsync(x => x.CurrencyCode.ToLower() == "kwd");
 
-            order.CurrencyRate = _currencyRateService.GetCurrencyRate(order.Currency);
-            order.PaymentGateway = PaymentGateway.MyFatoorah;
             order.RecipientFirstName = address.FirstName;
             order.RecipientLastName = address.LastName;
             order.PhoneNumber = address.PhoneNumber;
@@ -168,7 +164,7 @@ namespace EcommerceAPI.Core.Carts
                     }
                 }
                 //Calcualte Prices
-                oi.ProductSalesPrice = pv.SalesPrice * order.CurrencyRate;
+                oi.ProductSalesPrice = pv.SalesPrice;
                 oi.ProductDiscount = pv.Discount > 0 ? pv.Discount : pv.CategoryDiscount > 0 ? pv.CategoryDiscount : null;
                 oi.SalePrice = oi.ProductSalesPrice - oi.ProductSalesPrice * (oi.ProductDiscount ?? 0) / 100;
 
