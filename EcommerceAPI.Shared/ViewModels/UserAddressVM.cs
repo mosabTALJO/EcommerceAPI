@@ -7,7 +7,9 @@
         public string Name { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public int CountryId { get; set; }
         public string Country { get; set; }
+        public int CityId { get; set; }
         public string City { get; set; }
         public string FullAddress { get; set; }
         public string PhoneNumber { get; set; }
