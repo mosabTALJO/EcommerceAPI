@@ -9,8 +9,7 @@ namespace EcommerceAPI.Core.Carts.Queries
 {
     public class GetDeliveryDataQuery : IRequest<RequestResult<DeliveryData>>
     {
-        public string CountryCode { get; set; }
-        public string CityCode { get; set; }
+        public int CountryId { get; set; }
         public string UserId { get; set; }
         public class GetDeliveryDataQueryHandler : IRequestHandler<GetDeliveryDataQuery, RequestResult<DeliveryData>>
         {
@@ -27,23 +26,17 @@ namespace EcommerceAPI.Core.Carts.Queries
 
             public async Task<RequestResult<DeliveryData>> Handle(GetDeliveryDataQuery query, CancellationToken cancellationToken)
             {
-                query.CountryCode ??= "kwd";
-
-                var c = _countryService.Queryable().AsNoTracking().Include(x => x.Cities).FirstOrDefault(x => x.Code == query.CountryCode);
+                var c = _countryService.Queryable().AsNoTracking().Include(x => x.Cities).FirstOrDefault(x => x.Id == query.CountryId);
                 var u = await _userManager.FindByIdAsync(query.UserId);
                 var onlinePaymentOnlyExists = await _orderService.ItemsQueryable()
                     .AnyAsync(x => x.Order.OrderStatus == OrderStatus.CartOrder && x.Order.CustomerId == query.UserId && x.ProductVariant!.Product!.OnlinePaymentOnly);
 
                 bool OnDoorPayment = c?.OnDoorPayment == true && !onlinePaymentOnlyExists;
-                if (!string.IsNullOrEmpty(query.CityCode))
-                {
-                    var city = c.Cities.FirstOrDefault(x => x.Code == query.CityCode);
-                }
                 var deliverData = new DeliveryData
                 {
                     FreeDeliveryAbove = c?.DeliveryLimitAmount.ToString() ?? "30",
                     DeliveryAverageDays = c?.AverageDeliveryDays.ToString() ?? "15",
-                    CurrencyCode = c?.CurrencyCode ?? "KWD",
+                    CurrencyCode = c?.CurrencyCode,
                     MyFatoorah = true,//c.MyFatoorahPayment,
                     OnDoorPayment = OnDoorPayment,
                 };

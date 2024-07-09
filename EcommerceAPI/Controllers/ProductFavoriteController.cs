@@ -25,7 +25,7 @@ namespace EcommerceAPI.Web.Controllers
         {
             return GetActionResult(await _mediator.Send(new GetFavoriteProductsQuery
             {
-                CurrencyRate = _currencyRateService.GetCurrencyRate(Request.Headers["Currency"]),
+                //CurrencyRate = _currencyRateService.GetCurrencyRate(Request.Headers["Currency"]),
                 UserId = User.Identity.Name
             }));
         }
@@ -38,7 +38,7 @@ namespace EcommerceAPI.Web.Controllers
         {
             return GetActionResult(await _mediator.Send(new GetFavoriteProductsQuery
             {
-                CurrencyRate = _currencyRateService.GetCurrencyRate("kwd"),
+                //CurrencyRate = _currencyRateService.GetCurrencyRate("kwd"),
                 UserId = CustomerID,
             }));
         }

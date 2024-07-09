@@ -10,18 +10,18 @@ namespace EcommerceAPI.Core.UserAddresses.Commands
 {
     public class CreateUserAddressCommand : IRequest<RequestResult<int>>
     {
-        public string AppUserId { get; set; }
-        public string Name { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Country { get; set; }
-        public string City { get; set; }
-        public string FullAddress { get; set; }
-        public string PhoneNumber { get; set; }
+        public string AppUserId { get; set; } = string.Empty;
+        public required string Name { get; set; }
+        public required string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public int CountryId { get; set; }
+        public int CityId { get; set; }
+        public string FullAddress { get; set; } = string.Empty;
+        public string PhoneNumber { get; set; } = string.Empty;
         public bool IsDefault { get; set; }
         public double? Lat { get; set; }
         public double? Lng { get; set; }
-        public string UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
         public static bool IsPhoneNumber(string number) =>
                 Regex.Match(number, @"^(\+[0-9]{1,12})$").Success;
         public class CreateUserAddressCommandHandler : IRequestHandler<CreateUserAddressCommand, RequestResult<int>>
@@ -39,15 +39,16 @@ namespace EcommerceAPI.Core.UserAddresses.Commands
                 var ua = new UserAddress
                 {
                     AppUserId = command.UserId,
-                    City = command.City,
-                    Country = command.Country,
+                    Name = command.Name,
+                    CityId = command.CityId,
+                    CountryId = command.CountryId,
                     IsDefault = command.IsDefault,
                     FirstName = string.IsNullOrEmpty(command.FirstName) ? command.Name : command.FirstName,
                     LastName = string.IsNullOrEmpty(command.LastName) ? string.Empty : command.LastName,
                     Lat = command.Lat,
                     Lng = command.Lng,
                     PhoneNumber = command.PhoneNumber,
-                    FullAddress = command.FullAddress,
+                    FullAddress = command.FullAddress, 
                 };
 
                 if (!IsPhoneNumber(command.PhoneNumber))

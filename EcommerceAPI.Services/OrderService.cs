@@ -129,7 +129,7 @@ namespace EcommerceAPI.Services
                 .Include(x => x.Customer)
                 .Include(x => x.OrderItems).ThenInclude(x => x.ProductVariant).ThenInclude(x => x.Product).ThenInclude(x => x.Brand)
                 .Include(x => x.OrderItems).ThenInclude(x => x.Logs)
-                .Where(x => !x.DeletedAt.HasValue).AsSplitQuery().FirstOrDefaultAsync(x => x.Id == id);
+                .AsSplitQuery().FirstOrDefaultAsync(x => x.Id == id);
 
             return o;
         }

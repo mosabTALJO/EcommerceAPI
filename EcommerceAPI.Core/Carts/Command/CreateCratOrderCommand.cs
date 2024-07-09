@@ -25,8 +25,8 @@ namespace EcommerceAPI.Core.Carts.Command
         public double CurrencyRate { get; set; }
         public OrderStatus OrderStatus { get; set; }
         public OrderPaymentType PaymentType { get; set; }
-        public string Country { get; set; }
-        public string City { get; set; }
+        public int CountryId { get; set; }
+        public int CityId { get; set; }
         public string FullAddress { get; set; }
         public string RecipientFirstName { get; set; }
         public string RecipientLastName { get; set; }
@@ -84,13 +84,13 @@ namespace EcommerceAPI.Core.Carts.Command
                 o.PaymentType = OrderPaymentType.OnDoor;
                 o.OrderDeviceType = OrderDeviceType.DashBoard;
 
-                var country = _countryService.Queryable().FirstOrDefault(x => x.Code == command.Country);
+                var country = _countryService.Queryable().FirstOrDefault(x => x.Id == command.CountryId);
                 var address = new UserAddress
                 {
-                    Country = country.NameEn,
+                    CountryId = country.Id,
                     FirstName = command.RecipientFirstName,
                     LastName = command.RecipientLastName,
-                    City = command.City,
+                    CityId = command.CityId,
                     PhoneNumber = command.PhoneNumber,
                     FullAddress = command.FullAddress,
                 };

@@ -12,22 +12,22 @@ namespace EcommerceAPI.Core.Countries.Commands
     public class UpdateCountryCommand : IRequest<RequestResult<bool>>
     {
         public int Id { get; set; }
-        public string NameAr { get; set; }
-        public string NameEn { get; set; }
-        public string NameTr { get; set; }
+        public string NameAr { get; set; } = string.Empty;
+        public string NameEn { get; set; } = string.Empty;
+        public string NameTr { get; set; } = string.Empty;
         public double DeliveryLimitAmount { get; set; }
         public double DeliveryLimitFixedAmount { get; set; }
         public double DeliveryLimitPercent { get; set; }
         public int AverageDeliveryDays { get; set; }
-        public string Code { get; set; }
-        public string CurrencyCode { get; set; }
-        public string BannerImage { get; set; }
+        public string Code { get; set; } = string.Empty;
+        public string CurrencyCode { get; set; } = string.Empty;
+        public string BannerImage { get; set; } = string.Empty;
         public int PhoneCode { get; set; }
-        public string Image { get; set; }
+        public string Image { get; set; } = string.Empty;
         public bool IsActive { get; set; }
         public bool OnDoorPayment { get; set; }
         //public bool MyFatoorahPayment { get; set; }
-        public string PrivacyPolicyText { get; set; }
+        public string PrivacyPolicyText { get; set; } = string.Empty;
         public ICollection<CityVM> Cities { get; set; }
 
         public class PutCountryCommandHandler : IRequestHandler<UpdateCountryCommand, RequestResult<bool>>

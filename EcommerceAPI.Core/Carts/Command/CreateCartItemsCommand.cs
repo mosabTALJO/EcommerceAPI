@@ -82,7 +82,7 @@ namespace EcommerceAPI.Core.Carts.Command
                     _orderService.CreateOrder(o);
 
                 if (await _unitOfWork.SaveChangesAsync() > 0)
-                    return new RequestResult<bool>(true, ActionResultType.BadRequest, error);
+                    return new RequestResult<bool>(true, ActionResultType.OK, error);
 
                 return new RequestResult<bool>(ActionResultType.BadRequest, "Error");
             }

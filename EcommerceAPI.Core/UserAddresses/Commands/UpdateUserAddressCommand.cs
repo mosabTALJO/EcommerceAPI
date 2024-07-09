@@ -9,18 +9,18 @@ namespace EcommerceAPI.Core.UserAddresses.Commands
     public class UpdateUserAddressCommand : IRequest<RequestResult<bool>>
     {
         public int Id { get; set; }
-        public string AppUserId { get; set; }
-        public string Name { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Country { get; set; }
-        public string City { get; set; }
-        public string FullAddress { get; set; }
-        public string PhoneNumber { get; set; }
+        public string AppUserId { get; set; } = string.Empty;
+        public required string Name { get; set; }
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public int CountryId { get; set; }
+        public int CityId { get; set; }
+        public string FullAddress { get; set; } = string.Empty;
+        public string PhoneNumber { get; set; } = string.Empty;
         public bool IsDefault { get; set; }
         public double? Lat { get; set; }
         public double? Lng { get; set; }
-        public string UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
         public class UpdateUserAddressCommandHandler : IRequestHandler<UpdateUserAddressCommand, RequestResult<bool>>
         {
             private readonly IUserAddressService _userAddressService;
@@ -35,8 +35,9 @@ namespace EcommerceAPI.Core.UserAddresses.Commands
                 var ua = _userAddressService.Queryable().FirstOrDefault(x => x.Id == command.Id && x.AppUserId == command.UserId);
                 if (ua != null)
                 {
-                    ua.Country = command.Country;
-                    ua.City = command.City;
+                    ua.Name = command.Name;
+                    ua.CountryId = command.CountryId;
+                    ua.CityId = command.CityId;
                     ua.FullAddress = command.FullAddress;
                     ua.Lat = command.Lat;
                     ua.Lng = command.Lng;

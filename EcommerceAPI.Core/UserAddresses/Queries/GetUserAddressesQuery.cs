@@ -1,4 +1,6 @@
-﻿using EcommerceAPI.Services;
+﻿using AutoMapper;
+using EcommerceAPI.Core.Extentions;
+using EcommerceAPI.Services;
 using EcommerceAPI.Shared.Helpers;
 using EcommerceAPI.Shared.ViewModels;
 using MediatR;
@@ -12,10 +14,12 @@ namespace EcommerceAPI.Core.UserAddresses.Queries
         public class GetUserAddressesQueryHandler : IRequestHandler<GetUserAddressesQuery, RequestResult<UserAddressVM[]>>
         {
             private readonly IUserAddressService _userAddressService;
+            private readonly IMapper mapper;
 
-            public GetUserAddressesQueryHandler(IUserAddressService userAddressService)
+            public GetUserAddressesQueryHandler(IUserAddressService userAddressService, IMapper mapper)
             {
                 _userAddressService = userAddressService;
+                this.mapper = mapper;
             }
 
             public async Task<RequestResult<UserAddressVM[]>> Handle(GetUserAddressesQuery query, CancellationToken cancellationToken)
@@ -23,20 +27,7 @@ namespace EcommerceAPI.Core.UserAddresses.Queries
                 if (query.UserId is null) return new RequestResult<UserAddressVM[]>(ActionResultType.BadRequest);
 
                 var lst = _userAddressService.Queryable().Where(x => x.AppUserId == query.UserId);
-                var lstResult = lst.Select(x => new UserAddressVM
-                {
-                    Id = x.Id,
-                    Name = x.FirstName + "" + x.LastName,
-                    FirstName = x.FirstName,
-                    LastName = x.LastName,
-                    Country = x.Country,
-                    City = x.City,
-                    FullAddress = x.FullAddress,
-                    PhoneNumber = x.PhoneNumber,
-                    IsDefault = x.IsDefault,
-                    Lat = x.Lat,
-                    Lng = x.Lng
-                });
+                var lstResult = lst.To<UserAddressVM>(mapper);
                 return new RequestResult<UserAddressVM[]>(await lstResult.ToArrayAsync());
             }
         }

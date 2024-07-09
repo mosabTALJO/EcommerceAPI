@@ -63,8 +63,7 @@ namespace EcommerceAPI.Core.Carts.Queries
                 if (!CartOrderOperations.IsPhoneNumber(address.PhoneNumber))
                     return new RequestResult<string>(ActionResultType.BadRequest, lang == "en" ? "Phone number is incorrect" : "رقم الهاتف غير صحيح");
 
-                var c = await _countryService.Queryable().AsNoTracking().Include(x => x.Cities).FirstOrDefaultAsync(x => x.Code.ToLower() == address.Country.ToLower()) ??
-                await _countryService.Queryable().AsNoTracking().Include(x => x.Cities).FirstOrDefaultAsync(x => x.Code.ToLower() == "kwd");
+                var c = await _countryService.Queryable().AsNoTracking().Include(x => x.Cities).FirstOrDefaultAsync(x => x.Id == address.CountryId);
 
                 Coupon coupon = null;
                 if (o.DiscountCoupunId.HasValue)

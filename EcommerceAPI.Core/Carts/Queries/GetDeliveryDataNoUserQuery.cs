@@ -8,8 +8,7 @@ namespace EcommerceAPI.Core.Carts.Queries
 {
     public class GetDeliveryDataNoUserQuery : IRequest<RequestResult<DeliveryData>>
     {
-        public string CountryCode { get; set; }
-        public string CityCode { get; set; }
+        public int CountryId { get; set; }
         public CartItemVM[] Items { get; set; }
         public class GetDeliveryDataNoUserQueryHandler : IRequestHandler<GetDeliveryDataNoUserQuery, RequestResult<DeliveryData>>
         {
@@ -24,16 +23,15 @@ namespace EcommerceAPI.Core.Carts.Queries
 
             public async Task<RequestResult<DeliveryData>> Handle(GetDeliveryDataNoUserQuery query, CancellationToken cancellationToken)
             {
-                var c = _countryService.Queryable().AsNoTracking().Include(x => x.Cities).FirstOrDefault(x => x.Code == query.CountryCode);
+                var c = _countryService.Queryable().AsNoTracking().Include(x => x.Cities).FirstOrDefault(x => x.Id == query.CountryId);
                 var productVariantIds = query.Items.Select(x => x.ProductVariantId).ToList();
                 var onlinePaymentOnly = await _productVariantService.Queryable().AnyAsync(x => productVariantIds.Contains(x.Id) && x.Product!.OnlinePaymentOnly);
-                var city = c.Cities.FirstOrDefault(x => x.Code == query.CityCode);
 
                 var deliverData = new DeliveryData
                 {
                     FreeDeliveryAbove = c?.DeliveryLimitAmount.ToString() ?? "30",
                     DeliveryAverageDays = c?.AverageDeliveryDays.ToString() ?? "15",
-                    CurrencyCode = c?.CurrencyCode ?? "KWD",
+                    CurrencyCode = c?.CurrencyCode,
                     MyFatoorah = true,//c.MyFatoorahPayment,
                     OnDoorPayment = c.OnDoorPayment && !onlinePaymentOnly,
                 };
