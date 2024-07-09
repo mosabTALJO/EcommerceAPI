@@ -69,7 +69,7 @@ namespace EcommerceAPI.Core.Carts
                 }
 
                 //Calcualte Prices
-                oi.ProductSalesPrice = pv.SalesPrice;
+                oi.ProductSalesPrice = pv.SalesPrice;// * order.CurrencyRate;
                 oi.ProductDiscount = pv.Discount > 0 ? pv.Discount : pv.CategoryDiscount > 0 ? pv.CategoryDiscount : null;
                 oi.SalePrice = oi.ProductSalesPrice - oi.ProductSalesPrice * (oi.ProductDiscount ?? 0) / 100;
 
@@ -164,7 +164,7 @@ namespace EcommerceAPI.Core.Carts
                     }
                 }
                 //Calcualte Prices
-                oi.ProductSalesPrice = pv.SalesPrice;
+                oi.ProductSalesPrice = pv.SalesPrice;// * order.CurrencyRate;
                 oi.ProductDiscount = pv.Discount > 0 ? pv.Discount : pv.CategoryDiscount > 0 ? pv.CategoryDiscount : null;
                 oi.SalePrice = oi.ProductSalesPrice - oi.ProductSalesPrice * (oi.ProductDiscount ?? 0) / 100;
 
