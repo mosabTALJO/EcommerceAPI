@@ -877,9 +877,6 @@ namespace EcommerceAPI.Services.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<double>("CurrencyRate")
-                        .HasColumnType("double precision");
-
                     b.Property<string>("CustomerId")
                         .IsRequired()
                         .HasColumnType("text");

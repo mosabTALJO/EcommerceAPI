@@ -178,6 +178,7 @@ namespace EcommerceAPI.Services
                 CreatedBy = u.Id,
                 Username = u.DisplayName = ", " + u.Email,
                 UserType = u.UserType,
+                Notes = "",
             });
         }
         public async Task ItemUpdatedOrEditedLog(OrderItem item, string UserId, string notes)
