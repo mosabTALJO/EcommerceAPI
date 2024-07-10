@@ -33,10 +33,10 @@ namespace EcommerceAPI.Core.Orders.Commands
                 if (order1 is null || order2 is null)
                     return new RequestResult<int>(ActionResultType.NotFound, "NotFound");
 
-                if (!(order1.OrderStatus == OrderStatus.Paid || order1.OrderStatus == OrderStatus.ConfirmedForOnDoorPayment) || !order1.OrderItems.All(x => x.OrderItemState == OrderItemState.Pending))
+                if ((order1.OrderStatus != OrderStatus.Paid && order1.OrderStatus != OrderStatus.ConfirmedForOnDoorPayment) || !order1.OrderItems.All(x => x.OrderItemState == OrderItemState.Pending))
                     return new RequestResult<int>(ActionResultType.BadRequest, $"The order with id ({order1.Id}) is not mergeable");
 
-                if (!(order2.OrderStatus == OrderStatus.Paid || order2.OrderStatus == OrderStatus.ConfirmedForOnDoorPayment) || !order2.OrderItems.All(x => x.OrderItemState == OrderItemState.Pending))
+                if ((order1.OrderStatus != OrderStatus.Paid && order1.OrderStatus != OrderStatus.ConfirmedForOnDoorPayment) || !order2.OrderItems.All(x => x.OrderItemState == OrderItemState.Pending))
                     return new RequestResult<int>(ActionResultType.BadRequest, $"The order with id ({order2.Id}) is not mergeable");
 
                 if (order1.DiscountCoupunId != order2.DiscountCoupunId)

@@ -15,7 +15,7 @@ namespace EcommerceAPI.Core.Orders.Commands
         public string OrderNumber { get; set; }
         public double SalePriceNoKDV { get; set; }
         public double KDV { get; set; }
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
         public class AcceptItemCommandHandler : IRequestHandler<AcceptItemCommand, RequestResult<bool>>
         {
             private readonly IOrderService _orderService;

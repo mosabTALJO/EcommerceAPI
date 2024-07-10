@@ -14,7 +14,11 @@ namespace EcommerceAPI.Core.Products
                 .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.NameEn))
                 .ForMember(dst => dst.BrandName, opt => opt.MapFrom(src => src.Brand.NameEn));
 
-            CreateMap<ProductVariant, ProductVariantVM>().ReverseMap();
+            CreateMap<ProductVariant, ProductVariantVM>()
+                .ForMember(dst => dst.Images, opt => opt.MapFrom(src => src.Images.Split(',', StringSplitOptions.None)));
+
+            CreateMap<ProductVariantVM, ProductVariant>()
+                .ForMember(dst => dst.Images, opt => opt.MapFrom(src => string.Join(',', src.Images)));
 
             CreateMap<Product, ProductVM>()
                 .ForMember(dst => dst.Images,

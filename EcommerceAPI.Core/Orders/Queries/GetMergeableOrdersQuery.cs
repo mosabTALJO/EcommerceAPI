@@ -20,27 +20,26 @@ namespace EcommerceAPI.Core.Orders.Queries
 
             public async Task<RequestResult<List<int>>> Handle(GetMergeableOrdersQuery query, CancellationToken cancellationToken)
             {
-                var item = await _orderService.GetOrderDetails(query.Id);
-                if (item is null)
+                var order = await _orderService.GetOrderDetails(query.Id);
+                if (order is null)
                     return new RequestResult<List<int>>(new List<int>());
 
-                if (!(item.OrderStatus > OrderStatus.CartOrder))
+                if ((order.OrderStatus != OrderStatus.Paid && order.OrderStatus != OrderStatus.ConfirmedForOnDoorPayment) || !order.OrderItems.All(x => x.OrderItemState == OrderItemState.Pending))
                     return new RequestResult<List<int>>(new List<int>());
 
-                var mergeableOrders = _orderService.Queryable().AsNoTracking().Include(o => o.Customer).Include(o => o.OrderItems)
+                var mergeableOrderIds = await _orderService.Queryable().AsNoTracking().Include(o => o.Customer).Include(o => o.OrderItems)
                                                          .Where(o => !o.DeletedAt.HasValue)
-                                                         .Where(o => o.CustomerId == item.CustomerId)
+                                                         .Where(o => o.CustomerId == order.CustomerId)
                                                          .Where(o => o.OrderStatus > OrderStatus.CartOrder)
                                                          .Where(o => o.OrderItems.All(x => x.OrderItemState == OrderItemState.Pending))
-                                                         .Where(o => o.DiscountCoupunId == item.DiscountCoupunId)
-                                                         .Where(o => o.Currency == item.Currency);
+                                                         .Where(o => o.DiscountCoupunId == order.DiscountCoupunId)
+                                                         .Where(o => o.Currency == order.Currency)
+                                                         .Select(x => x.Id)
+                                                         .ToListAsync();
                
-                if (mergeableOrders == null || mergeableOrders.Count() == 0)
+                if (mergeableOrderIds == null || mergeableOrderIds.Count == 0)
                     return new RequestResult<List<int>>(new List<int>());
 
-                var mergeableOrderIds = new List<int>();
-                foreach (var order in mergeableOrders.ToArray())
-                    mergeableOrderIds.Add(order.Id);
                 mergeableOrderIds.Remove(query.Id);
 
                 return new RequestResult<List<int>>(mergeableOrderIds);

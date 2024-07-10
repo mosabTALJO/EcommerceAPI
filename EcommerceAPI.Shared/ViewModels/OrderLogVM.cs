@@ -11,7 +11,7 @@ namespace EcommerceAPI.Shared.ViewModels
         public OrderItemState? OrderItemState { get; set; }
         public UserTypes UserType { get; set; }
         public string Username { get; set; }
-        public string Notes { get; set; }
+        public string? Notes { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }

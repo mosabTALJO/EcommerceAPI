@@ -12,13 +12,7 @@ namespace EcommerceAPI.Core.Customers.Commands
         public string DisplayName { get; set; }
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
-        public string OldPassword { get; set; }
         public string Password { get; set; }
-        public bool IsActive { get; set; }
-        public double CustomerBalance { get; set; }
-        public string Country { get; set; }
-        public UserTypes UserType { get; set; }
-        public List<Policies> Claims { get; set; }
 
         public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, RequestResult<bool>>
         {

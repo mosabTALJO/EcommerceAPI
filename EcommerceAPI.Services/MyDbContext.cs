@@ -21,6 +21,10 @@ namespace EcommerceAPI.Services
                 optionsBuilder.UseNpgsql(@"Host=localhost; Database=Ecommerce; Username=postgres; Password=123456lolo");
             else
                 optionsBuilder.UseNpgsql(@"Host=localhost; Database=Ecommerce; Username=ecomm; Password=aser@sWwer##4as");
+            //if (Debugger.IsAttached)
+            //    optionsBuilder.UseNpgsql(@"Host=37.27.57.167; Database=Ecommerce; Username=postgres; Password=123456lolo");
+            //else
+            //    optionsBuilder.UseNpgsql(@"Host=localhost; Database=Ecommerce; Username=ecomm; Password=aser@sWwer##4as");
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

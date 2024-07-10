@@ -13,7 +13,7 @@ namespace EcommerceAPI.Shared.ViewModels
         public double SalesPrice { get; set; }
         public double? Discount { get; set; }
         public string MainImage { get; set; }
-        public string Images { get; set; }
+        public List<string> Images { get; set; } = [];
         public string SKU { get; set; }
         public bool IsActive { get; set; } = true;
         public List<ProductVariantAttributeVM> Attributes { get; set; } = [];

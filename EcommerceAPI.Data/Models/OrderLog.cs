@@ -13,6 +13,6 @@ namespace EcommerceAPI.Data.Models
         public OrderItemState? OrderItemState { get; set; } = null;
         public UserTypes UserType { get; set; }
         public string Username { get; set; }
-        public string Notes { get; set; }
+        public string? Notes { get; set; }
     }
 }

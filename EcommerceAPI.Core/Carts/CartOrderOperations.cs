@@ -45,6 +45,7 @@ namespace EcommerceAPI.Core.Carts
                         x.Product.CategoryId,
                         x.Product.SalesPrice,
                         x.Discount,
+                        ProductDiscount = x.Product.Discount,
                         CategoryDiscount = x.Product.Category.Discount,
                     }).FirstOrDefaultAsync();
 
@@ -70,7 +71,7 @@ namespace EcommerceAPI.Core.Carts
 
                 //Calcualte Prices
                 oi.ProductSalesPrice = pv.SalesPrice;// * order.CurrencyRate;
-                oi.ProductDiscount = pv.Discount > 0 ? pv.Discount : pv.CategoryDiscount > 0 ? pv.CategoryDiscount : null;
+                oi.ProductDiscount = pv.Discount > 0 ? pv.Discount : pv.ProductDiscount > 0 ? pv.ProductDiscount : pv.CategoryDiscount > 0 ? pv.CategoryDiscount : null;
                 oi.SalePrice = oi.ProductSalesPrice - oi.ProductSalesPrice * (oi.ProductDiscount ?? 0) / 100;
 
                 totalWithoutCuponDiscount += oi.SalePrice * oi.Qty;

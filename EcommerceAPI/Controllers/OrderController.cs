@@ -139,10 +139,10 @@ namespace EcommerceAPI.Web.Controllers
             command.UserId = User.Identity.Name;
             return GetActionResult(await _mediator.Send(command));
         }
+
         [HttpPost("EditOrderItemData")]
         [Authorize(Policy = PoliciesText.UpdateOrder)]
         [ApiExplorerSettings(GroupName = "cp")]
-
         public async Task<ActionResult<RequestResult<bool>>> EditOrderItemData(EditOrderItemDataCommand command)
         {
             command.UserId = User.Identity.Name;
