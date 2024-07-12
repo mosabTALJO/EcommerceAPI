@@ -23,7 +23,8 @@ namespace EcommerceAPI.Web.Controllers
             [FromQuery] int pageSize = 20,
             [FromQuery] string search = null,
             [FromQuery] string sortField = "Id",
-            [FromQuery] string sortOrder = "Asc")
+            [FromQuery] string sortOrder = "Asc",
+            [FromQuery] bool showHidden = false)
         {
             return GetActionResult(await _mediator.Send(new GetAllCategoriesQuery
             {
@@ -31,7 +32,8 @@ namespace EcommerceAPI.Web.Controllers
                 PageSize = pageSize,
                 Search = search,
                 SortField = sortField,
-                SortOrder = sortOrder
+                SortOrder = sortOrder,
+                ShowHidden = showHidden
             }));
         }
 

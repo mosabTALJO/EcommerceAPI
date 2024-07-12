@@ -31,6 +31,5 @@ namespace EcommerceAPI.Core.Extentions
         {
             return source.ProjectTo<T>(mapper.ConfigurationProvider);
         }
-
     }
 }

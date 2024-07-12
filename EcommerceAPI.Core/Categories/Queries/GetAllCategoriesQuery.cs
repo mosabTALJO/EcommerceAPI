@@ -15,6 +15,7 @@ namespace EcommerceAPI.Core.Categories.Queries
         public string? Search { get; set; } = null;
         public string SortField { get; set; } = "Id";
         public string SortOrder { get; set; } = "Asc";
+        public bool ShowHidden { get; set; }
         public class GetAllCategoriesQueryHandler : IRequestHandler<GetAllCategoriesQuery, RequestResult<ListResponse<CategoryVM>>>
         {
             private readonly IMapper _mapper;
@@ -27,7 +28,8 @@ namespace EcommerceAPI.Core.Categories.Queries
             public async Task<RequestResult<ListResponse<CategoryVM>>> Handle(GetAllCategoriesQuery query, CancellationToken cancellationToken)
             {
                 query.PageNumber = query.PageNumber.PagingNumber();
-                var lst = _categoryService.Queryable().IgnoreQueryFilters().Include(x => x.Parent).ThenInclude(x => x.Parent).AsNoTracking();
+                var lst = _categoryService.Queryable().IgnoreQueryFilters().Include(x => x.Parent).ThenInclude(x => x.Parent).AsNoTracking()
+                    .Where(x => query.ShowHidden || x.IsActive);
                 if (!string.IsNullOrEmpty(query.Search))
                 {
                     if (int.TryParse(query.Search, out int idSearch))

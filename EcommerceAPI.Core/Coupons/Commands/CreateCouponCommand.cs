@@ -40,6 +40,8 @@ namespace EcommerceAPI.Core.Coupons.Commands
 
             public async Task<RequestResult<int>> Handle(CreateCouponCommand command, CancellationToken cancellationToken)
             {
+                if (command.ExpireDate < DateTime.UtcNow)
+                    return new RequestResult<int>(ActionResultType.BadRequest, "Expire date has passed!");
                 command.RemainingCount = command.Count;
                 var coupon = _mapper.Map<Coupon>(command);
                 _couponService.Insert(coupon);

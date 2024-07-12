@@ -21,6 +21,13 @@ namespace EcommerceAPI.Web.Controllers
             return GetActionResult(await _mediator.Send(command));
         }
 
+        [Route("/api/loginAdmin")] // /login
+        [HttpPost]
+        public async Task<ActionResult<RequestResult<TokenViewModel>>> LoginAdmin([FromBody] LoginAdminCommand command)
+        {
+            return GetActionResult(await _mediator.Send(command));
+        }
+
         [Route("/api/Register")]
         [HttpPost]
         [ApiExplorerSettings(GroupName = "fe")]
