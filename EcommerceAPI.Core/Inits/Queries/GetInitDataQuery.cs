@@ -13,27 +13,19 @@ namespace EcommerceAPI.Core.Inits.Queries
     public class GetInitDataQuery : IRequest<RequestResult<InitDataModel>>
     {
         public string UserId { get; set; }
-        public string Role { get; set; }
-        public double CurrencyRate { get; set; }
+        public bool ShowHidden { get; set; }
         public class GetInitDataQueryHandler : IRequestHandler<GetInitDataQuery, RequestResult<InitDataModel>>
         {
             private readonly ICategoryService _categoryService;
-            private readonly IBrandService _brandService;
             private readonly IMapper _mapper;
             private readonly ICurrencyRateService _currencyService;
             private readonly UserManager<AppUser> _userManager;
-            private readonly IProductService _productService;
-            private readonly IProductFavoriteService _productFavoriteService;
-
-            public GetInitDataQueryHandler(ICategoryService categoryService, IBrandService brandService, IMapper mapper, ICurrencyRateService currencyService, UserManager<AppUser> userManager, IProductService productService, IProductFavoriteService productFavoriteService)
+            public GetInitDataQueryHandler(ICategoryService categoryService, IMapper mapper, ICurrencyRateService currencyService, UserManager<AppUser> userManager)
             {
                 _categoryService = categoryService;
-                _brandService = brandService;
                 _mapper = mapper;
                 _currencyService = currencyService;
                 _userManager = userManager;
-                _productService = productService;
-                _productFavoriteService = productFavoriteService;
             }
             public async Task<RequestResult<InitDataModel>> Handle(GetInitDataQuery query, CancellationToken cancellationToken)
             {
@@ -62,7 +54,7 @@ namespace EcommerceAPI.Core.Inits.Queries
                 };
 
                 var cats = await _categoryService.Queryable().AsNoTracking()
-                            .Where(x => x.ParentId == null && x.IsActive)
+                            .Where(x => x.ParentId == null && (query.ShowHidden || x.IsActive))
                             .OrderBy(x => x.OrderIndex)
                             .ToArrayAsync();
 

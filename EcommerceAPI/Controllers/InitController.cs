@@ -20,21 +20,17 @@ namespace EcommerceAPI.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         [AllowAnonymous]
-        public async Task<ActionResult<RequestResult<InitDataModel>>> GetInitData()
+        public async Task<ActionResult<RequestResult<InitDataModel>>> GetInitData([FromQuery] bool showHidden = false)
         {
             return GetActionResult(await _mediator.Send(new GetInitDataQuery 
             {
-                Role = HttpContext.User?.Claims?.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value,
-                CurrencyRate = _currencyRateService.GetCurrencyRate(Request.Headers["Currency"]),
-                UserId = User.Identity.Name 
+                UserId = User.Identity.Name,
+                ShowHidden = showHidden
             }));
         }
 
-
         [HttpGet("GetInit")]
-        [Authorize]
         [AllowAnonymous]
         public async Task<ActionResult<RequestResult<InitData>>> GetInit()
         {
@@ -47,7 +43,6 @@ namespace EcommerceAPI.Web.Controllers
         }
 
         [HttpGet("WebInit")]
-        [Authorize]
         [AllowAnonymous]
         public async Task<ActionResult<RequestResult<WebInitData>>> GetWebInit()
         {

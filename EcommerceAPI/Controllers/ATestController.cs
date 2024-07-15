@@ -1,6 +1,4 @@
-﻿using EcommerceAPI.Core.Extentions;
-using EcommerceAPI.Core.Helpers;
-using EcommerceAPI.Services;
+﻿using EcommerceAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
