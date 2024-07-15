@@ -220,9 +220,9 @@ namespace EcommerceAPI.Core.Products.Queries
                             if (!string.IsNullOrEmpty(query.Search))
                             {
                                 if (int.TryParse(query.Search, out int idToSearch))
-                                    lst = lst.Where(x => x.Id == idToSearch || EF.Functions.Like(x.NameTr, query.Search + "%"));
+                                    lst = lst.Where(x => x.Id == idToSearch || EF.Functions.Like(x.NameTr!.ToLower(), query.Search.ToLower() + "%"));
                                 else
-                                    lst = lst.Where(x => EF.Functions.Like(x.NameTr, query.Search + "%"));
+                                    lst = lst.Where(x => EF.Functions.Like(x.NameTr!.ToLower(), query.Search.ToLower() + "%"));
                             }
 
                             //enable 5 products per brand if there is no other filter

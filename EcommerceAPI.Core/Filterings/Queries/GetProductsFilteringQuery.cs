@@ -67,9 +67,9 @@ namespace EcommerceAPI.Core.Filterings.Queries
                 if (!string.IsNullOrEmpty(query.Search))
                 {
                     if (int.TryParse(query.Search, out int idToSearch))
-                        lst = lst.Where(x => x.Id == idToSearch || EF.Functions.Like(x.NameEn, query.Search + "%"));
+                        lst = lst.Where(x => x.Id == idToSearch || EF.Functions.Like(x.NameEn.ToLower(), query.Search.ToLower() + "%"));
                     else
-                        lst = lst.Where(x => EF.Functions.Like(x.NameEn, query.Search + "%"));
+                        lst = lst.Where(x => EF.Functions.Like(x.NameEn.ToLower(), query.Search.ToLower() + "%"));
                 }
 
                 return new RequestResult<Filtering>(new Filtering
