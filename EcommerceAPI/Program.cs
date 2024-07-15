@@ -146,7 +146,7 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(
     builder =>
     {
-        builder.WithOrigins("*", "http://localhost:4200", "http://localhost:5173", "https://cp-ecommerce.usos.co")
+        builder.WithOrigins("*", "http://localhost:4200", "http://localhost:5173", "https://cp-ecommerce.usos.co", "https://Ecommerce.usos.co")
                .AllowAnyMethod()
                .AllowAnyHeader()
                .AllowCredentials();
