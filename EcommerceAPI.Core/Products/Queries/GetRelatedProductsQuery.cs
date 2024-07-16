@@ -29,22 +29,20 @@ namespace EcommerceAPI.Core.Products.Queries
             public async Task<RequestResult<ListResponse<ProductLiteVM>>> Handle(GetRelatedProductsQuery query, CancellationToken cancellationToken)
             {
                 var lang = CultureInfo.CurrentCulture?.TwoLetterISOLanguageName ?? "en";
-                var currencyRate = _currencyRateService.GetCurrencyRate(query.Currency);
 
-                var qry = _productService.GetRelatedProducts(query.Id, lang, currencyRate);
+                var qry = _productService.GetRelatedProducts(query.Id, lang);
                 if (qry == null)
                     return new RequestResult<ListResponse<ProductLiteVM>>(ActionResultType.BadRequest);
                 var lst = await qry.Select(x => new ProductLiteVM
                 {
                     Name = lang == "en" ? x.NameEn : lang == "ar" ? x.NameAr : x.NameTr,
                     BrandName = lang == "en" ? x.Brand.NameEn : lang == "ar" ? x.Brand.NameAr : x.Brand.NameTr,
-                    SalesPrice = x.SalesPrice * currencyRate,
+                    SalesPrice = x.SalesPrice,
                     Discount = x.Discount > 0 ? x.Discount : x.Category.Discount > 0 ? x.Category.Discount : null,
                     Id = x.Id,
                     MainImage = x.MainImage,
                     TotalRate = x.TotalRate,
                     CreatedAt = x.CreatedAt,
-                    //VendorId = x.VendorId,
                 }).ToArrayAsync();
 
                 var result = new ListResponse<ProductLiteVM>
@@ -69,4 +67,3 @@ namespace EcommerceAPI.Core.Products.Queries
         }
     }
 }
-

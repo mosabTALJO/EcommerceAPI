@@ -10,7 +10,7 @@ namespace EcommerceAPI.Services
         void CreateProduct(Product p);
         Task UpdateProduct(Product p);
         Task DeleteProduct(Product p);
-        IQueryable<Product>? GetRelatedProducts(int id, string lang, double currencyRate);
+        IQueryable<Product>? GetRelatedProducts(int id, string lang);
         IQueryable<ProductVariant> GetProductVariant(int productId);
     }
 
@@ -93,7 +93,7 @@ namespace EcommerceAPI.Services
                 await _productVariantAttributeRepo.Queryable().Where(x => EF.Constant(variantIds).Contains(x.ProductVariantID)).ExecuteDeleteAsync();
             Delete(p);
         }
-        public IQueryable<Product>? GetRelatedProducts(int productId, string lang, double currencyRate)
+        public IQueryable<Product>? GetRelatedProducts(int productId, string lang)
         {
             var catId = Repository.Queryable().Where(x => x.Id == productId).Select(x => x.CategoryId).FirstOrDefault();
             if (catId == null)
