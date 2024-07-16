@@ -11,6 +11,7 @@ namespace EcommerceAPI.Data.Models
         public CurrencyRateTypes Type { get; set; }
         public double Rate { get; set; }
         public double FeeRate { get; set; }
+        [Column(TypeName = "timestamp(6)")]
         public DateTime? LastUpdatedDate { get; set; }
 
         [NotMapped]

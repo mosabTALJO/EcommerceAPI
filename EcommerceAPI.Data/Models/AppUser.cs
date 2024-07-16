@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EcommerceAPI.Data.Models
 {
@@ -11,6 +12,7 @@ namespace EcommerceAPI.Data.Models
         public bool IsActive { get; set; }
         [MaxLength(200)]
         public string CreatedUser { get; set; } = string.Empty;
+        [Column(TypeName = "timestamp(6)")]
         public DateTime CreatedAt { get; set; }
         public UserTypes UserType { get; set; }
         public string FacebookId { get; set; } = string.Empty;

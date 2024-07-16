@@ -23,10 +23,10 @@ namespace EcommerceAPI.Core.Auths.Commands
             }
             public async Task<RequestResult<TokenViewModel>> Handle(LoginAdminCommand command, CancellationToken cancellationToken)
             {
-                var user = await _userManager.Users.FirstOrDefaultAsync(x => !string.IsNullOrEmpty(x.Email) && x.Email == command.Email) ??
-                            await _userManager.Users.FirstOrDefaultAsync(x => !string.IsNullOrEmpty(x.PhoneNumber) && x.PhoneNumber == command.PhoneNumber);
+                var user = await _userManager.Users.FirstOrDefaultAsync(x => !string.IsNullOrEmpty(x.Email) && x.Email == command.Email && x.UserType == UserTypes.Admin) ??
+                            await _userManager.Users.FirstOrDefaultAsync(x => !string.IsNullOrEmpty(x.PhoneNumber) && x.PhoneNumber == command.PhoneNumber && x.UserType == UserTypes.Admin);
                 if (user is null)
-                    return new RequestResult<TokenViewModel>(ActionResultType.NotFound, "Username or password is incorrect!");
+                    return new RequestResult<TokenViewModel>(ActionResultType.NotFound, "Username not found!");
 
                 if (!await _userManager.CheckPasswordAsync(user, command.Password))
                     return new RequestResult<TokenViewModel>(ActionResultType.Unauthorized, "Username or Password is incorrect!");
