@@ -9,8 +9,8 @@ namespace EcommerceAPI.Core.Auths.Commands
 {
     public class LoginAdminCommand : IRequest<RequestResult<TokenViewModel>>
     {
-        public string PhoneNumber { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
+        public string? PhoneNumber { get; set; } = string.Empty;
+        public string? Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
         public class LoginAdminCommandHandler : IRequestHandler<LoginAdminCommand, RequestResult<TokenViewModel>>
         {

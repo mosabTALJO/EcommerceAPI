@@ -16,7 +16,6 @@ namespace EcommerceAPI.Data.Models
         public string NameEn { get; set; }
         [MaxLength(200)]
         public string NameTr { get; set; }
-        [Column(TypeName = "timestamp(6)")]
         public DateTime ExpireDate { get; set; }
         public int Count { get; set; }
         public int RemainingCount { get; set; }

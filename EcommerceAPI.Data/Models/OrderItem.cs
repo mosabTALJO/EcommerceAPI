@@ -9,21 +9,14 @@ namespace EcommerceAPI.Data.Models
         public int ProductVariantId { get; set; }
         public ProductVariant? ProductVariant { get; set; }
         public OrderItemState OrderItemState { get; set; }
-        [Column(TypeName = "timestamp(6)")]
         public DateTime? AcceptedDate { get; set; }
-        [Column(TypeName = "timestamp(6)")]
         public DateTime? ShippingDate { get; set; }
         public string ShippingCompany { get; set; } = string.Empty;
         public string ShippingCode { get; set; } = string.Empty;
-        [Column(TypeName = "timestamp(6)")]
         public DateTime? DeliveredDate { get; set; }
-        [Column(TypeName = "timestamp(6)")]
         public DateTime? ReturningDate { get; set; }
-        [Column(TypeName = "timestamp(6)")]
         public DateTime? CancelDate { get; set; }
-        [Column(TypeName = "timestamp(6)")]
         public DateTime? RejectedDate { get; set; }
-        [Column(TypeName = "timestamp(6)")]
         public DateTime? InStockDate { get; set; }
         public string ReturnReason { get; set; } = string.Empty;
         public double SalePrice { get; set; }

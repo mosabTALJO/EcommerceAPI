@@ -8,7 +8,6 @@ namespace EcommerceAPI.Data.Models
         public int Id { get; set; }
         public string Subject { get; set; }
         public PromotionFilter Filter { get; set; }
-        [Column(TypeName = "timestamp(6)")]
         public DateTime? FilterDate { get; set; }
         public string HtmlText { get; set; }
     }

@@ -510,7 +510,7 @@ namespace EcommerceAPI.Services.Migrations
                         .HasColumnType("character varying(40)");
 
                     b.Property<DateTime>("ExpireDate")
-                        .HasColumnType("timestamp(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");

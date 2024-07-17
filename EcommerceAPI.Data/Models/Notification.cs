@@ -13,7 +13,6 @@ namespace EcommerceAPI.Data.Models
         public string Text { get; set; }
         public string Image { get; set; }
         public string Url { get; set; }
-        [Column(TypeName = "timestamp(6)")]
         public DateTime? ScheduledDate { get; set; }
     }
 }
