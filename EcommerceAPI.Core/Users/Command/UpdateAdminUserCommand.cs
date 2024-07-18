@@ -29,7 +29,7 @@ namespace EcommerceAPI.Core.Users.Command
             }
             public async Task<RequestResult<bool>> Handle(UpdateAdminUserCommand command, CancellationToken cancellationToken)
             {
-                var currentUser = await _userManager.FindByIdAsync(command.UserId);
+                var currentUser = await _userManager.FindByIdAsync(command.Id);
                 if (currentUser is null)
                     return new RequestResult<bool>(ActionResultType.NotFound, "currentUser NotFound");
 
