@@ -18,6 +18,7 @@ namespace EcommerceAPI.Web.Controllers
         // GETList api/Category
         [HttpGet]
         [Authorize(Policy = PoliciesText.EditCategories)]
+        [Authorize(Policy = PoliciesText.GetProducts)]
         public async Task<ActionResult<RequestResult<ListResponse<CategoryVM>>>> Get(
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 20,

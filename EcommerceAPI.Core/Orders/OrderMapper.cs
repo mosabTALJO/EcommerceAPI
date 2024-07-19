@@ -18,9 +18,6 @@ namespace EcommerceAPI.Core.Orders
             CreateMap<Order, OrderLiteVM>()
                 .ForMember(dst => dst.CustomerName, opt => opt.MapFrom(src => src.Customer.DisplayName));
 
-            CreateMap<Order, NewOrderVM>().ReverseMap();
-            CreateMap<OrderItem, NewOrderItemVM>().ReverseMap();
-
             CreateMap<OrderPayment, OrderPaymentVM>().ReverseMap();
         }
     }

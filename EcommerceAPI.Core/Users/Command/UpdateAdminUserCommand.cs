@@ -29,7 +29,7 @@ namespace EcommerceAPI.Core.Users.Command
             }
             public async Task<RequestResult<bool>> Handle(UpdateAdminUserCommand command, CancellationToken cancellationToken)
             {
-                var currentUser = await _userManager.FindByIdAsync(command.Id);
+                var currentUser = await _userManager.FindByIdAsync(command.UserId);
                 if (currentUser is null)
                     return new RequestResult<bool>(ActionResultType.NotFound, "currentUser NotFound");
 
@@ -68,8 +68,8 @@ namespace EcommerceAPI.Core.Users.Command
                 var r = await _userManager.UpdateAsync(u);
                 if (r.Succeeded)
                 {
-                    if (oldClaims?.Any(x => x.Value == PoliciesText.AdminPermissions) != true)
-                        return new RequestResult<bool>(true);
+                    //if (oldClaims?.Any(x => x.Value == PoliciesText.AdminPermissions) != true)
+                    //    return new RequestResult<bool>(true);
                     if (oldClaims?.Any() == true)
                         await _userManager.RemoveClaimsAsync(u, oldClaims);
 

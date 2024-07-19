@@ -5,7 +5,6 @@ namespace EcommerceAPI.Shared.ViewModels
     public class OrderItemVM
     {
         public int Id { get; set; }
-        public int? ProductTypeId { get; set; }
         public ProductVariantVM ProductVariant { get; set; }
         public OrderItemState OrderItemState { get; set; }
         public DateTime? AcceptedDate { get; set; }
