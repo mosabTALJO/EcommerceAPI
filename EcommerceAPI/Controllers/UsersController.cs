@@ -109,18 +109,19 @@ namespace EcommerceAPI.Web.Controllers
         }
 
         [HttpGet("GetDefaultCountry")]
-        public async Task<ActionResult<string>> GetDefaultCountry()
+        public async Task<ActionResult<RequestResult<string>>> GetDefaultCountry()
         {
             var clientIpAddress = GetClientIP(Request);
             try
             {
                 var r = await new HttpClient().GetAsync("https://ipinfo.io/" + clientIpAddress + "?token=4723ac3b4a6c19");
                 var ipData = JsonSerializer.Deserialize<IpData>(await r.Content.ReadAsStringAsync());
-                return Ok(new CultureInfo(ipData.country)?.ThreeLetterISOLanguageName);
+
+                return GetActionResult(new RequestResult<string>(new CultureInfo(ipData!.country)?.ThreeLetterISOLanguageName));
             }
             catch (Exception ex)
             {
-                return BadRequest("Unable to find the country from: " + clientIpAddress);
+                return new RequestResult<string>(ActionResultType.BadRequest, "Unable to find the country from: " + clientIpAddress) { };
             }
         }
         public static string GetClientIP(HttpRequest request)
