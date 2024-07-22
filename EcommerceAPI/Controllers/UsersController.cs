@@ -117,7 +117,7 @@ namespace EcommerceAPI.Web.Controllers
                 var r = await new HttpClient().GetAsync("https://ipinfo.io/" + clientIpAddress + "?token=4723ac3b4a6c19");
                 var ipData = JsonSerializer.Deserialize<IpData>(await r.Content.ReadAsStringAsync());
 
-                return GetActionResult(new RequestResult<string>(new CultureInfo(ipData!.country)?.ThreeLetterISOLanguageName));
+                return GetActionResult(new RequestResult<string>(new CultureInfo(ipData!.country)?.TwoLetterISOLanguageName));
             }
             catch (Exception ex)
             {
