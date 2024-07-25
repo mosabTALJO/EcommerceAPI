@@ -58,6 +58,9 @@ namespace EcommerceAPI.Core.Products.Queries
                 {
                     p.Discount = p.Discount > 0 ? p.Discount : p.Category.Discount > 0 ? p.Category.Discount : null;
                 }
+
+
+                p.ProductVariants = p.ProductVariants.Where(x => x.IsActive).ToList();
                 return new RequestResult<ProductVM>(p);
             }
             private void CleanImages(ProductVM p, string role)
