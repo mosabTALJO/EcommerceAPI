@@ -187,7 +187,7 @@ namespace EcommerceAPI.Core.Products.Queries
                             result.Items = await lst.Skip(query.PageSize * query.PageNumber).Take(query.PageSize).Select(x => new ProductLiteVM
                             {
                                 Id = x.Id,
-                                Name = lang == "en" ? x.NameEn : x.NameAr,
+                                Name = lang == "en" ? x.NameEn : lang == "ar" ? x.NameAr : x.NameTr,
                                 BrandName = lang == "en" ? x.Brand.NameEn : lang == "ar" ? x.Brand.NameAr : x.Brand.NameTr,
                                 SalesPrice = currencyRate == 0 ? x.SalesPrice : x.SalesPrice * currencyRate,
                                 Discount = x.Discount > 0 ? x.Discount : x.Category.Discount > 0 ? x.Category.Discount : null,
@@ -276,8 +276,6 @@ namespace EcommerceAPI.Core.Products.Queries
                                     {
                                         //if (pageNumberReached == 27 && query.PageNumber == 27 && query.PageSize == 30)
                                         //    throw new Exception(currentProductsReached + ", " + allBrands.Count + ", " + allBrands.FirstOrDefault()?.ProductsCount + ", BINDEX:" + brandIndex);
-
-
                                         var brand = allBrands.ElementAtOrDefault(brandIndex);
                                         var productsToTakeFromBrand = currentProductsReached <= query.PageSize - brand.ProductsToBeTaken ? brand.ProductsToBeTaken : query.PageSize - currentProductsReached;
 
