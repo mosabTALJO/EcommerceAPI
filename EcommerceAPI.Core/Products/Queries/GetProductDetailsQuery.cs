@@ -34,6 +34,7 @@ namespace EcommerceAPI.Core.Products.Queries
                 var p = await _productService.Queryable().IgnoreQueryFilters()
                 .Where(x => query.Role == "Admin" || x.IsActive)
                 .Where(x => !x.DeletedAt.HasValue)
+                .Include(x => x.ProductVariants.Where(x => x.IsActive))
                 .To<ProductVM>(_mapper)
                 .FirstOrDefaultAsync(x => x.Id == query.Id);
                 if (p == null)

@@ -51,12 +51,15 @@ namespace EcommerceAPI.Services
                 if (variant == null)
                 {
                     if (_orderItemRepo.Queryable().Any(oi => oi.ProductVariantId == dbVariant.Id))
+                    {
                         dbVariant.StockLevel = 0;
+                        dbVariant.IsActive = false;
+                    }
                     else
                     {
                         _productVariantRepo.Delete(dbVariant);
-                        await _productVariantAttributeRepo.Queryable().Where(x => x.ProductVariantID == dbVariant.Id).ExecuteDeleteAsync();
                     }
+                    await _productVariantAttributeRepo.Queryable().Where(x => x.ProductVariantID == dbVariant.Id).ExecuteDeleteAsync();
                 }
                 else
                 {
@@ -113,7 +116,7 @@ namespace EcommerceAPI.Services
         }
         public IQueryable<ProductVariant> GetProductVariant(int productId)
         {
-            return _productVariantRepo.Queryable().Where(x => x.ProductId == productId);
+            return _productVariantRepo.Queryable().Where(x => x.ProductId == productId && x.IsActive);
         }
     }
 }
