@@ -7,12 +7,13 @@ namespace EcommerceAPI.Core.Users.Command
 {
     public class UpdateUserCommand : IRequest<RequestResult<bool>>
     {
+        public void SetUserId(string UserId) =>this.UserId = UserId;
         public string? DisplayName { get; set; }
         public string? PhoneNumber { get; set; }
         public required string Email { get; set; }
         public string? Password { get; set; }
         public required string Country { get; set; }
-        public string UserId { get; set; } = string.Empty;
+        private string UserId { get; set; } = string.Empty;
         public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, RequestResult<bool>>
         {
             private readonly UserManager<AppUser> _userManager;

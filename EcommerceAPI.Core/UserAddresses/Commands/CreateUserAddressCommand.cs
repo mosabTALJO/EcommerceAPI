@@ -10,7 +10,6 @@ namespace EcommerceAPI.Core.UserAddresses.Commands
 {
     public class CreateUserAddressCommand : IRequest<RequestResult<int>>
     {
-        public string AppUserId { get; set; } = string.Empty;
         public required string Name { get; set; }
         public required string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;

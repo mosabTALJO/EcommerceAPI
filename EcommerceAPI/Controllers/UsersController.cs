@@ -23,7 +23,7 @@ namespace EcommerceAPI.Web.Controllers
         [Authorize]
         public async Task<ActionResult<RequestResult<bool>>> UpdateUser([FromBody] UpdateUserCommand command)
         {
-            command.UserId = User.Identity.Name;
+            command.SetUserId(User.Identity.Name);
             return GetActionResult(await _mediator.Send(command));
         }
 

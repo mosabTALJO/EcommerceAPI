@@ -57,7 +57,7 @@ namespace EcommerceAPI.Web.Controllers
         [ApiExplorerSettings(GroupName = "fe")]
         public async Task<ActionResult<RequestResult<bool>>> Delete(int ProductID)
         {
-            return GetActionResult(await _mediator.Send(new DeleteFavoriteProductCommand { ProductID = ProductID }));
+            return GetActionResult(await _mediator.Send(new DeleteFavoriteProductCommand { ProductID = ProductID, UserId = User.Identity.Name }));
         }
     }
 }

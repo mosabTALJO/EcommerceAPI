@@ -72,7 +72,7 @@ namespace EcommerceAPI.Core.Carts
                 //Calcualte Prices
                 oi.ProductSalesPrice = pv.SalesPrice;// * order.CurrencyRate;
                 oi.ProductDiscount = pv.Discount > 0 ? pv.Discount : pv.ProductDiscount > 0 ? pv.ProductDiscount : pv.CategoryDiscount > 0 ? pv.CategoryDiscount : null;
-                oi.SalePrice = oi.ProductSalesPrice - oi.ProductSalesPrice * (oi.ProductDiscount ?? 0) / 100;
+                oi.SalePrice = pv.SalesPrice - pv.SalesPrice * (pv.Discount ?? 0) / 100;
 
                 totalWithoutCuponDiscount += oi.SalePrice * oi.Qty;
                 oi.SalePrice = oi.SalePrice - oi.SalePrice * (oi.CoupunDiscount ?? 0) / 100;

@@ -9,6 +9,7 @@ namespace EcommerceAPI.Core.ProductFavorites.Commands
     public class DeleteFavoriteProductCommand : IRequest<RequestResult<bool>>
     {
         public int ProductID { get; set; }
+        public string UserId { get; set; }
         public class DeleteFavoriteProductCommandHandler : IRequestHandler<DeleteFavoriteProductCommand, RequestResult<bool>>
         {
             private readonly IProductFavoriteService _productFavoriteService;
@@ -21,7 +22,7 @@ namespace EcommerceAPI.Core.ProductFavorites.Commands
             }
             public async Task<RequestResult<bool>> Handle(DeleteFavoriteProductCommand command, CancellationToken cancellationToken)
             {
-                var item = await _productFavoriteService.Queryable().FirstOrDefaultAsync(x => x.ProductId == command.ProductID);
+                var item = await _productFavoriteService.Queryable().FirstOrDefaultAsync(x => x.AppUserId == command.UserId && x.ProductId == command.ProductID);
                 if (item is null)
                     return new RequestResult<bool>(ActionResultType.NotFound);
 
