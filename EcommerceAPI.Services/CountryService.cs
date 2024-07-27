@@ -9,6 +9,7 @@ namespace EcommerceAPI.Services
     {
         Task<List<Country>> GetCountries();
         Country GetCountry(string code);
+        void CreateCountryData(Country c, City[] passedCities);
         void UpdateCountryData(Country c, City[] passedCities);
     }
     public class CountryService : Service<Country>, ICountryService
@@ -28,6 +29,16 @@ namespace EcommerceAPI.Services
             var c = Repository.Queryable().AsNoTracking().FirstOrDefault(x => x.Code == code);
 
             return c;
+        }
+        public void CreateCountryData(Country c, City[] passedCities)
+        {
+            foreach (var newItem in passedCities.ToArray())
+            {
+                newItem.Country = c;
+                newItem.CountryId = c.Id;
+                _cityRepo.Insert(newItem);
+            }
+            Insert(c);
         }
         public void UpdateCountryData(Country c, City[] passedCities)
         {

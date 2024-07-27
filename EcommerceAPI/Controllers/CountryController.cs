@@ -40,6 +40,13 @@ namespace EcommerceAPI.Web.Controllers
             return GetActionResult(await _mediator.Send(new GetMainScreenCountriesQuery()));
         }
 
+        // Post api/Country
+        [HttpPost]
+        [Authorize(Policy = PoliciesText.EditCountries)]
+        [ApiExplorerSettings(GroupName = "cp")]
+        public async Task<ActionResult<RequestResult<bool>>> Put([FromBody] CreateCountryCommand command) =>
+            GetActionResult(await _mediator.Send(command));
+
         // Put api/Country
         [HttpPut("{Id}")]
         [Authorize(Policy = PoliciesText.EditCountries)]
