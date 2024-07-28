@@ -6,13 +6,11 @@ using EcommerceAPI.Shared.Helpers;
 using EcommerceAPI.Shared.Helpers.Abstractions;
 using EcommerceAPI.UnitOfWork.Abstractions;
 using EcommerceAPI.UnitOfWork.EF;
-using EcommerceAPI.UnitOfWork.Services;
 using EcommerceAPI.Web.Helpers;
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
@@ -114,12 +112,12 @@ builder.Services.Configure<SendGridEmailSenderOptions>(options =>
     options.SenderEmail = builder.Configuration["ExternalProviders:SendGrid:SenderEmail"];
     options.SenderName = builder.Configuration["ExternalProviders:SendGrid:SenderName"];
 });
-//builder.Services.AddHangfireServer();
-//builder.Services.AddHangfire(x =>
-//{
-//    x.UseSqlServerStorage("");
-//    x.UseFilter(new AutomaticRetryAttribute { Attempts = 0 });
-//});
+builder.Services.AddHangfireServer();
+builder.Services.AddHangfire(x =>
+{
+    x.UseSqlServerStorage("server=localhost;database=EcommerceHangfire;User ID=EcommerceHF;password=xvu3Ki5121;MultipleActiveResultSets=True;Encrypt=False");
+    x.UseFilter(new AutomaticRetryAttribute { Attempts = 0 });
+});
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -202,6 +200,7 @@ if (!builder.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/fe/swagger.json", "Mobile");
     });
 }
+app.UseHangfireDashboard("/hangfire", new DashboardOptions { Authorization = [new MyAuthorizationFilter(tokenValidationParameters)] });
 
 app.UseCors();
 app.UseHttpsRedirection();

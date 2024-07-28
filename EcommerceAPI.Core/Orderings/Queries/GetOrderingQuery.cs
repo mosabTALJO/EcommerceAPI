@@ -35,10 +35,10 @@ namespace EcommerceAPI.Core.Orderings.Queries
                 var categoryIds = await _categoryService.GetRelatedCategories(query.CategoryId);
 
                 var brands = await (from x in dbContext.Products
-                    .Where(x => categoryIds.Contains(x.CategoryId.Value))
-                    .GroupBy(x => x.BrandId).Select(x => new { Id = x.Key.Value, ProductsCount = x.Count() })
+                                        .Where(x => x.IsActive && categoryIds.Contains(x.CategoryId.Value))
+                                        .GroupBy(x => x.BrandId).Select(x => new { Id = x.Key.Value, ProductsCount = x.Count() })
                                     from b in dbContext.Brands
-                                    where b.Id == x.Id
+                                    where b.Id == x.Id && b.IsActive
                                     where string.IsNullOrEmpty(query.Search) || b.NameAr.ToLower().Contains(query.Search) || b.NameEn.ToLower().Contains(query.Search) || b.NameTr.ToLower().Contains(query.Search)
                                     select new BrandVM
                                     {

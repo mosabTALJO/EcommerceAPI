@@ -121,6 +121,7 @@ namespace EcommerceAPI.Services
         public DbSet<Coupon> Coupons { get; set; }
         public DbSet<ProductFavorite> ProductFavorites { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItem { get; set; }
         public DbSet<CurrencyRate> CurrencyRates { get; set; }
         public DbSet<OrderCategoryBrand> OrderCategoryBrands { get; set; }
         public DbSet<CollectionItem> CollectionItems { get; set; }
