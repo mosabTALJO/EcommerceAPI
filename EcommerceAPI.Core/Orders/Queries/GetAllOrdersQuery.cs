@@ -46,8 +46,7 @@ namespace EcommerceAPI.Core.Orders.Queries
                         x.RecipientFirstName.Contains(query.Search) ||
                         x.RecipientLastName.Contains(query.Search) ||
                         x.Customer.DisplayName.Contains(query.Search) ||
-                        x.Customer.PhoneNumber.Contains(query.Search) ||
-                        x.OrderItems.Any(x => x.OrderNumber == query.Search));
+                        x.Customer.PhoneNumber.Contains(query.Search));
                 if (!string.IsNullOrEmpty(query.Country))
                     lst = lst.Where(x => x.Country == query.Country);
                 if (!string.IsNullOrEmpty(query.City))

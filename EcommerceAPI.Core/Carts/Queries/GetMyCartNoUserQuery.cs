@@ -5,6 +5,7 @@ using EcommerceAPI.Shared.Helpers;
 using EcommerceAPI.Shared.ViewModels;
 using EcommerceAPI.UnitOfWork.Abstractions;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace EcommerceAPI.Core.Carts.Queries
 {
@@ -51,12 +52,26 @@ namespace EcommerceAPI.Core.Carts.Queries
                     Currency = query.Currency ?? "KWD"
                 };
 
+
                 foreach (var item in query.Items)
                 {
-                    o.OrderItems.Add(new OrderItem { ProductVariantId = item.ProductVariantId, Qty = item.Quantity, ProductVariant = new ProductVariant { Id = item.ProductVariantId } });
+                    var pv = await _productVariantService.Queryable().Where(x => x.Id == item.ProductVariantId)
+                     .Select(x => new { x.Id, x.ProductId, x.Name, x.Product.MainImage }).FirstOrDefaultAsync();
+                    if (pv != null)
+                    {
+                        var oi = new OrderItem
+                        {
+                            ProductVariantId = item.ProductVariantId,
+                            Qty = item.Quantity,
+                            ProductName = pv.Name,
+                            ProductImage = pv.MainImage,
+                            OrderItemState = OrderItemState.Pending,
+                        };
+                        o.OrderItems.Add(oi);
+                    }
                 }
 
-                await CartOrderOperations.CalcualteCartItems(_countryService, _productVariantService, _orderService, _unitOfWork, _collectionService, _currencyRateService, o, coupon );
+                await CartOrderOperations.CalcualteCartItems(_countryService, _productVariantService, _orderService, _unitOfWork, _collectionService, _currencyRateService, o, coupon);
                 return new RequestResult<OrderVM>(_mapper.Map<OrderVM>(o));
             }
         }

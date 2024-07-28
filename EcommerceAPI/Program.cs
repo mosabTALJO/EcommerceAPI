@@ -6,10 +6,13 @@ using EcommerceAPI.Shared.Helpers;
 using EcommerceAPI.Shared.Helpers.Abstractions;
 using EcommerceAPI.UnitOfWork.Abstractions;
 using EcommerceAPI.UnitOfWork.EF;
+using EcommerceAPI.UnitOfWork.Services;
 using EcommerceAPI.Web.Helpers;
+using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
@@ -105,8 +108,18 @@ builder.Services.AddAuthentication(option =>
 });
 
 //////////////////////////////
-
-
+builder.Services.Configure<SendGridEmailSenderOptions>(options =>
+{
+    options.ApiKey = builder.Configuration["ExternalProviders:SendGrid:ApiKey"];
+    options.SenderEmail = builder.Configuration["ExternalProviders:SendGrid:SenderEmail"];
+    options.SenderName = builder.Configuration["ExternalProviders:SendGrid:SenderName"];
+});
+//builder.Services.AddHangfireServer();
+//builder.Services.AddHangfire(x =>
+//{
+//    x.UseSqlServerStorage("");
+//    x.UseFilter(new AutomaticRetryAttribute { Attempts = 0 });
+//});
 
 builder.Services.AddSwaggerGen(c =>
 {

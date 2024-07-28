@@ -113,11 +113,14 @@ namespace EcommerceAPI.Web.Controllers
         [HttpPost("AcceptItem/{OrderId}/{OrderItemID}")]
         [Authorize(Policy = PoliciesText.UpdateOrder)]
         [ApiExplorerSettings(GroupName = "cp")]
-        public async Task<ActionResult<RequestResult<bool>>> AcceptItem([FromBody] AcceptItemCommand command, int OrderId, int OrderItemID)
+        public async Task<ActionResult<RequestResult<bool>>> AcceptItem(int OrderId, int OrderItemID)
         {
-            command.OrderItemId = OrderItemID;
-            command.OrderId = OrderId;
-            command.UserId = User.Identity.Name;
+            var command = new AcceptItemCommand()
+            {
+                OrderItemId = OrderItemID,
+                OrderId = OrderId,
+                UserId = User.Identity.Name,
+            };
             return GetActionResult(await _mediator.Send(command));
         }
 

@@ -66,7 +66,6 @@ namespace EcommerceAPI.Services
                     dbVariant.Name = variant.Name;
                     dbVariant.SalesPrice = variant.SalesPrice;
                     dbVariant.Discount = variant.Discount;
-                    dbVariant.MainImage = variant.MainImage;
                     dbVariant.Images = variant.Images;
                     dbVariant.SKU = variant.SKU;
                     dbVariant.FullDescription = variant.FullDescription;

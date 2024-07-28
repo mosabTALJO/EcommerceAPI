@@ -11,6 +11,7 @@ namespace EcommerceAPI.Services
         Country GetCountry(string code);
         void CreateCountryData(Country c, City[] passedCities);
         void UpdateCountryData(Country c, City[] passedCities);
+        void DeleteCountryData(Country c);
     }
     public class CountryService : Service<Country>, ICountryService
     {
@@ -63,6 +64,13 @@ namespace EcommerceAPI.Services
                 _cityRepo.Insert(newItem);
             }
             Update(c);
+        }
+
+        public void DeleteCountryData(Country c)
+        {
+            foreach (var newItem in c.Cities)
+                _cityRepo.Delete(newItem);
+            Delete(c);
         }
     }
 }

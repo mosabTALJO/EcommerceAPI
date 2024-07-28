@@ -1053,31 +1053,25 @@ namespace EcommerceAPI.Services.Migrations
                     b.Property<DateTime?>("InStockDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<double>("KDV")
-                        .HasColumnType("double precision");
-
                     b.Property<int>("OrderId")
                         .HasColumnType("integer");
 
                     b.Property<int>("OrderItemState")
                         .HasColumnType("integer");
 
-                    b.Property<string>("OrderNumber")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<double>("ProductCompanyPrice")
-                        .HasColumnType("double precision");
-
                     b.Property<double?>("ProductDiscount")
                         .HasColumnType("double precision");
 
-                    b.Property<double>("ProductSalesPrice")
-                        .HasColumnType("double precision");
-
-                    b.Property<string>("ProductUrl")
+                    b.Property<string>("ProductImage")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<string>("ProductName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<double>("ProductSalesPrice")
+                        .HasColumnType("double precision");
 
                     b.Property<int>("ProductVariantId")
                         .HasColumnType("integer");
@@ -1096,9 +1090,6 @@ namespace EcommerceAPI.Services.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<double>("SalePrice")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("SalePriceNoKDV")
                         .HasColumnType("double precision");
 
                     b.Property<string>("ShippingCode")
@@ -1452,11 +1443,6 @@ namespace EcommerceAPI.Services.Migrations
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("MainImage")
-                        .IsRequired()
-                        .HasMaxLength(400)
-                        .HasColumnType("character varying(400)");
 
                     b.Property<string>("Name")
                         .IsRequired()

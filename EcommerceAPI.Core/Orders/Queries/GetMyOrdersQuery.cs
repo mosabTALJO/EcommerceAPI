@@ -45,13 +45,7 @@ namespace EcommerceAPI.Core.Orders.Queries
                     CreatedAt = x.CreatedAt,
                     PaymentType = x.PaymentType,
                     OrderStatus = x.OrderStatus,
-                    ProductImages = string.Join(",", x.OrderItems.Select(i => i.ProductVariant!.MainImage))
-                    //ProductImages = string.Join(",",
-                    //    x.OrderItems.Where(x => !string.IsNullOrEmpty(x.Product.MainImage)).Select(x =>
-                    //    x.Product.VendorId == Entities.Models.Vendor.Custom ?
-                    //    $"https://api.trgatestore.com/api/Files/PreviewImage/{x.Product.MainImage}?w=300&h=400" :
-                    //    x.Product.MainImage.StartsWith("https") ? x.Product.MainImage :
-                    //    $"https://cdn.dsmcdn.com/mnresize/{600}/{500}" + x.Product.MainImage)),
+                    ProductImages = string.Join(",", x.OrderItems.Select(i => i.ProductImage))
                 });
 
                 var items = await lstResult.Skip(query.PageSize * query.PageNumber).Take(query.PageSize).ToArrayAsync();

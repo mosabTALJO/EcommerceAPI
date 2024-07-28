@@ -3,6 +3,7 @@ using EcommerceAPI.Services;
 using EcommerceAPI.Shared.Helpers;
 using EcommerceAPI.Shared.ViewModels;
 using EcommerceAPI.UnitOfWork.Abstractions;
+using Google.Apis.Util;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -58,7 +59,7 @@ namespace EcommerceAPI.Core.Carts.Command
                         continue;
 
                     var pv = await _productVariantService.Queryable().Where(x => x.Id == item.ProductVariantId)
-                        .Select(x => new { x.Id, x.ProductId }).FirstOrDefaultAsync();
+                        .Select(x => new { x.Id, x.ProductId, x.Name, x.Product.MainImage }).FirstOrDefaultAsync();
                     if (pv == null)
                     {
                         if (oi != null)
@@ -69,7 +70,14 @@ namespace EcommerceAPI.Core.Carts.Command
                     {
                         if (oi is null)
                         {
-                            oi = new OrderItem { ProductVariantId = item.ProductVariantId, Qty = item.Quantity, OrderItemState = OrderItemState.Pending };
+                            oi = new OrderItem
+                            {
+                                ProductVariantId = item.ProductVariantId,
+                                Qty = item.Quantity,
+                                ProductName = pv.Name,
+                                ProductImage = pv.MainImage,
+                                OrderItemState = OrderItemState.Pending,
+                            };
                             o.OrderItems.Add(oi);
                         }
                         oi.Qty = item.Quantity;

@@ -11,10 +11,6 @@ namespace EcommerceAPI.Core.Orders.Commands
     {
         public int OrderId { get; set; }
         public int OrderItemId { get; set; }
-        public string ProductUrl { get; set; }
-        public string OrderNumber { get; set; }
-        public double SalePriceNoKDV { get; set; }
-        public double KDV { get; set; }
         public string? UserId { get; set; }
         public class AcceptItemCommandHandler : IRequestHandler<AcceptItemCommand, RequestResult<bool>>
         {
@@ -42,11 +38,6 @@ namespace EcommerceAPI.Core.Orders.Commands
                     return new RequestResult<bool>(ActionResultType.NotFound, "Item not found");
                 if (oi.OrderItemState != OrderItemState.Pending && oi.OrderItemState != OrderItemState.Rejected && oi.OrderItemState != OrderItemState.Cancelled)
                     return new RequestResult<bool>(ActionResultType.BadRequest, "Status error");
-
-                oi.SalePriceNoKDV = command.SalePriceNoKDV;
-                oi.ProductUrl = command.ProductUrl;
-                oi.OrderNumber = command.OrderNumber;
-                oi.KDV = command.KDV;
 
                 if (oi.OrderItemState == OrderItemState.Rejected || oi.OrderItemState == OrderItemState.Cancelled)
                 {

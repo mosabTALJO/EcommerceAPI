@@ -43,6 +43,13 @@ namespace EcommerceAPI.Core.Countries.Commands
             {
                 var country = new Country
                 {
+                    NameAr = command.NameAr,
+                    NameEn = command.NameEn,
+                    NameTr = command.NameTr,
+                    Code = command.Code,
+                    CurrencyCode = command.CurrencyCode,
+                    PhoneCode = command.PhoneCode,
+                    Image = command.Image,
                     IsActive = command.IsActive,
                     BannerImage = command.BannerImage,
                     DeliveryLimitAmount = command.DeliveryLimitAmount,

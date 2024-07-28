@@ -44,7 +44,7 @@ namespace EcommerceAPI.Web.Controllers
         [HttpPost]
         [Authorize(Policy = PoliciesText.EditCountries)]
         [ApiExplorerSettings(GroupName = "cp")]
-        public async Task<ActionResult<RequestResult<bool>>> Put([FromBody] CreateCountryCommand command) =>
+        public async Task<ActionResult<RequestResult<bool>>> Post([FromBody] CreateCountryCommand command) =>
             GetActionResult(await _mediator.Send(command));
 
         // Put api/Country
@@ -54,6 +54,19 @@ namespace EcommerceAPI.Web.Controllers
         public async Task<ActionResult<RequestResult<bool>>> Put(int id, [FromBody] UpdateCountryCommand command)
         {
             command.Id = id;
+            return GetActionResult(await _mediator.Send(command));
+        }
+
+        // Delete api/Country
+        [HttpDelete("{Id}")]
+        [Authorize(Policy = PoliciesText.EditCountries)]
+        [ApiExplorerSettings(GroupName = "cp")]
+        public async Task<ActionResult<RequestResult<bool>>> Delete(int id)
+        {
+            var command = new DeleteCountryCommand
+            {
+                Id = id,
+            };
             return GetActionResult(await _mediator.Send(command));
         }
 

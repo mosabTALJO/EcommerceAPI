@@ -15,8 +15,6 @@ namespace EcommerceAPI.Data.Models
         public int StockLevel { get; set; }
         public double SalesPrice { get; set; }
         public double? Discount { get; set; }
-        [MaxLength(400)]
-        public string MainImage { get; set; }
         [MaxLength(5000)]
         public string Images { get; set; }
         [MaxLength(50)]

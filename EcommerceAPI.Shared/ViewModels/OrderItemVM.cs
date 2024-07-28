@@ -18,7 +18,8 @@ namespace EcommerceAPI.Shared.ViewModels
         public string Currency { get; set; }
         public string ReturnReason { get; set; }
         public double SalePrice { get; set; }
-        public double ProductCompanyPrice { get; set; }
+        public string ProductImage { get; set; } = string.Empty;
+        public string ProductName { get; set; } = string.Empty;
         public double ProductSalesPrice { get; set; }
         public double? ProductDiscount { get; set; }
         public int Qty { get; set; }

@@ -5,11 +5,11 @@ using EcommerceAPI.UnitOfWork.Abstractions;
 using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace EcommerceAPI.Web.Controllers
 {
     [ApiExplorerSettings(GroupName = "cp")]
-    [Authorize(Policy = PoliciesText.CleaningDatabase)]
     public class SettingsController : MyControllerBase
     {
         private readonly ISettingsService _settingsService;
@@ -23,10 +23,12 @@ namespace EcommerceAPI.Web.Controllers
         }
 
         [HttpGet("CanCleanDatabase")]
+        [Authorize(Policy = PoliciesText.CleaningDatabase)]
         public ActionResult<bool> CanCleanDatabase() =>
-           Ok(_settingsService.Queryable().FirstOrDefault(x => x.Name == "IsCleaning")?.Value != "1");
+           Ok((_settingsService.Queryable().FirstOrDefault(x => x.Name == "IsCleaning")?.Value ?? "0") != "1");
 
         [HttpPost("CleanDatabase/{CategoryId}")]
+        [Authorize(Policy = PoliciesText.CleaningDatabase)]
         public async Task<ActionResult<bool>> CleanDatabase(int CategoryId = 0)
         {
             var record = _settingsService.Queryable().FirstOrDefault(x => x.Name == "IsCleaning") ?? new Settings { Name = "IsCleaning", };
@@ -47,6 +49,7 @@ namespace EcommerceAPI.Web.Controllers
         }
 
         [HttpPost("CleanDatabase/{CategoryId}/{BrandId}")]
+        [Authorize(Policy = PoliciesText.CleaningDatabase)]
         public async Task<ActionResult<bool>> CleanDatabaseWithBrand(int CategoryId = 0, int BrandId = 0)
         {
             var record = _settingsService.Queryable().FirstOrDefault(x => x.Name == "IsCleaning") ?? new Settings { Name = "IsCleaning", };
@@ -64,6 +67,33 @@ namespace EcommerceAPI.Web.Controllers
 
             BackgroundJob.Enqueue<SettingsService>(x => x.CleanDbWithBrandId(allCats, BrandId));
             return Ok(true);
+        }
+
+        [HttpPost("UpdateAppSettings")]
+        [Authorize(Policy = PoliciesText.AdminPermissions)]
+        public async Task<ActionResult<RequestResult<bool>>> UpdateSettings([FromBody] Settings[] settings)
+        {
+            var oldSettings = settings.Where(x => x.Id > 0).ToArray();
+            var oldSettingsIds = oldSettings.Select(x => x.Id).ToArray();
+
+            var dbSettings = _settingsService.Queryable().Where(x => oldSettingsIds.Contains(x.Id)).ToArray();
+            foreach (var dbSetting in dbSettings)
+            {
+                var s = settings.First(x => x.Id == dbSetting.Id);
+                dbSetting.Name = s.Name;
+                dbSetting.Value = s.Value;
+            }
+            var newSettings = settings.Except(oldSettings).ToList();
+            newSettings.ForEach(x => _settingsService.Insert(x));
+            await _unitOfWork.SaveChangesAsync();
+            return new RequestResult<bool>(true, ActionResultType.OK);
+        }
+        [HttpGet("GetAppSettings")]
+        [AllowAnonymous]
+        public async Task<ActionResult<RequestResult<Settings[]>>> GetAppSettings()
+        {
+            var dbSettings = await _settingsService.Queryable().ToArrayAsync();
+            return new RequestResult<Settings[]>(dbSettings, ActionResultType.OK);
         }
     }
 }

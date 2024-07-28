@@ -48,12 +48,18 @@ namespace EcommerceAPI.Core.Countries.Commands
                 {
                     dbCountry.IsActive = command.IsActive;
                     dbCountry.BannerImage = command.BannerImage;
+                    dbCountry.Image = command.Image;
+                    dbCountry.NameAr = command.NameAr;
+                    dbCountry.NameEn = command.NameEn;
+                    dbCountry.NameTr = command.NameTr;
+                    dbCountry.Code = command.Code;
+                    dbCountry.CurrencyCode = command.CurrencyCode;
+                    dbCountry.PhoneCode = command.PhoneCode;
                     dbCountry.DeliveryLimitAmount = command.DeliveryLimitAmount;
                     dbCountry.DeliveryLimitPercent = command.DeliveryLimitPercent;
                     dbCountry.AverageDeliveryDays = command.AverageDeliveryDays;
                     dbCountry.DeliveryLimitFixedAmount = command.DeliveryLimitFixedAmount;
                     dbCountry.OnDoorPayment = command.OnDoorPayment;
-                    //dbCountry.MyFatoorahPayment = command.MyFatoorahPayment;
                     dbCountry.PrivacyPolicyText = command.PrivacyPolicyText;
 
                     _countryService.UpdateCountryData(dbCountry, command.Cities.Select(x => _mapper.Map<City>(x)).ToArray());

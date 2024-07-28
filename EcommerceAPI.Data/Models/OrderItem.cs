@@ -20,7 +20,8 @@ namespace EcommerceAPI.Data.Models
         public DateTime? InStockDate { get; set; }
         public string ReturnReason { get; set; } = string.Empty;
         public double SalePrice { get; set; }
-        public double ProductCompanyPrice { get; set; }
+        public string ProductImage { get; set; } = string.Empty;
+        public string ProductName { get; set; } = string.Empty;
         public double ProductSalesPrice { get; set; }
         public double? ProductDiscount { get; set; }
         public int Qty { get; set; }
@@ -28,10 +29,6 @@ namespace EcommerceAPI.Data.Models
         public double? CoupunDiscount { get; set; }
         public int OrderId { get; set; }
         public Order Order { get; set; }
-        public string ProductUrl { get; set; } = string.Empty;
-        public string OrderNumber { get; set; } = string.Empty;
-        public double SalePriceNoKDV { get; set; }
-        public double KDV { get; set; }
         public double DiscountAmount { get; set; }
         public virtual ICollection<OrderLog> Logs { get; set; }
         [NotMapped]
