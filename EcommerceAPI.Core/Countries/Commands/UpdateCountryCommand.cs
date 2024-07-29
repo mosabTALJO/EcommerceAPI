@@ -26,7 +26,7 @@ namespace EcommerceAPI.Core.Countries.Commands
         public string Image { get; set; } = string.Empty;
         public bool IsActive { get; set; }
         public bool OnDoorPayment { get; set; }
-        //public bool MyFatoorahPayment { get; set; }
+        public bool IsDefault { get; set; }
         public string PrivacyPolicyText { get; set; } = string.Empty;
         public ICollection<CityVM> Cities { get; set; }
 
@@ -46,6 +46,14 @@ namespace EcommerceAPI.Core.Countries.Commands
             {
                 if (await _countryService.Queryable().AsNoTracking().AsNoTracking().FirstOrDefaultAsync(x => x.Id == command.Id) is Country dbCountry)
                 {
+                    if (dbCountry.IsDefault && !command.IsDefault)
+                        return new RequestResult<bool>(ActionResultType.BadRequest, "You have to select other default country first, unable to update the default country");
+                    if (!dbCountry.IsDefault && command.IsDefault)
+                    {
+                        var lst = _countryService.Queryable().Where(x => x.IsDefault).ToList();
+                        lst.ForEach(x => x.IsDefault = false);
+                        lst.ForEach(_countryService.Update);
+                    }
                     dbCountry.IsActive = command.IsActive;
                     dbCountry.BannerImage = command.BannerImage;
                     dbCountry.Image = command.Image;
@@ -61,6 +69,7 @@ namespace EcommerceAPI.Core.Countries.Commands
                     dbCountry.DeliveryLimitFixedAmount = command.DeliveryLimitFixedAmount;
                     dbCountry.OnDoorPayment = command.OnDoorPayment;
                     dbCountry.PrivacyPolicyText = command.PrivacyPolicyText;
+                    dbCountry.IsDefault = command.IsDefault;
 
                     _countryService.UpdateCountryData(dbCountry, command.Cities.Select(x => _mapper.Map<City>(x)).ToArray());
 

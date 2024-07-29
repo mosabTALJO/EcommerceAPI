@@ -5,15 +5,17 @@ VisualStudioVersion = 17.9.34714.143
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcommerceAPI.Web", "EcommerceAPI\EcommerceAPI.Web.csproj", "{DCDB09B5-19B9-4B7D-940A-12F086716B36}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcommerceAPI.Services", "EcommerceAPI.Services\EcommerceAPI.Services.csproj", "{F7DC0429-9231-4D02-B298-59CFD2E4FC70}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcommerceAPI.Services", "EcommerceAPI.Services\EcommerceAPI.Services.csproj", "{F7DC0429-9231-4D02-B298-59CFD2E4FC70}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcommerceAPI.Data", "EcommerceAPI.Data\EcommerceAPI.Data.csproj", "{E3BBA318-2224-4706-B884-A0C0E3004945}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcommerceAPI.Data", "EcommerceAPI.Data\EcommerceAPI.Data.csproj", "{E3BBA318-2224-4706-B884-A0C0E3004945}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcommerceAPI.UnitOfWork", "EcommerceAPI.UnitOfWork\EcommerceAPI.UnitOfWork.csproj", "{C03B69CA-7093-47B8-B900-F58DE47E0F29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcommerceAPI.UnitOfWork", "EcommerceAPI.UnitOfWork\EcommerceAPI.UnitOfWork.csproj", "{C03B69CA-7093-47B8-B900-F58DE47E0F29}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcommerceAPI.Shared", "EcommerceAPI.Shared\EcommerceAPI.Shared.csproj", "{842AABF3-FF4B-4564-9392-29AD36FBE233}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcommerceAPI.Shared", "EcommerceAPI.Shared\EcommerceAPI.Shared.csproj", "{842AABF3-FF4B-4564-9392-29AD36FBE233}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcommerceAPI.Core", "EcommerceAPI.Core\EcommerceAPI.Core.csproj", "{43A74698-6FFA-4521-8365-D5959319C171}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcommerceAPI.Core", "EcommerceAPI.Core\EcommerceAPI.Core.csproj", "{43A74698-6FFA-4521-8365-D5959319C171}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scrapper", "Scrapper\Scrapper.csproj", "{04A3F0B0-9FF0-4773-B965-9334B2F0B6B8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{43A74698-6FFA-4521-8365-D5959319C171}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43A74698-6FFA-4521-8365-D5959319C171}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43A74698-6FFA-4521-8365-D5959319C171}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04A3F0B0-9FF0-4773-B965-9334B2F0B6B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04A3F0B0-9FF0-4773-B965-9334B2F0B6B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04A3F0B0-9FF0-4773-B965-9334B2F0B6B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04A3F0B0-9FF0-4773-B965-9334B2F0B6B8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -24,10 +24,6 @@ namespace EcommerceAPI.Core.Countries.Queries
             public async Task<RequestResult<List<CountryVM>>> Handle(GetMainScreenCountriesQuery request, CancellationToken cancellationToken)
             {
                 var lst = await _countryService.Queryable().To<CountryVM>(_mapper).ToListAsync();
-                lst.ForEach(c =>
-                {
-                    c.Image = _fileService.GetFileUrl(c.Image);
-                });
                 lst.Insert(0, new CountryVM { NameEn = "All Counties", Id = 0, });
                 return new RequestResult<List<CountryVM>>(lst);
             }

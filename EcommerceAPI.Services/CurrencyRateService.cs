@@ -1,13 +1,7 @@
 ﻿using EcommerceAPI.Data.Models;
 using EcommerceAPI.UnitOfWork.Abstractions;
-using EcommerceAPI.UnitOfWork.EF;
 using EcommerceAPI.UnitOfWork.Services;
 using Microsoft.Extensions.Caching.Memory;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EcommerceAPI.Services
 {
@@ -27,7 +21,7 @@ namespace EcommerceAPI.Services
 
         public double GetCurrencyRate(string currency)
         {
-            currency ??= "kwd";
+            currency ??= "usd";
             var key = "CurrencyChange_" + currency.ToLower();
             if (!_cache.TryGetValue(key, out double rateValue))
             {

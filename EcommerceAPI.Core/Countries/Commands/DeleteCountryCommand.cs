@@ -27,6 +27,9 @@ namespace EcommerceAPI.Core.Countries.Commands
             {
                 if (await _countryService.Queryable().Include(x=>x.Cities).AsNoTracking().FirstOrDefaultAsync(x => x.Id == command.Id) is Country dbCountry)
                 {
+                    if (dbCountry.IsDefault)
+                        return new RequestResult<bool>(ActionResultType.BadRequest, "unable to remove the default country");
+
                     _countryService.DeleteCountryData(dbCountry);
                     if (await _unitOfWork.SaveChangesAsync() > 0)
                         return new RequestResult<bool>(true);

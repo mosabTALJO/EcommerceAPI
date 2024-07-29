@@ -214,7 +214,7 @@ namespace EcommerceAPI.Web.Controllers
         [ApiExplorerSettings(GroupName = "cp")]
         public async Task<IActionResult> GeneratePaymentLink(int OrderId)
         {
-            return Ok("https://trgatestore.com");
+            return Ok("https://Ecommerce.usos.co");
         }
 
         // Archive api/Order

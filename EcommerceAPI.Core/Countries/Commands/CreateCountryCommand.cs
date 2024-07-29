@@ -25,6 +25,7 @@ namespace EcommerceAPI.Core.Countries.Commands
         public bool IsActive { get; set; }
         public bool OnDoorPayment { get; set; }
         public string PrivacyPolicyText { get; set; } = string.Empty;
+        public bool IsDefault { get; set; }
         public ICollection<CityVM> Cities { get; set; }
 
         public class CreateCountryCommandHandler : IRequestHandler<CreateCountryCommand, RequestResult<bool>>
@@ -41,6 +42,13 @@ namespace EcommerceAPI.Core.Countries.Commands
 
             public async Task<RequestResult<bool>> Handle(CreateCountryCommand command, CancellationToken cancellationToken)
             {
+                if (command.IsDefault)
+                {
+                    var lst = _countryService.Queryable().Where(x => x.IsDefault).ToList();
+                    lst.ForEach(x => x.IsDefault = false);
+                    lst.ForEach(_countryService.Update);
+                }
+
                 var country = new Country
                 {
                     NameAr = command.NameAr,
@@ -58,6 +66,7 @@ namespace EcommerceAPI.Core.Countries.Commands
                     DeliveryLimitFixedAmount = command.DeliveryLimitFixedAmount,
                     OnDoorPayment = command.OnDoorPayment,
                     PrivacyPolicyText = command.PrivacyPolicyText,
+                    IsDefault = command.IsDefault,
                 };
 
                 _countryService.CreateCountryData(country, command.Cities.Select(x => _mapper.Map<City>(x)).ToArray());

@@ -34,7 +34,7 @@ namespace EcommerceAPI.Core.Auths.Commands
                             Please click the following link to reset your password
                             <a href='{callbackUrl}'>reset your password!</a>
                             <br/><br/><br/>Thank you
-                            <br/>TRGate app";
+                            <br/>Ecommerce app";
                 await _emailSender.SendEmailAsync(command.Email, "Forget password request", msg);
                 return new RequestResult<bool>(true);
             }

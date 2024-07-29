@@ -28,7 +28,7 @@ namespace EcommerceAPI.Data.Models
         public string PrivacyPolicyText { get; set; }
         [MaxLength(60)]
         public string Image { get; set; }
-        public bool IsDelivery { get; set; }
+        public bool IsDefault { get; set; }
         public ICollection<City> Cities { get; set; }
     }
 }

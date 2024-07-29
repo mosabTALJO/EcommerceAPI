@@ -34,12 +34,6 @@ namespace EcommerceAPI.Core.Countries.Queries
                 lst = query.Role != "Admin" ? lst.Where(x => x.IsActive) : lst;
 
                 var items = await lst.To<CountryVM>(_mapper).ToArrayAsync();
-
-                foreach (var item in items)
-                {
-                    item.Image = _fileService.GetFileUrl(item.Image);
-                }
-
                 return new RequestResult<CountryVM[]>(items);
             }
         }

@@ -19,6 +19,7 @@
         public bool OnDoorPayment { get; set; }
         public bool MyFatoorahPayment { get; set; }
         public string PrivacyPolicyText { get; set; }
+        public bool IsDefault { get; set; }
         public ICollection<CityVM> Cities { get; set; }
     }
 }
