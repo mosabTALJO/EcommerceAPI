@@ -60,7 +60,7 @@ namespace EcommerceAPI.Web.Controllers
         {
             var collection = _collectionService.Queryable().Include(x => x.Items).To<CollectionVM>(_mapper).FirstOrDefault(x => x.Id == Id);
             var lang = CultureInfo.CurrentCulture?.TwoLetterISOLanguageName ?? "en";
-            var currencyRate = _currencyRateService.GetCurrencyRate(Request.Headers["Currency"]);
+            string currency = Request.Headers["Currency"];
             var productIds = collection.Items.Select(x => x.ProductId).Distinct().ToArray();
             var products = await _productService.Queryable().Include(x => x.Category)
                 .Where(x => productIds.Contains(x.Id) && x.Category.IsActive)
@@ -70,7 +70,7 @@ namespace EcommerceAPI.Web.Controllers
                     BrandName = lang == "en" ? x.Brand.NameEn : lang == "ar" ? x.Brand.NameAr : x.Brand.NameTr,
                     MainImage = x.MainImage,
                     Id = x.Id,
-                    SalesPrice = x.SalesPrice * currencyRate,
+                    SalesPrice = x.SalesPrice * _currencyRateService.Queryable().FirstOrDefault(c => c.FromCurrencyCode == x.Currency && c.ToCurrencyCode == currency).Rate,
                     Discount = x.Discount > 0 ? x.Discount : x.Category.Discount > 0 ? x.Category.Discount : null,
                     TotalRate = x.TotalRate,
                     CreatedAt = x.CreatedAt,

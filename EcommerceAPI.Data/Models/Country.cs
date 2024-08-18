@@ -15,8 +15,8 @@ namespace EcommerceAPI.Data.Models
         public string Code { get; set; }
         [MaxLength(999)]
         public int PhoneCode { get; set; }
-        [MaxLength(10)]
-        public string CurrencyCode { get; set; }
+        [MaxLength(3)]
+        public string CurrencyCode { get; set; } = string.Empty;
         [MaxLength(90)]
         public string BannerImage { get; set; }
         public bool IsActive { get; set; }

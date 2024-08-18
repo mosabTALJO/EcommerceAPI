@@ -6,6 +6,7 @@
         public required string NameAr { get; set; }
         public required string NameEn { get; set; }
         public required string NameTr { get; set; }
+        public required string Currency { get; set; }
         public string FullDescriptionAr { get; set; } = string.Empty;
         public string FullDescriptionEn { get; set; } = string.Empty;
         public string FullDescriptionTr { get; set; } = string.Empty;

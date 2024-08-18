@@ -11,6 +11,7 @@ namespace EcommerceAPI.Core.Products.Commands
 {
     public class UpdateProductCommand : IRequest<RequestResult<bool>>
     {
+        public string CurrencyCode { get; set; } = string.Empty;
         public int Id { get; set; }
         public string? NameAr { get; set; } = string.Empty;
         public string NameEn { get; set; }
@@ -64,6 +65,7 @@ namespace EcommerceAPI.Core.Products.Commands
                     p.IsActive = command.IsActive;
                     p.OnlinePaymentOnly = command.OnlinePaymentOnly;
                     p.ProductVariants = command.ProductVariants.Select(_mapper.Map<ProductVariant>).ToList();
+                    p.Currency = command.CurrencyCode;
 
                     await _productService.UpdateProduct(p);
                     if (await _unitOfWork.SaveChangesAsync() > 0)

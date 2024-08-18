@@ -19,7 +19,6 @@ namespace EcommerceAPI.Core.Inits.Queries
         public string Role { get; set; }
         public string Currency { get; set; }
         public string lang { get; set; }
-        public double CurrencyRate { get; set; }
         public class GetWebInitQueryHandler : IRequestHandler<GetWebInitQuery, RequestResult<WebInitData>>
         {
             public readonly IMemoryCache _memoryCache;
@@ -52,8 +51,6 @@ namespace EcommerceAPI.Core.Inits.Queries
             public async Task<RequestResult<WebInitData>> Handle(GetWebInitQuery query, CancellationToken cancellationToken)
             {
                 var lang = CultureInfo.CurrentCulture?.TwoLetterISOLanguageName ?? "en";
-                var currencyRate = _currencyRateService.GetCurrencyRate(query.Currency);
-
                 var user = string.IsNullOrEmpty(query.UserId) ? null : _userManager.Users.FirstOrDefault(x => x.Id == query.UserId);
 
                 var cacheKey = $"GetWebInitCache_{lang}_{query.Currency}";
@@ -97,19 +94,19 @@ namespace EcommerceAPI.Core.Inits.Queries
                             if (lst.ElementAtOrDefault(i + 2)?.BaseItemType == BaseItemTypes.SingleBanner)
                             {
                                 var b3 = BaseItemVM.GenerateFromBaseItem(lst[i + 2]);
-                                bi.MultipleBanners.Banners = new SingleBanner[] { b1.SingleBanner, b2.SingleBanner, b3.SingleBanner, };
+                                bi.MultipleBanners.Banners = [b1.SingleBanner, b2.SingleBanner, b3.SingleBanner,];
                                 i += 2;
                             }
                             else
                             {
-                                bi.MultipleBanners.Banners = new SingleBanner[] { b1.SingleBanner, b2.SingleBanner, };
+                                bi.MultipleBanners.Banners = [b1.SingleBanner, b2.SingleBanner,];
                                 i++;
                             }
                             bItems.Add(bi);
                             continue;
                         }
                         var x = BaseItemVM.GenerateFromBaseItem(item);
-                        BaseItemCleaner.CleanItems(x, _mapper, _brandService, _categoryService, _productService, query.lang, query.CurrencyRate);
+                        BaseItemCleaner.CleanItems(x, _mapper, _brandService, _categoryService, _productService, _currencyRateService, query.Currency, query.lang);
                         bItems.Add(x);
                     }
                     init.BaseItems = bItems;

@@ -10,6 +10,7 @@ namespace EcommerceAPI.Core.Products.Commands
 {
     public class CreateProductCommand : IRequest<RequestResult<int>>
     {
+        public string CurrencyCode { get; set; } = string.Empty;
         public string NameAr { get; set; }
         public string NameEn { get; set; }
         public string NameTr { get; set; }

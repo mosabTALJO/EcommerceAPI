@@ -7,6 +7,7 @@ using EcommerceAPI.Shared.Helpers.Abstractions;
 using EcommerceAPI.UnitOfWork.Abstractions;
 using EcommerceAPI.UnitOfWork.EF;
 using EcommerceAPI.Web.Helpers;
+using Google.Api.Gax;
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -14,6 +15,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -176,6 +178,12 @@ if (!builder.Environment.IsDevelopment())
         var roleManager = serviceScope.ServiceProvider.GetService<RoleManager<IdentityRole>>();
         dbContext?.Database.Migrate();
         MySeedInitializer.SeedData(userManager, roleManager, memoryCache);
+
+        if (!builder.Environment.IsDevelopment())
+        {
+            RecurringJob.RemoveIfExists("RefreshPrices");
+            RecurringJob.AddOrUpdate("RefreshPrices", () => Scrapper.CurrencyScrapper.Scrap(ICurrencyRateService.CurrencyCodes), Cron.Hourly(1));
+        }
     }
 }
 //else
@@ -208,5 +216,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseMiddleware<ErrorHandlerMiddleware>();
 app.MapControllers();
+
+
+
 
 app.Run();

@@ -7,11 +7,46 @@ namespace Scrapper
 {
     public class CurrencyScrapper
     {
-        public static async Task<bool> Scrap()
+        public static async Task<List<CurrencyRate>> Scrap(string[] toCurrencies)
         {
-            ScrapingBrowser sbrow = new ScrapingBrowser();
-            var webPage = await sbrow.NavigateToPageAsync(new Uri("https://kur.doviz.com/"));
-            var lst = webPage.Html.CssSelect("table[id='currencies'] tbody tr").ToArray();
+            var items = new List<CurrencyRate>();
+
+            foreach (var fromCurrency in toCurrencies)
+            {
+                ScrapingBrowser sbrow = new ScrapingBrowser();
+                var webPage = await sbrow.NavigateToPageAsync(new Uri("https://www.xe.com/currencytables/?from=" + fromCurrency));
+                var lst = webPage.Html.CssSelect("th").ToArray();
+                foreach (var item in lst)
+                {
+                    if (string.IsNullOrEmpty(item?.InnerText))
+                        continue;
+
+                    if (toCurrencies.Contains(item.InnerText))
+                    {
+                        var toCurrency = toCurrencies.First(x => x == item.InnerText);
+                        if (toCurrency == fromCurrency)
+                            continue;
+
+                        var rateTxt = item.NextSibling?.NextSibling?.InnerText.Replace(",", ".");
+                        if (double.TryParse(rateTxt, out double rate))
+                        {
+                            items.Add(new CurrencyRate
+                            {
+                                FromCurrencyCode = fromCurrency,
+                                ToCurrencyCode = toCurrency,
+                                Rate = rate,
+                                LastUpdatedDate = DateTime.UtcNow,
+                            });
+                        }
+                    }
+                }
+            }
+
+            return items;
+
+            //ScrapingBrowser sbrow = new ScrapingBrowser();
+            //var webPage = await sbrow.NavigateToPageAsync(new Uri("https://kur.doviz.com/"));
+            //var lst = webPage.Html.CssSelect("table[id='currencies'] tbody tr").ToArray();
             //using (var db = new MyDbContext())
             //{
             //    var currencyRates = db.CurrencyRates.ToList();
@@ -119,7 +154,6 @@ namespace Scrapper
             //        return true;
             //    return false;
             //}
-            return false;
         }
     }
 }

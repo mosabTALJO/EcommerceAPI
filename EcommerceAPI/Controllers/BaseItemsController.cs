@@ -13,10 +13,8 @@ namespace EcommerceAPI.Web.Controllers
 {
     public class BaseItemController : MyControllerBase
     {
-        private readonly ICurrencyRateService _currencyRateService;
-        public BaseItemController(IMediator mediator, ICurrencyRateService currencyRateService) : base(mediator: mediator)
+        public BaseItemController(IMediator mediator) : base(mediator: mediator)
         {
-            _currencyRateService = currencyRateService;
         }
 
         // GETList
@@ -24,13 +22,13 @@ namespace EcommerceAPI.Web.Controllers
         public async Task<ActionResult<RequestResult<ListResponse<BaseItemVM>>>> Get([FromQuery] int IsHomeOrCategory = 0)
         {
             var lang = CultureInfo.CurrentCulture?.TwoLetterISOLanguageName ?? "en";
-            var currencyRate = _currencyRateService.GetCurrencyRate(Request.Headers["Currency"]);
-            string role = HttpContext.User?.Claims?.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+            var currency = Request.Headers["Currency"].ToString();
+            var role = HttpContext.User?.Claims?.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
 
             var query = new GetBaseItemsQuery
             {
-                CurrencyRate = currencyRate,
                 IsHomeOrCategory = IsHomeOrCategory,
+                Currency = currency,
                 Role = role,
                 UserId = User.Identity.Name,
                 lang = lang,
@@ -42,12 +40,13 @@ namespace EcommerceAPI.Web.Controllers
         [HttpGet("GetBaseItems")]
         public async Task<ActionResult<RequestResult<ListResponse<BaseItemVM>>>> GetBaseItems([FromQuery] int IsHomeOrCategory = 0)
         {
+            var toCurrency = Request.Headers["Currency"].ToString();
             return GetActionResult(await _mediator.Send(new GetBaseItemsQuery
             {
                 IsHomeOrCategory = IsHomeOrCategory,
                 UserId = User.Identity.Name,
+                ToCurrency = toCurrency,
                 Role = HttpContext.User?.Claims?.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value,
-                CurrencyRate = _currencyRateService.GetCurrencyRate(Request.Headers["Currency"])
             }));
         }
 
@@ -55,12 +54,13 @@ namespace EcommerceAPI.Web.Controllers
         [HttpGet("GetWebBaseItems")]
         public async Task<ActionResult<RequestResult<ListResponse<BaseItemVM>>>> GetWebBaseItems([FromQuery] int IsHomeOrCategory = 0)
         {
+            var toCurrency = Request.Headers["Currency"].ToString();
             return GetActionResult(await _mediator.Send(new GetWebBaseItemsQuery
             {
                 IsHomeOrCategory = IsHomeOrCategory,
+                ToCurrency = toCurrency,
                 UserId = User.Identity.Name,
                 Role = HttpContext.User?.Claims?.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value,
-                CurrencyRate = _currencyRateService.GetCurrencyRate(Request.Headers["Currency"])
             }));
         }
 

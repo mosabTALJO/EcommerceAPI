@@ -15,7 +15,6 @@ namespace EcommerceAPI.Shared.ViewModels
         public string Title { get; set; }
         public string Code { get; set; }
         public string CountryCode { get; set; }
-        public CurrencyRateTypes Type { get; set; }
         public double Rate { get; set; }
         public double FeeRate { get; set; }
         public DateTime? LastUpdatedDate { get; set; }

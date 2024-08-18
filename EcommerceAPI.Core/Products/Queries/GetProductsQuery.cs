@@ -53,8 +53,6 @@ namespace EcommerceAPI.Core.Products.Queries
                 query.PageNumber = query.PageNumber.PagingNumber();
                 IQueryable<Product> lst = null;
                 var lang = CultureInfo.CurrentCulture?.TwoLetterISOLanguageName ?? "en";
-                var currencyRate = _currencyRateService.GetCurrencyRate(query.Currency);
-
                 ListResponse<ProductLiteVM> result = null;
                 //Filtering used
                 if (!string.IsNullOrEmpty(query.Brands) || !string.IsNullOrEmpty(query.Colors) || !string.IsNullOrEmpty(query.Gender) || query.MinPrice.HasValue || query.MaxPrice.HasValue)
@@ -103,7 +101,7 @@ namespace EcommerceAPI.Core.Products.Queries
                     {
                         var min = query.MinPrice.Value;
                         lst = lst.Where(x =>
-                            currencyRate *
+                             _currencyRateService.Queryable().FirstOrDefault(c => c.FromCurrencyCode == x.Currency && c.ToCurrencyCode == query.Currency).Rate *
                             (
                                x.Discount != null ? x.SalesPrice * (1 - x.Discount.Value / 100) :
                                x.Category.Discount != null ? x.SalesPrice * (1 - x.Category.Discount.Value / 100) :
@@ -116,7 +114,7 @@ namespace EcommerceAPI.Core.Products.Queries
                     {
                         var max = query.MaxPrice.Value;
                         lst = lst.Where(x =>
-                             currencyRate *
+                             _currencyRateService.Queryable().FirstOrDefault(c => c.FromCurrencyCode == x.Currency && c.ToCurrencyCode == query.Currency).Rate *
                              (
                                 x.Discount != null ? x.SalesPrice * (1 - x.Discount.Value / 100) :
                                 x.Category.Discount != null ? x.SalesPrice * (1 - x.Category.Discount.Value / 100) :
@@ -160,7 +158,7 @@ namespace EcommerceAPI.Core.Products.Queries
                             Id = x.Id,
                             Name = lang == "en" ? x.NameEn : x.NameAr,
                             BrandName = lang == "en" ? x.Brand.NameEn : lang == "ar" ? x.Brand.NameAr : x.Brand.NameTr,
-                            SalesPrice = currencyRate == 0 ? x.SalesPrice : x.SalesPrice * currencyRate,
+                            SalesPrice = _currencyRateService.Queryable().FirstOrDefault(c => c.FromCurrencyCode == x.Currency && c.ToCurrencyCode == query.Currency).Rate * x.SalesPrice,
                             Discount = x.Discount != null ? x.Discount : x.Category.Discount != null ? x.Category.Discount : null,
                             MainImage = x.MainImage,
                             TotalRate = x.TotalRate,
@@ -189,7 +187,7 @@ namespace EcommerceAPI.Core.Products.Queries
                                 Id = x.Id,
                                 Name = lang == "en" ? x.NameEn : lang == "ar" ? x.NameAr : x.NameTr,
                                 BrandName = lang == "en" ? x.Brand.NameEn : lang == "ar" ? x.Brand.NameAr : x.Brand.NameTr,
-                                SalesPrice = currencyRate == 0 ? x.SalesPrice : x.SalesPrice * currencyRate,
+                                SalesPrice = _currencyRateService.Queryable().FirstOrDefault(c => c.FromCurrencyCode == x.Currency && c.ToCurrencyCode == query.Currency).Rate * x.SalesPrice,
                                 Discount = x.Discount > 0 ? x.Discount : x.Category.Discount > 0 ? x.Category.Discount : null,
                                 MainImage = x.MainImage,
                                 TotalRate = x.TotalRate,
@@ -309,7 +307,7 @@ namespace EcommerceAPI.Core.Products.Queries
                                         {
                                             Name = lang == "en" ? x.NameEn : lang == "ar" ? x.NameAr : x.NameTr,
                                             BrandName = lang == "en" ? x.Brand.NameEn : lang == "ar" ? x.Brand.NameAr : x.Brand.NameTr,
-                                            SalesPrice = currencyRate == 0 ? x.SalesPrice : x.SalesPrice * currencyRate,
+                                            SalesPrice = _currencyRateService.Queryable().FirstOrDefault(c => c.FromCurrencyCode == x.Currency && c.ToCurrencyCode == query.Currency).Rate * x.SalesPrice,
                                             Discount = x.Discount > 0 ? x.Discount : x.Category.Discount > 0 ? x.Category.Discount : null,
                                             Id = x.Id,
                                             MainImage = x.MainImage,
@@ -379,7 +377,7 @@ namespace EcommerceAPI.Core.Products.Queries
                                         {
                                             Name = lang == "en" ? x.NameEn : lang == "ar" ? x.NameAr : x.NameTr,
                                             BrandName = lang == "en" ? x.Brand.NameEn : lang == "ar" ? x.Brand.NameAr : x.Brand.NameTr,
-                                            SalesPrice = currencyRate == 0 ? x.SalesPrice : x.SalesPrice * currencyRate,
+                                            SalesPrice = _currencyRateService.Queryable().FirstOrDefault(c => c.FromCurrencyCode == x.Currency && c.ToCurrencyCode == query.Currency).Rate * x.SalesPrice,
                                             Discount = x.Discount > 0 ? x.Discount : x.Category.Discount > 0 ? x.Category.Discount : null,
                                             Id = x.Id,
                                             MainImage = x.MainImage,
@@ -400,7 +398,7 @@ namespace EcommerceAPI.Core.Products.Queries
                                 {
                                     Name = lang == "en" ? x.NameEn : lang == "ar" ? x.NameAr : x.NameTr,
                                     BrandName = lang == "en" ? x.Brand.NameEn : lang == "ar" ? x.Brand.NameAr : x.Brand.NameTr,
-                                    SalesPrice = currencyRate == 0 ? x.SalesPrice : x.SalesPrice * currencyRate,
+                                    SalesPrice = _currencyRateService.Queryable().FirstOrDefault(c => c.FromCurrencyCode == x.Currency && c.ToCurrencyCode == query.Currency).Rate * x.SalesPrice,
                                     Discount = x.Discount > 0 ? x.Discount : x.Category.Discount > 0 ? x.Category.Discount : null,
                                     Id = x.Id,
                                     MainImage = x.MainImage,

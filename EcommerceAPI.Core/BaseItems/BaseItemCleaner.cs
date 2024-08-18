@@ -9,7 +9,7 @@ namespace EcommerceAPI.Core.BaseItems
 {
     public class BaseItemCleaner
     {
-        public static void CleanItems(BaseItemVM item, IMapper _mapper, IBrandService _brandService, ICategoryService _categoryService, IProductService _productService, string lang, double CurrencyRate)
+        public static void CleanItems(BaseItemVM item, IMapper _mapper, IBrandService _brandService, ICategoryService _categoryService, IProductService _productService, ICurrencyRateService currencyRateService, string toCurrency, string lang)
         {
             if (item.BaseItemType == BaseItemTypes.BrandsSet)
             {
@@ -49,7 +49,7 @@ namespace EcommerceAPI.Core.BaseItems
                     BrandName = lang == "en" ? x.Brand.NameEn : x.Brand.NameAr,
                     Id = x.Id,
                     MainImage = x.MainImage,
-                    SalesPrice = CurrencyRate == 0 ? x.SalesPrice : x.SalesPrice * CurrencyRate,
+                    SalesPrice = x.SalesPrice * currencyRateService.GetCurrencyRate(x.Currency, toCurrency),
                     Discount = x.Discount > 0 ? x.Discount : x.Category.Discount > 0 ? x.Category.Discount : null,
                 }).ToArray();
 

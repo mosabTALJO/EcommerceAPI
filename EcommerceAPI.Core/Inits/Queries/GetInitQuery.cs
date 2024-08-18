@@ -9,7 +9,6 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Primitives;
 using System.Globalization;
 
 namespace EcommerceAPI.Core.Inits.Queries
@@ -18,7 +17,7 @@ namespace EcommerceAPI.Core.Inits.Queries
     {
         public string UserId { get; set; }
         public string Role { get; set; }
-        public StringValues Currency { get; set; }
+        public string Currency { get; set; }
         public class GetInitQueryHandler : IRequestHandler<GetInitQuery, RequestResult<InitData>>
         {
             public readonly IMemoryCache _memoryCache;
@@ -51,8 +50,6 @@ namespace EcommerceAPI.Core.Inits.Queries
             public async Task<RequestResult<InitData>> Handle(GetInitQuery query, CancellationToken cancellationToken)
             {
                 var lang = CultureInfo.CurrentCulture?.TwoLetterISOLanguageName ?? "en";
-                var currencyRate = _currencyRateService.GetCurrencyRate(query.Currency);
-
                 var user = string.IsNullOrEmpty(query.UserId) ? null : _userManager.Users.FirstOrDefault(x => x.Id == query.UserId);
 
                 var cacheKey = $"GetInitCache_{lang}_{query.Currency}";
@@ -88,7 +85,7 @@ namespace EcommerceAPI.Core.Inits.Queries
                     foreach (var item in lst)
                     {
                         var x = BaseItemVM.GenerateFromBaseItem(item);
-                        BaseItemCleaner.CleanItems(x, _mapper, _brandService, _categoryService, _productService, lang, currencyRate);
+                        BaseItemCleaner.CleanItems(x, _mapper, _brandService, _categoryService, _productService, _currencyRateService, query.Currency, lang);
                         items.Add(x);
                     }
                     init.BaseItems = items;
