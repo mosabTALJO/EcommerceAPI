@@ -28,12 +28,24 @@ namespace EcommerceAPI.Core.Products.Queries
             {
                 var usdRate = 1 / _currencyRateService.GetUSDRate(query.Currency);
 
-                var items = await _productService.GetProductVariant(query.Id).To<ProductVariantVM>(_mapper).ToArrayAsync();
+                var items = await _productService.GetProductVariant(query.Id).Select(x => new ProductVariantVM
+                {
+                    Barcode = x.Barcode,
+                    Name = x.Name,
+                    IsActive = x.IsActive,
+                    Id = x.Id,
+                    Images = x.Images.Split(',', StringSplitOptions.None).ToList(),
+                    Discount = x.Discount,
+                    FullDescription = x.FullDescription,
+                    ProductId = x.ProductId,
+                    SalesPrice = query.Currency == x.Product.Currency ? x.SalesPrice : x.SalesPriceUSD * usdRate,
+                    SalesPriceUSD = x.SalesPriceUSD,
+                    SKU = x.SKU,
+                    StockLevel = x.StockLevel,
+
+                }).ToArrayAsync();
                 if (items is null)
                     return new RequestResult<ProductVariantVM[]>(null, ActionResultType.NotFound);
-
-                foreach (var v in items)
-                    v.SalesPrice = usdRate * v.SalesPriceUSD;
 
                 return new RequestResult<ProductVariantVM[]>(items);
             }

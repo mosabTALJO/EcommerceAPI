@@ -11,7 +11,7 @@ namespace EcommerceAPI.Core.Carts.Queries
 {
     public class GetMyCartNoUserQuery : IRequest<RequestResult<OrderVM>>
     {
-        public string? Currency { get; set; }
+        public string Currency { get; set; } = string.Empty;
         public string? CouponCode { get; set; }
         public CartItemVM[] Items { get; set; }
         public class GetMyCartNoUserQueryHandler : IRequestHandler<GetMyCartNoUserQuery, RequestResult<OrderVM>>
@@ -49,9 +49,8 @@ namespace EcommerceAPI.Core.Carts.Queries
                 var o = new Order
                 {
                     OrderItems = [],
-                    Currency = query.Currency ?? "KWD"
+                    Currency = query.Currency
                 };
-
 
                 foreach (var item in query.Items)
                 {

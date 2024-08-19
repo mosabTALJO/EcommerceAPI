@@ -15,7 +15,6 @@ namespace EcommerceAPI.Core.Carts.Command
         public string? UserId { get; set; }
         public string? Currency { get; set; }
         public string? CountryCode { get; set; }
-        public bool ContainsCountryCodeKey { get; set; }
         public class CreateCartItemsCommandHandler : IRequestHandler<CreateCartItemsCommand, RequestResult<bool>>
         {
             private readonly IOrderService _orderService;
@@ -48,8 +47,7 @@ namespace EcommerceAPI.Core.Carts.Command
                 };
 
                 o.Currency = command.Currency;
-                o.Country = command.ContainsCountryCodeKey ? command.CountryCode : _countryService.Queryable().AsNoTracking().FirstOrDefault(x => x.CurrencyCode == o.Currency)?.Code;
-                //o.CurrencyRate = _currencyRateService.GetCurrencyRate(command.Currency);
+                o.Country = command.CountryCode;
 
                 string error = "";
                 foreach (var item in command.Items)

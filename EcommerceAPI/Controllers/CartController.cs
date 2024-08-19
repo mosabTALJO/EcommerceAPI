@@ -74,12 +74,14 @@ namespace EcommerceAPI.Web.Controllers
         [ApiExplorerSettings(GroupName = "fe")]
         public async Task<ActionResult<RequestResult<OrderVM>>> GetMyCartNoUser([FromBody] CartItemVM[] items, [FromQuery] string? couponCode = null)
         {
-            var containsCurrency = Request.Headers.ContainsKey("Currency");
+            if (Request.Headers.ContainsKey("Currency"))
+                return BadRequest("Currency Missing");
+
             return GetActionResult(await _mediator.Send(new GetMyCartNoUserQuery
             {
                 Items = items,
                 CouponCode = couponCode,
-                Currency = containsCurrency ? Request.Headers["Currency"].ToString() : null
+                Currency =  Request.Headers["Currency"].ToString(),
             }));
         }
 
@@ -103,14 +105,12 @@ namespace EcommerceAPI.Web.Controllers
         [ApiExplorerSettings(GroupName = "fe")]
         public async Task<ActionResult<RequestResult<bool>>> Post(CartItemVM[] items)
         {
-            var containsCountryCode = Request.Headers.TryGetValue("Country-Code", out StringValues s);
             return GetActionResult(await _mediator.Send(new CreateCartItemsCommand
             {
                 Items = items,
                 UserId = User.Identity.Name,
                 Currency = Request.Headers.TryGetValue("Currency", out StringValues c) ? c.ToString() : null,
-                CountryCode = containsCountryCode ? s.ToString() : null,
-                ContainsCountryCodeKey = containsCountryCode
+                CountryCode = Request.Headers["Country-Code"].ToString(),
             }));
         }
 

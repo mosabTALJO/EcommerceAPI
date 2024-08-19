@@ -92,10 +92,10 @@ namespace EcommerceAPI.Core.Carts.Command
                     LastName = command.RecipientLastName,
                     CityId = command.CityId,
                     PhoneNumber = command.PhoneNumber,
-                    FullAddress = command.FullAddress,
+                    FullAddress = command.FullAddress, 
                 };
 
-                bool areProductsValid = await CartOrderOperations.CalcualteAndValidateOrderItems(_countryService, _productVariantService, _couponService, _collectionService, _currencyRateService, o, address, coupon, country.CurrencyCode);
+                bool areProductsValid = await CartOrderOperations.CalcualteAndValidateOrderItems(_countryService, _productVariantService, _couponService, _collectionService, _currencyRateService, o, address, coupon);
 
                 _orderService.UpdateOrder(o, true);
                 if (await _unitOfWork.SaveChangesAsync() > 0)

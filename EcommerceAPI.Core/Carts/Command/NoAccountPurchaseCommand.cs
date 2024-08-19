@@ -36,8 +36,9 @@ namespace EcommerceAPI.Core.Carts.Command
             private readonly ICollectionService _collectionService;
             private readonly IOrderLogService _orderLogService;
             private readonly IOrderPaymentService _orderPaymentService;
+            private readonly IUserAddressService _userAddressService;
             //private readonly IEmailSender _emailSender;
-            public NoAccountPurchaseCommandHandler(IOrderService orderService, IUnitOfWork unitOfWork, UserManager<AppUser> userManager, ICurrencyRateService currencyRateService, IProductVariantService productVariantService, ICouponService couponService, ICountryService countryService, ICollectionService collectionService, IOrderLogService orderLogService, IOrderPaymentService orderPaymentService/*, IEmailSender emailSender*/)
+            public NoAccountPurchaseCommandHandler(IOrderService orderService, IUnitOfWork unitOfWork, UserManager<AppUser> userManager, ICurrencyRateService currencyRateService, IProductVariantService productVariantService, ICouponService couponService, ICountryService countryService, ICollectionService collectionService, IOrderLogService orderLogService, IOrderPaymentService orderPaymentService/*, IEmailSender emailSender*/, IUserAddressService userAddressService)
             {
                 _orderService = orderService;
                 _unitOfWork = unitOfWork;
@@ -49,6 +50,7 @@ namespace EcommerceAPI.Core.Carts.Command
                 _collectionService = collectionService;
                 _orderLogService = orderLogService;
                 _orderPaymentService = orderPaymentService;
+                _userAddressService = userAddressService;
                 //_emailSender = emailSender;
             }
             public async Task<RequestResult<NoAccountPaymentVM>> Handle(NoAccountPurchaseCommand command, CancellationToken cancellationToken)
@@ -78,7 +80,7 @@ namespace EcommerceAPI.Core.Carts.Command
                     };
                     var result = await _userManager.CreateAsync(user);
                     if (!result.Succeeded)
-                        return new RequestResult<NoAccountPaymentVM>(ActionResultType.BadRequest, "ERROR in entered information");
+                        return new RequestResult<NoAccountPaymentVM>(ActionResultType.BadRequest, "ERROR in entered information" + result.Errors.FirstOrDefault()?.Description);
                 }
 
                 var address = new UserAddress
@@ -91,8 +93,9 @@ namespace EcommerceAPI.Core.Carts.Command
                     CityId = command.CityId,
                     FullAddress = command.FullAddress,
                 };
-                //_userAddressService.Insert(address);
-                //await _unitOfWork.SaveChangesAsync();
+                _userAddressService.Insert(address);
+
+                await _unitOfWork.SaveChangesAsync();
 
                 //if (c.IsRequestIdCard == true && string.IsNullOrEmpty(command.IdCard))
                 //    return new RequestResult<NoAccountPaymentVM>(ActionResultType.BadRequest, "you have to upload id card");
@@ -106,6 +109,9 @@ namespace EcommerceAPI.Core.Carts.Command
                     OrderItems = new List<OrderItem>(),
                     Currency = command.Currency,
                     Country = c.NameEn,
+                    OrderDeviceType = command.OrderDeviceType,
+                    PaymentType = command.OrderPaymentType,
+
                     //CurrencyRate = _currencyRateService.GetCurrencyRate(command.Currency),
                 };
 
@@ -150,11 +156,8 @@ namespace EcommerceAPI.Core.Carts.Command
                     o.DiscountCoupunId = coupon.Id;
                 }
 
-                o.PaymentType = command.OrderPaymentType;
                 o.OrderStatus = command.OrderPaymentType == OrderPaymentType.OnDoor ? OrderStatus.OnDoorPaymentPending : OrderStatus.Pending;
-                o.OrderDeviceType = command.OrderDeviceType;
-
-                bool areProductsValid = await CartOrderOperations.CalcualteAndValidateOrderItems(_countryService, _productVariantService, _couponService, _collectionService, _currencyRateService, o, address, coupon, command.Currency);
+                bool areProductsValid = await CartOrderOperations.CalcualteAndValidateOrderItems(_countryService, _productVariantService, _couponService, _collectionService, _currencyRateService, o, address, coupon);
                 _orderService.CreateOrder(o);
 
                 if (await _unitOfWork.SaveChangesAsync() > 0)
@@ -187,7 +190,8 @@ namespace EcommerceAPI.Core.Carts.Command
                         await _orderLogService.OrderCreatedLog(o.Id, user.Id);
                         try
                         {
-                            var sendPaymentRequest = CartOrderOperations.GeneratePaymentRequest(o, user, address, o.TotalSalePrice);
+                            var totalKwdPrice = o.TotalSalePrice * _currencyRateService.GetCurrencyRate(o.Currency, "KWD");
+                            var sendPaymentRequest = CartOrderOperations.GeneratePaymentRequest(o, user, address, totalKwdPrice);
                             var x = await MyFatoorahHelper.SendPayment(sendPaymentRequest);
                             if (x?.IsSuccess == true)
                             {

@@ -42,7 +42,7 @@ namespace EcommerceAPI.Core.Carts.Command
             public async Task<RequestResult<bool>> Handle(OnDoorPaymentPendingOrderCommand command, CancellationToken cancellationToken)
             {
                 var cartOrder = _orderService.Queryable().Include(x => x.OrderItems).AsNoTracking()
-              .FirstOrDefault(x => x.OrderStatus == OrderStatus.CartOrder && x.CustomerId == command.UserId);
+                        .FirstOrDefault(x => x.OrderStatus == OrderStatus.CartOrder && x.CustomerId == command.UserId);
                 if (cartOrder?.OrderItems?.Any() != true)
                     return new RequestResult<bool>(ActionResultType.NotFound, "No items in the cart");
 
@@ -75,8 +75,9 @@ namespace EcommerceAPI.Core.Carts.Command
                 o.OrderStatus = OrderStatus.OnDoorPaymentPending;
                 o.PaymentType = OrderPaymentType.OnDoor;
                 o.OrderDeviceType = command.OrderDeviceType;
+                o.Currency = command.Currency;
 
-                bool areProductsValid = await CartOrderOperations.CalcualteAndValidateOrderItems(_countryService, _productVariantService, _couponService, _collectionService, _currencyRateService, o, address, coupon, command.Currency);
+                bool areProductsValid = await CartOrderOperations.CalcualteAndValidateOrderItems(_countryService, _productVariantService, _couponService, _collectionService, _currencyRateService, o, address, coupon);
                 _orderService.UpdateOrder(o, true);
 
                 if (await _unitOfWork.SaveChangesAsync() > 0)

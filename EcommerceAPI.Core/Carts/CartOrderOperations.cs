@@ -21,10 +21,11 @@ namespace EcommerceAPI.Core.Carts
             Coupon? coupon = null
             )
         {
-            var c = _countryService.Queryable().AsNoTracking().FirstOrDefault(x => x.CurrencyCode.ToLower() == order.Currency.ToLower()) ??
-                _countryService.Queryable().AsNoTracking().FirstOrDefault(x => x.CurrencyCode.ToLower() == "kwd");
-            order.Country = c.Code;
-            order.PaymentGateway = PaymentGateway.MyFatoorah;
+            var usdRate = 1 / _currencyRateService.GetUSDRate(order.Currency);
+            var c = _countryService.Queryable().AsNoTracking().FirstOrDefault(x => x.Code == order.Country);
+
+            //order.Country = c.Code;
+            //order.PaymentGateway = PaymentGateway.MyFatoorah;
 
             double totalWithoutCuponDiscount = 0;
             double totalWithCuponDiscount = 0;
@@ -43,7 +44,7 @@ namespace EcommerceAPI.Core.Carts
                         x.StockLevel,
                         x.Product.BrandId,
                         x.Product.CategoryId,
-                        x.Product.SalesPrice,
+                        SalesPrice = order.Currency == x.Product.Currency ? x.SalesPrice : x.SalesPriceUSD * usdRate,
                         x.Discount,
                         ProductDiscount = x.Product.Discount,
                         CategoryDiscount = x.Product.Category.Discount,
@@ -70,7 +71,7 @@ namespace EcommerceAPI.Core.Carts
                 }
 
                 //Calcualte Prices
-                oi.ProductSalesPrice = pv.SalesPrice;// * order.CurrencyRate;
+                oi.ProductSalesPrice = pv.SalesPrice;
                 oi.ProductDiscount = pv.Discount > 0 ? pv.Discount : pv.ProductDiscount > 0 ? pv.ProductDiscount : pv.CategoryDiscount > 0 ? pv.CategoryDiscount : null;
                 oi.SalePrice = pv.SalesPrice - pv.SalesPrice * (pv.Discount ?? 0) / 100;
 
@@ -80,8 +81,6 @@ namespace EcommerceAPI.Core.Carts
                 oi.TotalSalePrice = Math.Round(oi.Qty * oi.SalePrice - oi.DiscountAmount, 3); //**********************
                 totalWithCuponDiscount += oi.TotalSalePrice;
                 order.DiscountAmount += oi.DiscountAmount;
-
-                //oi.ProductVariant.CompanyPrice = p.Category.ProfitRatio; //look here
             }
 
             order.SubTotalSalePrice = totalWithoutCuponDiscount;
@@ -103,12 +102,9 @@ namespace EcommerceAPI.Core.Carts
             ICurrencyRateService _currencyRateService,
             Order order,
             UserAddress address,
-            Coupon coupon,
-            string Currency)
+            Coupon coupon)
         {
             //await CheckProductsCompanyData(order);
-
-            order.Currency = Currency;
             var c = await _countryService.Queryable().AsNoTracking().FirstOrDefaultAsync(x => x.CurrencyCode.ToLower() == order.Currency.ToLower()) ??
                 await _countryService.Queryable().AsNoTracking().FirstOrDefaultAsync(x => x.CurrencyCode.ToLower() == "kwd");
 

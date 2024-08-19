@@ -47,8 +47,6 @@ namespace EcommerceAPI.Core.Carts.Queries
                 if (dbOrder is null)
                     return new RequestResult<OrderVM>(new OrderVM());
 
-                if (string.IsNullOrEmpty(dbOrder.Currency))
-                    dbOrder.Currency = "KWD";
                 await CartOrderOperations.CalcualteCartItems(_countryService, _productVariantService, _orderService, _unitOfWork, _collectionService, _currencyRateService, dbOrder);
 
                 return new RequestResult<OrderVM>(_mapper.Map<OrderVM>(dbOrder));

@@ -1,7 +1,9 @@
-﻿using EcommerceAPI.Services;
+﻿using EcommerceAPI.Data.Models;
+using EcommerceAPI.Services;
 using EcommerceAPI.Shared.Helpers;
 using EcommerceAPI.UnitOfWork.Abstractions;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace EcommerceAPI.Core.Carts.Command
 {
@@ -20,21 +22,19 @@ namespace EcommerceAPI.Core.Carts.Command
             }
             public async Task<RequestResult<bool>> Handle(PaymentCancelledCommand command, CancellationToken cancellationToken)
             {
-                return new RequestResult<bool>(true);
-
+                var cartOrder = _orderService.Queryable().Include(x => x.OrderItems)
+                    .FirstOrDefault(x => x.OrderStatus == OrderStatus.CartOrder && x.CustomerId == command.UserId);
                 
-                //var cartOrder = _orderService.Queryable().Include(x => x.OrderItems)
-                //.FirstOrDefault(x => x.OrderStatus == OrderStatus.CartOrder && x.CustomerId == command.UserId);
-                // if (cartOrder != null)
-                //     return new RequestResult<bool>(true);
-                // cartOrder = _orderService.Queryable().Include(x => x.OrderItems)
-                //     .OrderBy(x => x.Id).LastOrDefault(x => x.OrderStatus == OrderStatus.Pending && x.CustomerId == command.UserId);
-                // if (cartOrder is null)
-                //     return new RequestResult<bool>(true);
+                if (cartOrder != null)
+                    return new RequestResult<bool>(true);
+                cartOrder = _orderService.Queryable().Include(x => x.OrderItems)
+                    .OrderBy(x => x.Id).LastOrDefault(x => x.OrderStatus == OrderStatus.Pending && x.CustomerId == command.UserId);
+                if (cartOrder is null)
+                    return new RequestResult<bool>(true);
 
-                // cartOrder.OrderStatus = OrderStatus.CartOrder;
-                // _orderService.Update(cartOrder);
-                // return await _unitOfWork.SaveChangesAsync() > 0 ? new RequestResult<bool>(true) : new RequestResult<bool>(ActionResultType.BadRequest);
+                cartOrder.OrderStatus = OrderStatus.CartOrder;
+                _orderService.Update(cartOrder);
+                return await _unitOfWork.SaveChangesAsync() > 0 ? new RequestResult<bool>(true) : new RequestResult<bool>(ActionResultType.BadRequest);
             }
         }
     }

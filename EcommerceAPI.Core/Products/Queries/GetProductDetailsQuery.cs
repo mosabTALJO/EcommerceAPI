@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using EcommerceAPI.Core.Extentions;
+using EcommerceAPI.Data.Models;
 using EcommerceAPI.Services;
 using EcommerceAPI.Shared.Helpers;
 using EcommerceAPI.Shared.ViewModels;
@@ -54,10 +55,10 @@ namespace EcommerceAPI.Core.Products.Queries
                 if (query.Role != "Admin")
                 {
                     p.Discount = p.Discount > 0 ? p.Discount : p.Category.Discount > 0 ? p.Category.Discount : null;
-                    p.SalesPrice = p.SalesPriceUSD * usdRate;
+                    p.SalesPrice = query.Currency == p.Currency ? p.SalesPrice : p.SalesPriceUSD * usdRate;
                     foreach (var pv in p.ProductVariants)
                     {
-                        pv.SalesPrice = pv.SalesPriceUSD * usdRate;
+                        pv.SalesPrice = query.Currency == p.Currency ? pv.SalesPrice : pv.SalesPriceUSD * usdRate;
                     }
                 }
                 

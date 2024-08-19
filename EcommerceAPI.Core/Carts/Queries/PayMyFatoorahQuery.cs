@@ -65,7 +65,7 @@ namespace EcommerceAPI.Core.Carts.Queries
 
                 var c = await _countryService.Queryable().AsNoTracking().Include(x => x.Cities).FirstOrDefaultAsync(x => x.Id == address.CountryId);
 
-                Coupon coupon = null;
+                Coupon? coupon = null;
                 if (o.DiscountCoupunId.HasValue)
                 {
                     coupon = _couponService.CheckCoupon(o.DiscountCoupunId.Value, out string error);
@@ -74,8 +74,9 @@ namespace EcommerceAPI.Core.Carts.Queries
                 }
                 o.PaymentType = OrderPaymentType.Online;
                 o.OrderDeviceType = query.OrderDeviceType;
+                o.Currency = query.Currency ?? o.Currency;
 
-                bool areProductsValid = await CartOrderOperations.CalcualteAndValidateOrderItems(_countryService, _productVariantService, _couponService, _collectionService, _currencyRateService, o, address, coupon, query.Currency);
+                bool areProductsValid = await CartOrderOperations.CalcualteAndValidateOrderItems(_countryService, _productVariantService, _couponService, _collectionService, _currencyRateService, o, address, coupon);
 
                 _orderService.UpdateOrder(o, true);
                 if (await _unitOfWork.SaveChangesAsync() > 0)
@@ -89,7 +90,8 @@ namespace EcommerceAPI.Core.Carts.Queries
                         string myFatoorahError = "";
                         try
                         {
-                            var sendPaymentRequest = CartOrderOperations.GeneratePaymentRequest(o, u, address, o.TotalSalePrice);
+                            var totalKwdPrice = o.TotalSalePrice * _currencyRateService.GetCurrencyRate(o.Currency, "KWD");
+                            var sendPaymentRequest = CartOrderOperations.GeneratePaymentRequest(o, u, address, totalKwdPrice);
                             var x = await MyFatoorahHelper.SendPayment(sendPaymentRequest);
                             if (x?.IsSuccess == true)
                             {
