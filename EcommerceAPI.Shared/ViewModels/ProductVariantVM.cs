@@ -11,6 +11,7 @@ namespace EcommerceAPI.Shared.ViewModels
         public string? Barcode { get; set; }
         public int StockLevel { get; set; }
         public double SalesPrice { get; set; }
+        public double SalesPriceUSD { get; set; }
         public double? Discount { get; set; }
         public double FinalSalesPrice => Math.Round(SalesPrice - SalesPrice * (Discount ?? 0) / 100, 1);
         public List<string> Images { get; set; } = [];

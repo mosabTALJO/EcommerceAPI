@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EcommerceAPI.Data\EcommerceAPI.Data.csproj" />
+	<ProjectReference Include="..\Scrapper\Scrapper.csproj" />
   </ItemGroup>
 
 </Project>

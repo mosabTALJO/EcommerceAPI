@@ -6,6 +6,8 @@ using EcommerceAPI.Shared.Helpers;
 using EcommerceAPI.Shared.Helpers.Abstractions;
 using EcommerceAPI.UnitOfWork.Abstractions;
 using EcommerceAPI.UnitOfWork.EF;
+using EcommerceAPI.UnitOfWork.Services;
+using EcommerceAPI.Web.Controllers;
 using EcommerceAPI.Web.Helpers;
 using Google.Api.Gax;
 using Hangfire;
@@ -46,7 +48,6 @@ builder.Services.AddScoped<ICouponService, CouponService>();
 builder.Services.AddScoped<IProductFavoriteService, ProductFavoriteService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
-builder.Services.AddScoped<ICurrencyRateService, CurrencyRateService>();
 builder.Services.AddScoped<IOrderCategoryBrandService, OrderCategoryBrandService>();
 builder.Services.AddScoped<ISettingsService, SettingsService>();
 builder.Services.AddScoped<ICollectionService, CollectionService>();
@@ -59,6 +60,7 @@ builder.Services.AddScoped<IOrderPaymentService, OrderPaymentService>();
 builder.Services.AddScoped<IAttributesService, AttributesService>();
 builder.Services.AddScoped<IAppEmailSender, SendGridEmailSender>();
 builder.Services.AddScoped<IProductVariantService, ProductVariantService>();
+builder.Services.AddTransient<ICurrencyRateService, CurrencyRateService>();
 
 
 //////////////////////////////
@@ -114,12 +116,12 @@ builder.Services.Configure<SendGridEmailSenderOptions>(options =>
     options.SenderEmail = builder.Configuration["ExternalProviders:SendGrid:SenderEmail"];
     options.SenderName = builder.Configuration["ExternalProviders:SendGrid:SenderName"];
 });
-builder.Services.AddHangfireServer();
 builder.Services.AddHangfire(x =>
 {
     x.UseSqlServerStorage("server=localhost;database=EcommerceHangfire;User ID=EcommerceHF;password=xvu3Ki5121;MultipleActiveResultSets=True;Encrypt=False");
     x.UseFilter(new AutomaticRetryAttribute { Attempts = 0 });
 });
+builder.Services.AddHangfireServer();
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -176,13 +178,15 @@ if (!builder.Environment.IsDevelopment())
         var userManager = serviceScope.ServiceProvider.GetService<UserManager<AppUser>>();
         var memoryCache = serviceScope.ServiceProvider.GetService<IMemoryCache>();
         var roleManager = serviceScope.ServiceProvider.GetService<RoleManager<IdentityRole>>();
+        var recurringJobManager = serviceScope.ServiceProvider.GetService<IRecurringJobManager>();
         dbContext?.Database.Migrate();
+
         MySeedInitializer.SeedData(userManager, roleManager, memoryCache);
 
         if (!builder.Environment.IsDevelopment())
         {
-            RecurringJob.RemoveIfExists("RefreshPrices");
-            RecurringJob.AddOrUpdate("RefreshPrices", () => Scrapper.CurrencyScrapper.Scrap(ICurrencyRateService.CurrencyCodes), Cron.Hourly(1));
+            recurringJobManager.RemoveIfExists("RefreshPrices");
+            recurringJobManager.AddOrUpdate<CurrencyRateService>("RefreshPrices", x => x.RefreshRates(), Cron.Hourly(1));
         }
     }
 }

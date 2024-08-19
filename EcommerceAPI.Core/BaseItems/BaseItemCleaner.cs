@@ -9,7 +9,7 @@ namespace EcommerceAPI.Core.BaseItems
 {
     public class BaseItemCleaner
     {
-        public static void CleanItems(BaseItemVM item, IMapper _mapper, IBrandService _brandService, ICategoryService _categoryService, IProductService _productService, ICurrencyRateService currencyRateService, string toCurrency, string lang)
+        public static void CleanItems(BaseItemVM item, IMapper _mapper, IBrandService _brandService, ICategoryService _categoryService, IProductService _productService, ICurrencyRateService _currencyRateService, string toCurrency, string lang)
         {
             if (item.BaseItemType == BaseItemTypes.BrandsSet)
             {
@@ -41,24 +41,18 @@ namespace EcommerceAPI.Core.BaseItems
             }
             else if (item.BaseItemType == BaseItemTypes.ProductsSet)
             {
-                var productsIds = item.Products.Select(x => x.Id).ToArray();
+                var usdRate = 1 / _currencyRateService.GetUSDRate(toCurrency);
 
-                var dbProducts = _productService.Queryable().Include(x => x.Category).Where(x => productsIds.Contains(x.Id)).Select(x => new BaseItemBrandProduct
+                var productsIds = item.Products.Select(x => x.Id).ToArray();
+                item.Products = _productService.Queryable().Include(x => x.Category).Where(x => productsIds.Contains(x.Id)).Select(x => new BaseItemBrandProduct
                 {
                     Name = lang == "en" ? x.NameEn : x.NameAr,
                     BrandName = lang == "en" ? x.Brand.NameEn : x.Brand.NameAr,
                     Id = x.Id,
                     MainImage = x.MainImage,
-                    SalesPrice = x.SalesPrice * currencyRateService.GetCurrencyRate(x.Currency, toCurrency),
+                    SalesPrice = usdRate * x.SalesPriceUSD,
                     Discount = x.Discount > 0 ? x.Discount : x.Category.Discount > 0 ? x.Category.Discount : null,
                 }).ToArray();
-
-                var lst = new List<BaseItemBrandProduct> { };
-                foreach (var pid in productsIds)
-                    if (dbProducts.FirstOrDefault(x => x.Id == pid) is BaseItemBrandProduct baseItemBrandProduct)
-                        lst.Add(baseItemBrandProduct);
-
-                item.Products = lst.ToArray();
             }
         }
     }

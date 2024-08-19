@@ -99,6 +99,7 @@ namespace EcommerceAPI.Web.Controllers
             return GetActionResult(await _mediator.Send(new GetProductVariantsQuery
             {
                 Id = id,
+                Currency = Request.Headers["Currency"],
             }));
         }
 

@@ -28,6 +28,7 @@ namespace EcommerceAPI.Data.Models
         public double? TotalRate { get; set; }
         public bool IsActive { get; set; } = true;
         public double SalesPrice { get; set; }
+        public double SalesPriceUSD { get; set; }
         public double? Discount { get; set; }
         public ICollection<ProductVariant>? ProductVariants { get; set; }
         public bool OnlinePaymentOnly { get; set; }

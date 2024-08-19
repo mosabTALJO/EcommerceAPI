@@ -19,21 +19,27 @@ namespace EcommerceAPI.Services
         IRepository<ProductVariant> _productVariantRepo;
         IRepository<OrderItem> _orderItemRepo;
         IRepository<ProductVariantAttribute> _productVariantAttributeRepo;
+        ICurrencyRateService _currencyRateService;
         public ProductService(IRepository<Product> repo,
             IRepository<ProductVariant> productVariantRepo,
             IRepository<OrderItem> orderItemRepo,
-            IRepository<ProductVariantAttribute> productVariantAttributeRepo) : base(repo)
+            IRepository<ProductVariantAttribute> productVariantAttributeRepo,
+            ICurrencyRateService currencyRateService) : base(repo)
         {
             _productVariantRepo = productVariantRepo;
             _orderItemRepo = orderItemRepo;
             _productVariantAttributeRepo = productVariantAttributeRepo;
+            _currencyRateService = currencyRateService;
         }
         public void CreateProduct(Product p)
         {
+            var usdRate = _currencyRateService.GetUSDRate(p.Currency);
+            p.SalesPriceUSD = usdRate * p.SalesPrice;
             Insert(p);
             foreach (var v in p.ProductVariants ?? [])
             {
                 v.Product = p;
+                v.SalesPriceUSD = usdRate * v.SalesPrice;
                 _productVariantRepo.Insert(v);
                 foreach (var a in v.Attributes)
                 {
@@ -44,6 +50,9 @@ namespace EcommerceAPI.Services
         }
         public async Task UpdateProduct(Product p)
         {
+            var usdRate = _currencyRateService.GetUSDRate(p.Currency);
+            p.SalesPriceUSD = usdRate * p.SalesPrice;
+
             var dbVariants = _productVariantRepo.Queryable().Where(x => x.ProductId == p.Id).ToList();
             foreach (var dbVariant in dbVariants)
             {
@@ -65,6 +74,7 @@ namespace EcommerceAPI.Services
                 {
                     dbVariant.Name = variant.Name;
                     dbVariant.SalesPrice = variant.SalesPrice;
+                    dbVariant.SalesPriceUSD = usdRate * dbVariant.SalesPrice;
                     dbVariant.Discount = variant.Discount;
                     dbVariant.Images = variant.Images;
                     dbVariant.SKU = variant.SKU;
@@ -78,6 +88,7 @@ namespace EcommerceAPI.Services
             foreach (var pv in p.ProductVariants?.Where(x => x.Id == 0) ?? [])
             {
                 pv.ProductId = p.Id;
+                pv.SalesPriceUSD = usdRate * pv.SalesPrice;
                 _productVariantRepo.Insert(pv);
                 foreach (var a in pv.Attributes)
                 {
@@ -113,9 +124,7 @@ namespace EcommerceAPI.Services
             }
             return lst;
         }
-        public IQueryable<ProductVariant> GetProductVariant(int productId)
-        {
-            return _productVariantRepo.Queryable().Where(x => x.ProductId == productId && x.IsActive);
-        }
+        public IQueryable<ProductVariant> GetProductVariant(int productId) =>
+            _productVariantRepo.Queryable().Where(x => x.ProductId == productId && x.IsActive);
     }
 }

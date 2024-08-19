@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using EcommerceAPI.Core.Extentions;
-using EcommerceAPI.Data.Models;
 using EcommerceAPI.Services;
 using EcommerceAPI.Shared.Helpers;
 using EcommerceAPI.Shared.ViewModels;
@@ -31,6 +30,8 @@ namespace EcommerceAPI.Core.Products.Queries
             }
             public async Task<RequestResult<ProductVM>> Handle(GetProductDetailsQuery query, CancellationToken cancellationToken)
             {
+                var usdRate = 1 / _currencyRateService.GetUSDRate(query.Currency);
+
                 var p = await _productService.Queryable().IgnoreQueryFilters()
                 .Where(x => query.Role == "Admin" || x.IsActive)
                 .Where(x => !x.DeletedAt.HasValue)
@@ -48,18 +49,20 @@ namespace EcommerceAPI.Core.Products.Queries
                 //calcualte IsFavorite
                 if (!string.IsNullOrEmpty(query.UserId))
                     p.IsFavorite = _productFavoriteService.Queryable().FirstOrDefault(x => x.ProductId == p.Id && x.AppUserId == query.UserId) != null;
-
-                p.SalesPrice = p.SalesPrice * _currencyRateService.GetCurrencyRate(p.Currency, query.Currency);
-                p.Discount = p.Discount > 0 ? p.Discount : p.Category.Discount > 0 ? p.Category.Discount : null;
                 p.Category.FullName = p.Category.NameEn;
 
                 if (query.Role != "Admin")
                 {
                     p.Discount = p.Discount > 0 ? p.Discount : p.Category.Discount > 0 ? p.Category.Discount : null;
+                    p.SalesPrice = p.SalesPriceUSD * usdRate;
+                    foreach (var pv in p.ProductVariants)
+                    {
+                        pv.SalesPrice = pv.SalesPriceUSD * usdRate;
+                    }
                 }
-
-
+                
                 p.ProductVariants = p.ProductVariants.Where(x => x.IsActive).ToList();
+
                 return new RequestResult<ProductVM>(p);
             }
             private void CleanImages(ProductVM p, string role)
@@ -74,7 +77,7 @@ namespace EcommerceAPI.Core.Products.Queries
                     p.MainImage = p.MainImage;
                     p.Images.Insert(0, p.MainImage);
                 }
-                p.Images = p.Images.Distinct().ToList();
+                p.Images = p.Images.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
             }
         }
     }

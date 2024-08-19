@@ -29,6 +29,7 @@ namespace EcommerceAPI.Core.Products.Queries
             public async Task<RequestResult<ListResponse<ProductLiteVM>>> Handle(GetRelatedProductsQuery query, CancellationToken cancellationToken)
             {
                 var lang = CultureInfo.CurrentCulture?.TwoLetterISOLanguageName ?? "en";
+                var usdRate = 1 / _currencyRateService.GetUSDRate(query.Currency);
 
                 var qry = _productService.GetRelatedProducts(query.Id, lang);
                 if (qry == null)
@@ -37,7 +38,7 @@ namespace EcommerceAPI.Core.Products.Queries
                 {
                     Name = lang == "en" ? x.NameEn : lang == "ar" ? x.NameAr : x.NameTr,
                     BrandName = lang == "en" ? x.Brand.NameEn : lang == "ar" ? x.Brand.NameAr : x.Brand.NameTr,
-                    SalesPrice = x.SalesPrice,
+                    SalesPrice = usdRate * x.SalesPriceUSD,
                     Discount = x.Discount > 0 ? x.Discount : x.Category.Discount > 0 ? x.Category.Discount : null,
                     Id = x.Id,
                     MainImage = x.MainImage,

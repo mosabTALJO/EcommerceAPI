@@ -1,5 +1,4 @@
 ﻿using EcommerceAPI.Data.Models;
-using EcommerceAPI.Services;
 using ScrapySharp.Extensions;
 using ScrapySharp.Network;
 

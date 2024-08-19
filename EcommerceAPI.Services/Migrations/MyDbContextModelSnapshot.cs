@@ -421,8 +421,8 @@ namespace EcommerceAPI.Services.Migrations
 
                     b.Property<string>("CurrencyCode")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)");
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)");
 
                     b.Property<double>("DeliveryLimitAmount")
                         .HasColumnType("double precision");
@@ -563,16 +563,12 @@ namespace EcommerceAPI.Services.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("CountryCode")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<double>("FeeRate")
                         .HasColumnType("double precision");
+
+                    b.Property<string>("FromCurrencyCode")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("LastUpdatedDate")
                         .HasColumnType("timestamp with time zone");
@@ -580,12 +576,9 @@ namespace EcommerceAPI.Services.Migrations
                     b.Property<double>("Rate")
                         .HasColumnType("double precision");
 
-                    b.Property<string>("Title")
+                    b.Property<string>("ToCurrencyCode")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -1252,6 +1245,11 @@ namespace EcommerceAPI.Services.Migrations
                         .HasMaxLength(40)
                         .HasColumnType("character varying(40)");
 
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -1306,6 +1304,9 @@ namespace EcommerceAPI.Services.Migrations
                         .HasColumnType("character varying(50)");
 
                     b.Property<double>("SalesPrice")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("SalesPriceUSD")
                         .HasColumnType("double precision");
 
                     b.Property<double?>("TotalRate")
@@ -1458,6 +1459,9 @@ namespace EcommerceAPI.Services.Migrations
                         .HasColumnType("character varying(50)");
 
                     b.Property<double>("SalesPrice")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("SalesPriceUSD")
                         .HasColumnType("double precision");
 
                     b.Property<int>("StockLevel")

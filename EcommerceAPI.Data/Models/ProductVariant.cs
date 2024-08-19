@@ -14,6 +14,7 @@ namespace EcommerceAPI.Data.Models
         public string? Barcode { get; set; }
         public int StockLevel { get; set; }
         public double SalesPrice { get; set; }
+        public double SalesPriceUSD { get; set; }
         public double? Discount { get; set; }
         [MaxLength(5000)]
         public string Images { get; set; }

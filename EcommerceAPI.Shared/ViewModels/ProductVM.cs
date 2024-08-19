@@ -15,6 +15,7 @@
         public int? CategoryId { get; set; }
         public CategoryVM? Category { get; set; }
         public double SalesPrice { get; set; }
+        public double SalesPriceUSD { get; set; }
         public double FinalSalesPrice => Math.Round(SalesPrice - SalesPrice * (Discount ?? 0) / 100, 1);
         public double? Discount { get; set; }
         public string MainImage { get; set; } = string.Empty;

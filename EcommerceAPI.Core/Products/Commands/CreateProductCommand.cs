@@ -19,7 +19,6 @@ namespace EcommerceAPI.Core.Products.Commands
         public string FullDescriptionTr { get; set; }
         public int BrandId { get; set; }
         public int CategoryId { get; set; }
-        //public Vendor VendorId { get; set; }
         public double SalesPrice { get; set; }
         public double? Discount { get; set; }
         public string MainImage { get; set; }
@@ -43,7 +42,6 @@ namespace EcommerceAPI.Core.Products.Commands
             public async Task<RequestResult<int>> Handle(CreateProductCommand command, CancellationToken cancellationToken)
             {
                 var p = _mapper.Map<Product>(command);
-                //p.VendorId = Vendor.Custom;
                 p.IsActive = true;
 
                 _productService.CreateProduct(p);
