@@ -29,7 +29,7 @@ namespace EcommerceAPI.Core.Products.Queries
             public async Task<RequestResult<ListResponse<ProductLiteVM>>> Handle(GetRelatedProductsQuery query, CancellationToken cancellationToken)
             {
                 var lang = CultureInfo.CurrentCulture?.TwoLetterISOLanguageName ?? "en";
-                var usdRate = 1 / _currencyRateService.GetUSDRate(query.Currency);
+                var usdRate = _currencyRateService.GetUSDRate(query.Currency, true);
 
                 var qry = _productService.GetRelatedProducts(query.Id, lang);
                 if (qry == null)

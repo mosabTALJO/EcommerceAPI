@@ -41,7 +41,7 @@ namespace EcommerceAPI.Core.BaseItems
             }
             else if (item.BaseItemType == BaseItemTypes.ProductsSet)
             {
-                var usdRate = 1 / _currencyRateService.GetUSDRate(toCurrency);
+                var usdRate = _currencyRateService.GetUSDRate(toCurrency, true);
 
                 var productsIds = item.Products.Select(x => x.Id).ToArray();
                 item.Products = _productService.Queryable().Include(x => x.Category).Where(x => productsIds.Contains(x.Id)).Select(x => new BaseItemBrandProduct

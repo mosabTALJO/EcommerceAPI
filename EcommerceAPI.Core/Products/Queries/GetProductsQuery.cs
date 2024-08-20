@@ -50,7 +50,7 @@ namespace EcommerceAPI.Core.Products.Queries
 
             public async Task<RequestResult<ListResponse<ProductLiteVM>>> Handle(GetProductsQuery query, CancellationToken cancellationToken)
             {
-                var usdRate = 1 / _currencyRateService.GetUSDRate(query.Currency);
+                var usdRate = _currencyRateService.GetUSDRate(query.Currency, true);
 
                 query.PageNumber = query.PageNumber.PagingNumber();
                 IQueryable<Product> lst = null;
@@ -101,7 +101,7 @@ namespace EcommerceAPI.Core.Products.Queries
                     //MIN PRICe
                     if (query.MinPrice.HasValue)
                     {
-                        var min = query.MinPrice.Value * usdRate;
+                        var min = query.MinPrice.Value * (1 / usdRate);
                         lst = lst.Where(x =>
                             (
                                x.Discount != null ? x.SalesPriceUSD * (1 - x.Discount.Value / 100) :
@@ -113,7 +113,7 @@ namespace EcommerceAPI.Core.Products.Queries
                     //MAX PRICe
                     if (query.MaxPrice.HasValue)
                     {
-                        var max = query.MaxPrice.Value * usdRate;
+                        var max = query.MaxPrice.Value * (1 / usdRate);
                         lst = lst.Where(x =>
                              (
                                 x.Discount != null ? x.SalesPriceUSD * (1 - x.Discount.Value / 100) :

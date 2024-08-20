@@ -21,7 +21,7 @@ namespace EcommerceAPI.Core.Carts
             Coupon? coupon = null
             )
         {
-            var usdRate = 1 / _currencyRateService.GetUSDRate(order.Currency);
+            var usdRate = _currencyRateService.GetUSDRate(order.Currency, true);
             var c = _countryService.Queryable().AsNoTracking().FirstOrDefault(x => x.Code == order.Country);
 
             //order.Country = c.Code;

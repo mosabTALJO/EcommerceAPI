@@ -2,6 +2,7 @@
 using EcommerceAPI.UnitOfWork.Abstractions;
 using EcommerceAPI.UnitOfWork.EF;
 using EcommerceAPI.UnitOfWork.Services;
+using Microsoft.AspNetCore.Http.Timeouts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Scrapper;
@@ -11,7 +12,7 @@ namespace EcommerceAPI.Services
     public interface ICurrencyRateService : IService<CurrencyRate>
     {
         double GetCurrencyRate(string from, string to);
-        double GetUSDRate(string from);
+        double GetUSDRate(string from, bool reverse = false);
         Task RefreshRates();
         Task ClearCache();
         static string[] CurrencyCodes => ["QAR", "KWD", "USD", "TRY", "OMR", "AED", "YER", "EGP", "SAR", "IQD", "JOD", "BHD", "MAD", "DZD", "LYD",];
@@ -29,6 +30,9 @@ namespace EcommerceAPI.Services
 
         public double GetCurrencyRate(string from, string to)
         {
+            if (from == to)
+                return 1.0;
+
             var key = $"CC_{from}_{to}";
             if (!_cache.TryGetValue(key, out double rateValue))
             {
@@ -74,6 +78,12 @@ namespace EcommerceAPI.Services
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public double GetUSDRate(string from) => GetCurrencyRate(from, "USD");
+        public double GetUSDRate(string from, bool reverse = false)
+        {
+            var rate = GetCurrencyRate(from, "USD");
+            if (reverse)
+                return rate == 0 ? 0 : 1 / rate;
+            return rate;
+        }
     }
 }

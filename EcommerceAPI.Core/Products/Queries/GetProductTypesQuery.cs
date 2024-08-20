@@ -26,7 +26,7 @@ namespace EcommerceAPI.Core.Products.Queries
             }
             public async Task<RequestResult<ProductVariantVM[]>> Handle(GetProductVariantsQuery query, CancellationToken cancellationToken)
             {
-                var usdRate = 1 / _currencyRateService.GetUSDRate(query.Currency);
+                var usdRate = _currencyRateService.GetUSDRate(query.Currency, true);
 
                 var items = await _productService.GetProductVariant(query.Id).Select(x => new ProductVariantVM
                 {
