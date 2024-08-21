@@ -18,7 +18,6 @@ namespace EcommerceAPI.Core.Inits.Queries
         public string UserId { get; set; }
         public string Role { get; set; }
         public string Currency { get; set; }
-        public string lang { get; set; }
         public class GetWebInitQueryHandler : IRequestHandler<GetWebInitQuery, RequestResult<WebInitData>>
         {
             public readonly IMemoryCache _memoryCache;
@@ -106,7 +105,7 @@ namespace EcommerceAPI.Core.Inits.Queries
                             continue;
                         }
                         var x = BaseItemVM.GenerateFromBaseItem(item);
-                        BaseItemCleaner.CleanItems(x, _mapper, _brandService, _categoryService, _productService, _currencyRateService, query.Currency, query.lang);
+                        BaseItemCleaner.CleanItems(x, _mapper, _brandService, _categoryService, _productService, _currencyRateService, query.Currency, lang);
                         bItems.Add(x);
                     }
                     init.BaseItems = bItems;

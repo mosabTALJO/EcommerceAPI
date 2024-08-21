@@ -14,12 +14,15 @@ using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Globalization;
 using System.Text;
 
 TokenValidationParameters tokenValidationParameters;
@@ -167,6 +170,7 @@ builder.Services.AddCors(options =>
                .AllowCredentials();
     });
 });
+ConfigureLocalization(builder.Services);
 builder.Services.AddDbContext<MyDbContext>(x => x.UseNpgsql("Host=localhost; Database=Ecommerce; Username=ecomm; Password=aser@sWwer##4as"));
 
 var app = builder.Build();
@@ -182,6 +186,8 @@ if (!builder.Environment.IsDevelopment())
         dbContext?.Database.Migrate();
 
         MySeedInitializer.SeedData(userManager, roleManager, memoryCache);
+        var options = serviceScope.ServiceProvider.GetService<IOptions<RequestLocalizationOptions>>();
+        app.UseRequestLocalization(options.Value);
 
         if (!builder.Environment.IsDevelopment())
         {
@@ -225,3 +231,29 @@ app.MapControllers();
 
 
 app.Run();
+
+
+
+void ConfigureLocalization(IServiceCollection services)
+{
+    services.AddLocalization(options => options.ResourcesPath = "Resources");
+    services.Configure<RequestLocalizationOptions>(options =>
+    {
+        List<CultureInfo> supportedCultures = new List<CultureInfo>
+                {
+                    new CultureInfo("en"),
+                    new CultureInfo("tr"),
+                    new CultureInfo("ar"),
+                    new CultureInfo("fr"),
+                };
+        options.DefaultRequestCulture = new RequestCulture("en");
+        options.SupportedCultures = supportedCultures;
+        options.SupportedUICultures = supportedCultures;
+        options.RequestCultureProviders = new List<IRequestCultureProvider>
+                {
+                    new AcceptLanguageHeaderRequestCultureProvider(),
+                    new QueryStringRequestCultureProvider(),
+                    new CookieRequestCultureProvider()
+                };
+    });
+}

@@ -44,7 +44,7 @@ namespace EcommerceAPI.Core.BaseItems
                 var usdRate = _currencyRateService.GetUSDRate(toCurrency, true);
 
                 var productsIds = item.Products.Select(x => x.Id).ToArray();
-                item.Products = _productService.Queryable().Include(x => x.Category).Where(x => productsIds.Contains(x.Id)).Select(x => new BaseItemBrandProduct
+                item.Products = _productService.Queryable().Where(x => productsIds.Contains(x.Id)).Select(x => new BaseItemBrandProduct
                 {
                     Name = lang == "en" ? x.NameEn : x.NameAr,
                     BrandName = lang == "en" ? x.Brand.NameEn : x.Brand.NameAr,
