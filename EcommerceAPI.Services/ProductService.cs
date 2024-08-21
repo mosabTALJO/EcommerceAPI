@@ -19,20 +19,29 @@ namespace EcommerceAPI.Services
         IRepository<ProductVariant> _productVariantRepo;
         IRepository<OrderItem> _orderItemRepo;
         IRepository<ProductVariantAttribute> _productVariantAttributeRepo;
+        IRepository<Country> _CountryRepo;
         ICurrencyRateService _currencyRateService;
         public ProductService(IRepository<Product> repo,
             IRepository<ProductVariant> productVariantRepo,
             IRepository<OrderItem> orderItemRepo,
             IRepository<ProductVariantAttribute> productVariantAttributeRepo,
-            ICurrencyRateService currencyRateService) : base(repo)
+            ICurrencyRateService currencyRateService,
+            IRepository<Country> countryRepo) : base(repo)
         {
             _productVariantRepo = productVariantRepo;
             _orderItemRepo = orderItemRepo;
             _productVariantAttributeRepo = productVariantAttributeRepo;
             _currencyRateService = currencyRateService;
+            _CountryRepo = countryRepo;
         }
         public void CreateProduct(Product p)
         {
+            //fix currency
+            if (string.IsNullOrEmpty(p.Currency))
+                p.Currency = _CountryRepo.Queryable().FirstOrDefault(x => x.IsDefault)?.CurrencyCode ?? "";
+            if (string.IsNullOrEmpty(p.Currency))
+                throw new Exception("Currency is required");
+
             var usdRate = _currencyRateService.GetUSDRate(p.Currency);
             p.SalesPriceUSD = usdRate * p.SalesPrice;
             Insert(p);

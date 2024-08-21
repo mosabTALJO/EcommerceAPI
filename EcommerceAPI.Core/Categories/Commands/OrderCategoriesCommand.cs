@@ -9,7 +9,6 @@ namespace EcommerceAPI.Core.Categories.Commands
     public class OrderCategoriesCommand : IRequest<RequestResult<bool>>
     {
         public CategoryOrdering[] Items { get; set; }
-
         public OrderCategoriesCommand(CategoryOrdering[] items)
         {
             Items = items;

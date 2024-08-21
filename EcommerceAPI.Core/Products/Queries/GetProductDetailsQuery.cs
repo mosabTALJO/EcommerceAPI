@@ -61,7 +61,7 @@ namespace EcommerceAPI.Core.Products.Queries
                         pv.SalesPrice = query.Currency == p.Currency ? pv.SalesPrice : pv.SalesPriceUSD * usdRate;
                     }
                 }
-                
+
                 p.ProductVariants = p.ProductVariants.Where(x => x.IsActive).ToList();
 
                 return new RequestResult<ProductVM>(p);
@@ -79,6 +79,8 @@ namespace EcommerceAPI.Core.Products.Queries
                     p.Images.Insert(0, p.MainImage);
                 }
                 p.Images = p.Images.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
+                foreach (var pv in p.ProductVariants)
+                    pv.Images = pv.Images.Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
             }
         }
     }

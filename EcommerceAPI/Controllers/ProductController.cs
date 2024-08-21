@@ -144,13 +144,13 @@ namespace EcommerceAPI.Web.Controllers
             return GetActionResult(await _mediator.Send(new UnHideProductCommand { Id = Id }));
         }
 
-        //[HttpPost("PostFile")]
-        //[Authorize(Policy = PoliciesText.CreateProduct)]
-        //[ApiExplorerSettings(GroupName = "cp")]
-        //public async Task<ActionResult<RequestResult<string>>> ImportFromExcel()
-        //{
-        //    return GetActionResult(await _mediator.Send(new ImportFromExcelCommand { File = Request?.Form?.Files?.ToArray()?.FirstOrDefault() }));
-        //}
+        [HttpPost("PostFile")]
+        [Authorize(Policy = PoliciesText.CreateProduct)]
+        [ApiExplorerSettings(GroupName = "cp")]
+        public async Task<ActionResult<RequestResult<string>>> ImportFromExcel()
+        {
+            return GetActionResult(await _mediator.Send(new ImportFromExcelCommand { File = Request?.Form?.Files?.ToArray()?.FirstOrDefault() }));
+        }
 
 
         //[HttpPost("PostFile1")]

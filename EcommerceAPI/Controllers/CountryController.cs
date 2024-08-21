@@ -1,5 +1,6 @@
 ﻿using EcommerceAPI.Core.Countries.Commands;
 using EcommerceAPI.Core.Countries.Queries;
+using EcommerceAPI.Services;
 using EcommerceAPI.Shared.Helpers;
 using EcommerceAPI.Shared.ViewModels;
 using MediatR;
@@ -39,6 +40,13 @@ namespace EcommerceAPI.Web.Controllers
         {
             return GetActionResult(await _mediator.Send(new GetMainScreenCountriesQuery()));
         }
+
+        //GetList api/Country
+        [HttpGet("GetCurrencies")]
+        [Authorize(Policy = PoliciesText.EditCountries)]
+        [ApiExplorerSettings(GroupName = "cp")]
+        public async Task<ActionResult<RequestResult<string[]>>> GetCurrencies() =>
+            GetActionResult(new RequestResult<string[]>(ICurrencyRateService.CurrencyCodes, ActionResultType.OK));
 
         // Post api/Country
         [HttpPost]

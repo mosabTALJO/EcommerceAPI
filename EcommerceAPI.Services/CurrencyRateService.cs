@@ -22,10 +22,12 @@ namespace EcommerceAPI.Services
     {
         readonly IMemoryCache _cache;
         readonly IUnitOfWork _unitOfWork;
-        public CurrencyRateService(IRepository<CurrencyRate> repo, IMemoryCache cache, IUnitOfWork unitOfWork) : base(repo)
+        readonly ICountryService _countryService;
+        public CurrencyRateService(IRepository<CurrencyRate> repo, IMemoryCache cache, IUnitOfWork unitOfWork, ICountryService countryService) : base(repo)
         {
             _cache = cache;
             _unitOfWork = unitOfWork;
+            _countryService = countryService;
         }
 
         public double GetCurrencyRate(string from, string to)
@@ -62,7 +64,7 @@ namespace EcommerceAPI.Services
             foreach (var dbItem in dbItems)
             {
                 var newItem = allItems.FirstOrDefault(x => x.FromCurrencyCode == dbItem.FromCurrencyCode && x.ToCurrencyCode == dbItem.ToCurrencyCode);
-                if (newItem != null)
+                if (newItem != null && newItem.Rate > 0)
                 {
                     dbItem.Rate = newItem.Rate;
                     Repository.Update(dbItem);
@@ -80,6 +82,11 @@ namespace EcommerceAPI.Services
 
         public double GetUSDRate(string from, bool reverse = false)
         {
+            if (string.IsNullOrEmpty(from))
+                from = _countryService.Queryable().OrderByDescending(x => x.IsDefault).FirstOrDefault()?.CurrencyCode ?? "";
+            if (string.IsNullOrEmpty(from))
+                throw new Exception("Currency missing");
+
             var rate = GetCurrencyRate(from, "USD");
             if (reverse)
                 return rate == 0 ? 0 : 1 / rate;

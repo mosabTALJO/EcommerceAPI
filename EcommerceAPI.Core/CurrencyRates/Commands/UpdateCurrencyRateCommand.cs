@@ -29,7 +29,7 @@ namespace EcommerceAPI.Core.CurrencyRates.Commands
                 foreach (var item in command.Items)
                 {
                     var dbItem = _currencyRateService.Queryable().First(x => x.Id == item.Id);
-                    //dbItem.FeeRate = item.FeeRate;
+                    dbItem.FeeRate = item.FeeRate;
                     dbItem.Rate = item.Rate;
                     dbItem.LastUpdatedDate = DateTime.UtcNow;
                     _currencyRateService.Update(dbItem);

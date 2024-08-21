@@ -65,7 +65,7 @@ namespace EcommerceAPI.Core.Products.Commands
                     p.IsActive = command.IsActive;
                     p.OnlinePaymentOnly = command.OnlinePaymentOnly;
                     p.ProductVariants = command.ProductVariants.Select(_mapper.Map<ProductVariant>).ToList();
-                    p.Currency = command.CurrencyCode;
+                    p.Currency = string.IsNullOrEmpty(command.CurrencyCode) ? p.Currency : command.CurrencyCode;
 
                     await _productService.UpdateProduct(p);
                     if (await _unitOfWork.SaveChangesAsync() > 0)
