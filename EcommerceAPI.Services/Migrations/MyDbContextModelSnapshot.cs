@@ -1019,6 +1019,9 @@ namespace EcommerceAPI.Services.Migrations
                     b.Property<DateTime?>("CancelDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<double?>("CostPrice")
+                        .HasColumnType("double precision");
+
                     b.Property<double?>("CoupunDiscount")
                         .HasColumnType("double precision");
 
@@ -1249,6 +1252,9 @@ namespace EcommerceAPI.Services.Migrations
                         .IsRequired()
                         .HasMaxLength(3)
                         .HasColumnType("character varying(3)");
+
+                    b.Property<double?>("DefaultCostPrice")
+                        .HasColumnType("double precision");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp with time zone");
@@ -1557,6 +1563,9 @@ namespace EcommerceAPI.Services.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()

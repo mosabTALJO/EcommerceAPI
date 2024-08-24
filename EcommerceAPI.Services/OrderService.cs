@@ -17,7 +17,7 @@ namespace EcommerceAPI.Services
         void UpdateOrder(Order o, bool UpdateCreatedAt = false);
         void DeleteOrder(Order o);
         void ShipItem(OrderItem orderItem, string ShippingCompany, string ShippingCode);
-        void Accept(OrderItem orderItem);
+        void Accept(OrderItem orderItem, double? CostPrice);
         void InStock(OrderItem orderItem);
         void Cancel(OrderItem oi);
         void Return(OrderItem oi, string reason);
@@ -94,11 +94,12 @@ namespace EcommerceAPI.Services
 
             _orderItemRepo.Update(OrderItem);
         }
-        public void Accept(OrderItem orderItem)
+        public void Accept(OrderItem orderItem, double? CostPrice)
         {
             var previousState = orderItem.OrderItemState;
             orderItem.AcceptedDate = DateTime.UtcNow;
             orderItem.OrderItemState = OrderItemState.Accepted;
+            orderItem.CostPrice = CostPrice;
             //var p = _productRepo.Queryable().Include(x => x.ProductTypes).IgnoreQueryFilters().FirstOrDefault(x => x.Id == orderItem.ProductId);
             var pv = _productVariantRepo.Queryable().Include(x => x.Product).IgnoreQueryFilters().FirstOrDefault(x => x.Id == orderItem.ProductVariantId)
                 ?? throw new Exception("Product Not Found");

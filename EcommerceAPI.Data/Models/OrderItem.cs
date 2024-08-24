@@ -30,6 +30,7 @@ namespace EcommerceAPI.Data.Models
         public int OrderId { get; set; }
         public Order Order { get; set; }
         public double DiscountAmount { get; set; }
+        public double? CostPrice { get; set; }
         public virtual ICollection<OrderLog> Logs { get; set; }
         [NotMapped]
         public bool HasLogs { get => Logs?.Any() ?? false; }

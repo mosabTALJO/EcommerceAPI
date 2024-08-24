@@ -33,5 +33,6 @@ namespace EcommerceAPI.Shared.ViewModels
         public double DiscountAmount { get; set; }
         public int? ShipmentId { get; set; }
         public bool HasLogs { get; set; }
+        public double? CostPrice { get; set; }
     }
 }

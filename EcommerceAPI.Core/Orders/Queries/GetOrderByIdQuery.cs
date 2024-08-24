@@ -28,6 +28,7 @@ namespace EcommerceAPI.Core.Orders.Queries
                 _ratingService = ratingService;
                 _userManager = userManager;
             }
+            
             public async Task<RequestResult<OrderVM>> Handle(GetOrderByIdQuery query, CancellationToken cancellationToken)
             {
                 var item = await _orderService.GetOrderDetails(query.Id);
@@ -41,7 +42,8 @@ namespace EcommerceAPI.Core.Orders.Queries
                 foreach (var oi in o.OrderItems)
                 {
                     oi.Currency = item.Currency;
-                    //oi.Product.CompanyURL = string.IsNullOrWhiteSpace(oi.Product.CompanyURL) || oi.Product.CompanyURL.StartsWith("https") ? oi.Product.CompanyURL : "https://www.trendyol.com" + (oi.Product.CompanyURL?.StartsWith("/") == true ? "" : "/") + oi.Product.CompanyURL;
+                    if (oi.CostPrice is null)
+                        oi.CostPrice = item.OrderItems.FirstOrDefault(x => x.Id == oi.Id)?.ProductVariant?.Product?.DefaultCostPrice;
                 }
                 o.Ratings = await _ratingService.Queryable().AsNoTracking().Where(r => r.OrderId == o.Id).To<RatingVM>(_mapper).ToArrayAsync();
 

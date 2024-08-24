@@ -9,7 +9,6 @@ namespace EcommerceAPI.Core.CurrencyRates
         public CurrencyRateMapper()
         {
             CreateMap<CurrencyRate, CurrencyRateVM>()
-                .ForMember(dst => dst.LastUpdatedDate, opt => opt.MapFrom(src => src.LastUpdatedDate.Value.ToLocalTime()))
                 .ReverseMap();
             CreateMap<CurrencyRate, CurrencyRateLiteVM>().ReverseMap();
         }

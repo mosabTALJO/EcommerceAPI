@@ -110,16 +110,17 @@ namespace EcommerceAPI.Web.Controllers
             return GetActionResult(await _mediator.Send(new GetOrderByIdQuery { Id = id }));
         }
 
-        [HttpPost("AcceptItem/{OrderId}/{OrderItemID}")]
+        [HttpPost("AcceptItem/{OrderId}/{OrderItemID}/{CostPrice?}")]
         [Authorize(Policy = PoliciesText.UpdateOrder)]
         [ApiExplorerSettings(GroupName = "cp")]
-        public async Task<ActionResult<RequestResult<bool>>> AcceptItem(int OrderId, int OrderItemID)
+        public async Task<ActionResult<RequestResult<bool>>> AcceptItem(int OrderId, int OrderItemID, double? CostPrice)
         {
             var command = new AcceptItemCommand()
             {
                 OrderItemId = OrderItemID,
                 OrderId = OrderId,
-                UserId = User.Identity.Name,
+                UserId = User?.Identity?.Name,
+                CostPrice = CostPrice,
             };
             return GetActionResult(await _mediator.Send(command));
         }

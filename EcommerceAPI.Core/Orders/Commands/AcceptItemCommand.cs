@@ -11,6 +11,7 @@ namespace EcommerceAPI.Core.Orders.Commands
     {
         public int OrderId { get; set; }
         public int OrderItemId { get; set; }
+        public double? CostPrice { get; set; }
         public string? UserId { get; set; }
         public class AcceptItemCommandHandler : IRequestHandler<AcceptItemCommand, RequestResult<bool>>
         {
@@ -51,9 +52,8 @@ namespace EcommerceAPI.Core.Orders.Commands
                     o.DeliveryPrice = OrderOperations.CalculateOrderDeliveryPrice(totalWithCuponDiscount, country);
                     o.TotalSalePrice = totalWithCuponDiscount + o.DeliveryPrice;
                 }
-
                 await _orderLogService.ItemAcceptedLog(oi.Id, o, command.UserId);
-                _orderService.Accept(oi);
+                _orderService.Accept(oi, command.CostPrice);
 
                 if (await _unitOfWork.SaveChangesAsync() > 0)
                     return new RequestResult<bool>(true);

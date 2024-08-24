@@ -88,11 +88,20 @@ namespace EcommerceAPI.Web.Controllers
             await _unitOfWork.SaveChangesAsync();
             return new RequestResult<bool>(true, ActionResultType.OK);
         }
+
         [HttpGet("GetAppSettings")]
         [AllowAnonymous]
         public async Task<ActionResult<RequestResult<Settings[]>>> GetAppSettings()
         {
-            var dbSettings = await _settingsService.Queryable().ToArrayAsync();
+            var dbSettings = await _settingsService.Queryable().Where(x => !x.IsAdmin).ToArrayAsync();
+            return new RequestResult<Settings[]>(dbSettings, ActionResultType.OK);
+        }
+
+        [HttpGet("GetAdminSettings")]
+        [AllowAnonymous]
+        public async Task<ActionResult<RequestResult<Settings[]>>> GetAdminSettings()
+        {
+            var dbSettings = await _settingsService.Queryable().Where(x => x.IsAdmin).ToArrayAsync();
             return new RequestResult<Settings[]>(dbSettings, ActionResultType.OK);
         }
     }

@@ -19,7 +19,7 @@ namespace EcommerceAPI.Web.Controllers
         [HttpGet]
         [ApiExplorerSettings(GroupName = "cp")]
         public async Task<ActionResult<RequestResult<CurrencyRateVM[]>>> Get() =>
-            Ok(GetActionResult(await _mediator.Send(new GetAllCurrencyRatesQuery())));
+            GetActionResult(await _mediator.Send(new GetAllCurrencyRatesQuery()));
 
         [HttpPut]
         [ApiExplorerSettings(GroupName = "cp")]
