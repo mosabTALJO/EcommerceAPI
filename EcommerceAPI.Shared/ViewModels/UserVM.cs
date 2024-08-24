@@ -16,6 +16,5 @@ namespace EcommerceAPI.Shared.ViewModels
         public UserTypes UserType { get; set; }
         public List<Policies> Claims { get; set; }
         public bool IsBlackList { get; set; }
-        public string IdCardImage { get; set; }
     }
 }

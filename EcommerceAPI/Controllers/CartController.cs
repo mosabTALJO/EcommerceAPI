@@ -145,7 +145,7 @@ namespace EcommerceAPI.Web.Controllers
         [HttpGet("PayMyFatoorah/{UserAddressId}")]
         [Authorize(Roles = "Customer")]
         [ApiExplorerSettings(GroupName = "fe")]
-        public async Task<ActionResult<RequestResult<string>>> PayMyFatoorah(int UserAddressId, [FromQuery] int? productNotFound = null, [FromQuery] string idCard = null)
+        public async Task<ActionResult<RequestResult<string>>> PayMyFatoorah(int UserAddressId, [FromQuery] int? productNotFound = null)
         {
             return GetActionResult(await _mediator.Send(new PayMyFatoorahQuery
             {
@@ -160,7 +160,7 @@ namespace EcommerceAPI.Web.Controllers
         [HttpPost("OnDoorPaymentPendingOrder/{userAddressId}")]
         [Authorize(Roles = "Customer")]
         [ApiExplorerSettings(GroupName = "fe")]
-        public async Task<ActionResult<RequestResult<bool>>> OnDoorPaymentPendingOrder(int userAddressId, [FromQuery] int? productNotFound = null, [FromQuery] string idCard = null)
+        public async Task<ActionResult<RequestResult<bool>>> OnDoorPaymentPendingOrder(int userAddressId, [FromQuery] int? productNotFound = null)
         {
             return GetActionResult(await _mediator.Send(new OnDoorPaymentPendingOrderCommand
             {
@@ -174,7 +174,7 @@ namespace EcommerceAPI.Web.Controllers
         [HttpPost("ConfirmOnDoorPaymentOrder/{userAddressId}")] // for old versions
         [Authorize(Roles = "Customer")]
         [ApiExplorerSettings(GroupName = "fe")]
-        public async Task<ActionResult<RequestResult<bool>>> ConfirmOnDoorPaymentOrderOld(int userAddressId, [FromQuery] int? productNotFound = null, [FromQuery] string idCard = null)
+        public async Task<ActionResult<RequestResult<bool>>> ConfirmOnDoorPaymentOrderOld(int userAddressId, [FromQuery] int? productNotFound = null)
         {
             return GetActionResult(await _mediator.Send(new OnDoorPaymentPendingOrderCommand
             {

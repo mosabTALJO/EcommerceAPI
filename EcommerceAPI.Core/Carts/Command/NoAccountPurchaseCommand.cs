@@ -97,11 +97,7 @@ namespace EcommerceAPI.Core.Carts.Command
 
                 await _unitOfWork.SaveChangesAsync();
 
-                //if (c.IsRequestIdCard == true && string.IsNullOrEmpty(command.IdCard))
-                //    return new RequestResult<NoAccountPaymentVM>(ActionResultType.BadRequest, "you have to upload id card");
-
                 var lang = CultureInfo.CurrentCulture?.TwoLetterISOLanguageName ?? "en";
-
                 var o = new Order()
                 {
                     OrderStatus = OrderStatus.CartOrder,

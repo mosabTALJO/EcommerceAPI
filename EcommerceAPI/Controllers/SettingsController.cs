@@ -98,7 +98,7 @@ namespace EcommerceAPI.Web.Controllers
         }
 
         [HttpGet("GetAdminSettings")]
-        [AllowAnonymous]
+        [Authorize(Policy = PoliciesText.AdminPermissions)]
         public async Task<ActionResult<RequestResult<Settings[]>>> GetAdminSettings()
         {
             var dbSettings = await _settingsService.Queryable().Where(x => x.IsAdmin).ToArrayAsync();

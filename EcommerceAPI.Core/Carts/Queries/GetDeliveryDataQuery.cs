@@ -40,11 +40,6 @@ namespace EcommerceAPI.Core.Carts.Queries
                     MyFatoorah = true,//c.MyFatoorahPayment,
                     OnDoorPayment = OnDoorPayment,
                 };
-                if (deliverData.OnDoorPayment)
-                {
-                    deliverData.RequestIdCard = true;
-                    deliverData.IdCardTermsAndConditions = c.PrivacyPolicyText;
-                }
                 return new RequestResult<DeliveryData>(deliverData);
             }
         }
@@ -56,7 +51,5 @@ namespace EcommerceAPI.Core.Carts.Queries
         public string CurrencyCode { get; set; }
         public bool MyFatoorah { get; set; }
         public bool OnDoorPayment { get; set; }
-        public bool RequestIdCard { get; set; }
-        public string IdCardTermsAndConditions { get; set; }
     }
 }

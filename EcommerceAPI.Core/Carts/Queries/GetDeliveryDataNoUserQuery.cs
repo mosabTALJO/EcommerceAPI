@@ -35,12 +35,6 @@ namespace EcommerceAPI.Core.Carts.Queries
                     MyFatoorah = true,//c.MyFatoorahPayment,
                     OnDoorPayment = c.OnDoorPayment && !onlinePaymentOnly,
                 };
-                if (deliverData.OnDoorPayment)
-                {
-                    deliverData.RequestIdCard = true;
-                    deliverData.IdCardTermsAndConditions = c.PrivacyPolicyText;
-                }
-
                 return new RequestResult<DeliveryData>(deliverData);
             }
         }
