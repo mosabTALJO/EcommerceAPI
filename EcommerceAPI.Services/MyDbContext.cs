@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System.Diagnostics;
+using EcommerceAPI.Entities.Models;
 
 namespace EcommerceAPI.Services
 {
@@ -138,5 +139,6 @@ namespace EcommerceAPI.Services
         public DbSet<BaseItem> BaseItems { get; set; }
         public DbSet<FrontendSetting> FrontendSettings { get; set; }
         public DbSet<Settings> Settings { get; set; }
+        public DbSet<KargoCompany> KargoCompanies { get; set; }
     }
 }

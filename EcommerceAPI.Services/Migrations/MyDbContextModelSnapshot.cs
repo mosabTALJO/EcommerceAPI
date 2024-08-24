@@ -1659,6 +1659,42 @@ namespace EcommerceAPI.Services.Migrations
                     b.ToTable("UserAddress");
                 });
 
+            modelBuilder.Entity("EcommerceAPI.Entities.Models.KargoCompany", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AverageDeliveryDays")
+                        .HasColumnType("integer");
+
+                    b.Property<double>("DeliveryLimitAmount")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("DeliveryLimitFixedAmount")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("DeliveryLimitPercent")
+                        .HasColumnType("double precision");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("NameAr")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("NameEn")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("KargoCompanies");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
