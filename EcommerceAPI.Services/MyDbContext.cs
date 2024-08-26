@@ -19,7 +19,7 @@ namespace EcommerceAPI.Services
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (Debugger.IsAttached)
-                optionsBuilder.UseNpgsql(@"Host=localhost; Database=Ecommerce; Username=postgres; Password=123456lolo");
+                optionsBuilder.UseNpgsql(@"Host=37.27.57.167; Port=5432; Database=Ecommerce; Username=ecomm; Password=aser@sWwer##4as");
             else
                 optionsBuilder.UseNpgsql(@"Host=localhost; Database=Ecommerce; Username=ecomm; Password=aser@sWwer##4as");
             //if (Debugger.IsAttached)
@@ -95,10 +95,6 @@ namespace EcommerceAPI.Services
                             sd.DeletedAt = now;
                         }
                     }
-                }
-                else if (entry.Entity is IMyTrackable entity2)
-                {
-
                 }
             }
         }

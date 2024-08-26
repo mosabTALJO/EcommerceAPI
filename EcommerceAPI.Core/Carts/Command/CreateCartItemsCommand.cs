@@ -56,7 +56,7 @@ namespace EcommerceAPI.Core.Carts.Command
                     if (oi is null && item.Quantity <= 0)
                         continue;
 
-                    var pv = await _productVariantService.Queryable().Where(x => x.Id == item.ProductVariantId)
+                    var pv = await _productVariantService.Queryable().AsNoTracking().Where(x => x.Id == item.ProductVariantId)
                         .Select(x => new { x.Id, x.ProductId, x.Name, x.Product.MainImage }).FirstOrDefaultAsync();
                     if (pv == null)
                     {

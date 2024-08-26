@@ -23,6 +23,7 @@ namespace EcommerceAPI.Core.KargoCompanies.Queries
             }
             public async Task<ListResponse<KargoCompanyVM>> Handle(GetAllKargoCompaniesnQuery query, CancellationToken cancellationToken)
             {
+                query.PageNumber = query.PageNumber.PagingNumber();
                 var companies = _kargoCompanyService.Queryable().AsNoTracking();
 
                 return new ListResponse<KargoCompanyVM>

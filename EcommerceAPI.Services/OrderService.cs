@@ -29,14 +29,15 @@ namespace EcommerceAPI.Services
     {
         IRepository<OrderItem> _orderItemRepo;
         IRepository<Product> _productRepo;
-        //IRepository<ProductType> _productTypeRepo;
         IRepository<ProductVariant> _productVariantRepo;
+        IRepository<OrderLog> _orderLogRepo;
         public OrderService(IRepository<Order> repo, IRepository<OrderItem> orderItemRepo,
-            /*IRepository<ProductType> productTypeRepo*/IRepository<ProductVariant> productVariantRepo, IRepository<Product> productRepo) : base(repo)
+            IRepository<ProductVariant> productVariantRepo, IRepository<Product> productRepo, IRepository<OrderLog> orderLogRepo) : base(repo)
         {
             _orderItemRepo = orderItemRepo;
             _productRepo = productRepo;
             _productVariantRepo = productVariantRepo;
+            _orderLogRepo = orderLogRepo;
             //_productTypeRepo = productTypeRepo;
         }
         public void CreateOrder(Order o)
@@ -56,7 +57,6 @@ namespace EcommerceAPI.Services
             var dbItems = _orderItemRepo.Queryable().AsNoTracking().Where(x => x.OrderId == o.Id).ToList();
             foreach (var oi in o.OrderItems ?? new List<OrderItem>())
             {
-                oi.Order = o;
                 oi.OrderId = o.Id;
                 if (oi.Id == 0)
                     _orderItemRepo.Insert(oi);
@@ -68,6 +68,7 @@ namespace EcommerceAPI.Services
             }
             foreach (var item in dbItems)
             {
+                _orderLogRepo.Queryable().Where(x => x.OrderItemId == item.Id).ToList().ForEach(x => _orderLogRepo.Delete(x));
                 item.CompleteRemove = true;
                 _orderItemRepo.Delete(item);
             }
