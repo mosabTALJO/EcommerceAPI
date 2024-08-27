@@ -48,8 +48,11 @@ namespace EcommerceAPI.Core.Products.Commands
                     if (p.DeletedAt.HasValue)
                         return new RequestResult<bool>(false, ActionResultType.BadRequest, "DeletedItem");
 
-                    //remove main image from the list
+                    //fix images
+                    foreach (var pv in command.ProductVariants ?? [])
+                        pv.Images = pv.Images.Intersect(command.Images).ToList();
                     command.Images = command.Images?.Where(x => x != command.MainImage && x != "").ToList() ?? [];
+
                     p.NameAr = command.NameAr ?? "";
                     p.NameEn = command.NameEn;
                     p.NameTr = command.NameTr ?? "";

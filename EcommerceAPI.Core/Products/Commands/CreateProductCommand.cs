@@ -41,6 +41,10 @@ namespace EcommerceAPI.Core.Products.Commands
             }
             public async Task<RequestResult<int>> Handle(CreateProductCommand command, CancellationToken cancellationToken)
             {
+                //fix images
+                foreach (var pv in command.ProductVariants ?? [])
+                    pv.Images = pv.Images.Intersect(command.Images).ToList();
+
                 var p = _mapper.Map<Product>(command);
                 p.IsActive = true;
 
