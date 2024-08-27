@@ -117,7 +117,7 @@ builder.Services.Configure<SendGridEmailSenderOptions>(options =>
 });
 builder.Services.AddHangfire(x =>
 {
-    x.UseSqlServerStorage("server=.\\MSSQLSERVER2022;database=EcommerceHangfire;User ID=EcommerceHF;password=xvu3Ki5121;MultipleActiveResultSets=True;Encrypt=False");
+    x.UseSqlServerStorage("server=localhost;database=EcommerceHangfire;User ID=EcommerceHF;password=xvu3Ki5121;MultipleActiveResultSets=True;Encrypt=False");
     x.UseFilter(new AutomaticRetryAttribute { Attempts = 0 });
 });
 builder.Services.AddHangfireServer();
