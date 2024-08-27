@@ -6,10 +6,7 @@ using EcommerceAPI.Shared.Helpers;
 using EcommerceAPI.Shared.Helpers.Abstractions;
 using EcommerceAPI.UnitOfWork.Abstractions;
 using EcommerceAPI.UnitOfWork.EF;
-using EcommerceAPI.UnitOfWork.Services;
-using EcommerceAPI.Web.Controllers;
 using EcommerceAPI.Web.Helpers;
-using Google.Api.Gax;
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -18,7 +15,6 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -121,7 +117,7 @@ builder.Services.Configure<SendGridEmailSenderOptions>(options =>
 });
 builder.Services.AddHangfire(x =>
 {
-    x.UseSqlServerStorage("server=localhost;database=EcommerceHangfire;User ID=EcommerceHF;password=xvu3Ki5121;MultipleActiveResultSets=True;Encrypt=False");
+    x.UseSqlServerStorage("server=.\\MSSQLSERVER2022;database=EcommerceHangfire;User ID=EcommerceHF;password=xvu3Ki5121;MultipleActiveResultSets=True;Encrypt=False");
     x.UseFilter(new AutomaticRetryAttribute { Attempts = 0 });
 });
 builder.Services.AddHangfireServer();
@@ -164,7 +160,13 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(
     builder =>
     {
-        builder.WithOrigins("*", "http://localhost:4200", "http://localhost:5173", "https://cp-ecommerce.usos.co", "https://Ecommerce.usos.co")
+        builder.WithOrigins("*", 
+            "http://localhost:4200",
+            "http://localhost:5173",
+            "https://cp.xgoagency.com", 
+            "https://cp-ecommerce.usos.co", 
+            "https://Ecommerce.usos.co",
+            "https://Ecommerce.xgoagency.com")
                .AllowAnyMethod()
                .AllowAnyHeader()
                .AllowCredentials();
@@ -209,7 +211,7 @@ if (!builder.Environment.IsDevelopment())
 //    }
 //}
 
-//if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(c =>
