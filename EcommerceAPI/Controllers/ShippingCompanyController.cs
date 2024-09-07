@@ -10,9 +10,9 @@ namespace EcommerceAPI.Web.Controllers
 {
     [Authorize(Policy = PoliciesText.EditShippingCompanies)]
     [ApiExplorerSettings(GroupName = "cp")]
-    public class ShippingCompanyController : MyControllerBase
+    public class ShippingCompaniesController : MyControllerBase
     {
-        public ShippingCompanyController(IMediator mediator) : base(mediator: mediator)
+        public ShippingCompaniesController(IMediator mediator) : base(mediator: mediator)
         {
         }
 
