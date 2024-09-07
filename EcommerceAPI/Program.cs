@@ -117,7 +117,7 @@ builder.Services.Configure<SendGridEmailSenderOptions>(options =>
 });
 builder.Services.AddHangfire(x =>
 {
-    x.UseSqlServerStorage("server=localhost;database=EcommerceHangfire;User ID=EcommerceHF;password=xvu3Ki5121;MultipleActiveResultSets=True;Encrypt=False");
+    x.UseSqlServerStorage("server=.\\MSSQLSERVER2022;database=EcommerceHangfire;User ID=EcommerceHF;password=xvu3Ki5121;MultipleActiveResultSets=True;Encrypt=False");
     x.UseFilter(new AutomaticRetryAttribute { Attempts = 0 });
 });
 builder.Services.AddHangfireServer();
@@ -162,9 +162,8 @@ builder.Services.AddCors(options =>
     {
         builder.WithOrigins("*", 
             "http://localhost:4200",
-            "http://localhost:5173",
-            "https://cp-ecommerce.usos.co", 
-            "https://Ecommerce.usos.co")
+            "https://cp.xgoagency.com",
+            "https://Ecommerce.xgoagency.com")
                .AllowAnyMethod()
                .AllowAnyHeader()
                .AllowCredentials();
