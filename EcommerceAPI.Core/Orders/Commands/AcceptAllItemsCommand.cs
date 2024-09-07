@@ -11,7 +11,7 @@ namespace EcommerceAPI.Core.Orders.Commands
     {
         public int OrderId { get; set; }
         public string UserId { get; set; } = string.Empty;
-        AcceptItemCommand[] OrderItems { get; set; } = [];
+        public AcceptItemCommand[] OrderItems { get; set; } = [];
         public class AcceptAllItemsCommandHandler : IRequestHandler<AcceptAllItemsCommand, RequestResult<bool>>
         {
             private readonly IOrderService _orderService;
