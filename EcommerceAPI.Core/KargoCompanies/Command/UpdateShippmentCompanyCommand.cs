@@ -4,9 +4,9 @@ using EcommerceAPI.UnitOfWork.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace EcommerceAPI.Core.KargoCompanies.Command
+namespace EcommerceAPI.Core.ShippmentCompanies.Command
 {
-    public class UpdateKargoCompanyCommand : IRequest<RequestResult<bool>>
+    public class UpdateShippmentCompanyCommand : IRequest<RequestResult<bool>>
     {
         public int Id { get; set; }
         public string NameEn { get; set; }
@@ -16,18 +16,18 @@ namespace EcommerceAPI.Core.KargoCompanies.Command
         public double DeliveryLimitFixedAmount { get; set; }
         public double DeliveryLimitPercent { get; set; }
         public int AverageDeliveryDays { get; set; }
-        public class UpdateKargoCompanyCommandHandler : IRequestHandler<UpdateKargoCompanyCommand, RequestResult<bool>>
+        public class UpdateShippmentCompanyCommandHandler : IRequestHandler<UpdateShippmentCompanyCommand, RequestResult<bool>>
         {
-            private readonly IKargoCompanyService _kargoCompanyService;
+            private readonly IShippmentCompanyService _shippmentCompanyService;
             private readonly IUnitOfWork _unitOfWork;
-            public UpdateKargoCompanyCommandHandler(IKargoCompanyService kargoCompanyService, IUnitOfWork unitOfWork)
+            public UpdateShippmentCompanyCommandHandler(IShippmentCompanyService shippmentCompanyService, IUnitOfWork unitOfWork)
             {
-                _kargoCompanyService = kargoCompanyService;
+                _shippmentCompanyService = shippmentCompanyService;
                 _unitOfWork = unitOfWork;
             }
-            public async Task<RequestResult<bool>> Handle(UpdateKargoCompanyCommand command, CancellationToken cancellationToken)
+            public async Task<RequestResult<bool>> Handle(UpdateShippmentCompanyCommand command, CancellationToken cancellationToken)
             {
-                var company = await _kargoCompanyService.Queryable().FirstOrDefaultAsync(x => x.Id == command.Id);
+                var company = await _shippmentCompanyService.Queryable().FirstOrDefaultAsync(x => x.Id == command.Id);
                 if (company is null)
                     return new RequestResult<bool>(ActionResultType.NotFound, "not found");
 
@@ -39,7 +39,7 @@ namespace EcommerceAPI.Core.KargoCompanies.Command
                 company.DeliveryLimitFixedAmount = command.DeliveryLimitFixedAmount;
                 company.DeliveryLimitAmount = command.DeliveryLimitAmount;
 
-                _kargoCompanyService.UpdateKargoCompany(company);
+                _shippmentCompanyService.UpdateShippmentCompany(company);
                 if (await _unitOfWork.SaveChangesAsync() > 0)
                     return new RequestResult<bool>(true);
                 return new RequestResult<bool>(ActionResultType.BadRequest, "ERROR");

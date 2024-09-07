@@ -59,7 +59,7 @@ builder.Services.AddScoped<IOrderPaymentService, OrderPaymentService>();
 builder.Services.AddScoped<IAttributesService, AttributesService>();
 builder.Services.AddScoped<IAppEmailSender, SendGridEmailSender>();
 builder.Services.AddScoped<IProductVariantService, ProductVariantService>();
-builder.Services.AddScoped<IKargoCompanyService, KargoCompanyService>();
+builder.Services.AddScoped<IShippmentCompanyService, ShippmentCompanyService>();
 builder.Services.AddTransient<ICurrencyRateService, CurrencyRateService>();
 
 //////////////////////////////
