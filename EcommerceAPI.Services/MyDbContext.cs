@@ -135,6 +135,6 @@ namespace EcommerceAPI.Services
         public DbSet<BaseItem> BaseItems { get; set; }
         public DbSet<FrontendSetting> FrontendSettings { get; set; }
         public DbSet<Settings> Settings { get; set; }
-        public DbSet<ShippmentCompany> ShippmentCompanies { get; set; }
+        public DbSet<ShippingCompany> ShippingCompanies { get; set; }
     }
 }

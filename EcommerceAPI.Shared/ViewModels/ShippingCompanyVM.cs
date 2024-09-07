@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-
-namespace EcommerceAPI.Entities.Models
+﻿namespace EcommerceAPI.Shared.ViewModels
 {
-    public class ShippmentCompany
+    public class ShippingCompanyVM
     {
         public int Id { get; set; }
         public string NameEn { get; set; }
