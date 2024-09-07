@@ -117,7 +117,7 @@ builder.Services.Configure<SendGridEmailSenderOptions>(options =>
 });
 builder.Services.AddHangfire(x =>
 {
-    x.UseSqlServerStorage("server=localhost;database=EcommerceHangfire;User ID=EcommerceHF;password=xvu3Ki5121;MultipleActiveResultSets=True;Encrypt=False");
+    x.UseSqlServerStorage("server=.\\MSSQLSERVER2022;database=EcommerceHangfireOrdchid;User ID=EcommerceHFOrchidAdmin;password=xvu3Ki5121;MultipleActiveResultSets=True;Encrypt=False");
     x.UseFilter(new AutomaticRetryAttribute { Attempts = 0 });
 });
 builder.Services.AddHangfireServer();
@@ -163,10 +163,8 @@ builder.Services.AddCors(options =>
         builder.WithOrigins("*", 
             "http://localhost:4200",
             "http://localhost:5173",
-            "https://cp.xgoagency.com", 
-            "https://cp-ecommerce.usos.co", 
-            "https://Ecommerce.usos.co",
-            "https://Ecommerce.xgoagency.com")
+            "https://cp.orchidperfumeskw.com", 
+            "https://Ecommerce.orchidperfumeskw.com")
                .AllowAnyMethod()
                .AllowAnyHeader()
                .AllowCredentials();
@@ -211,7 +209,7 @@ if (!builder.Environment.IsDevelopment())
 //    }
 //}
 
-if (app.Environment.IsDevelopment())
+//if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(c =>
