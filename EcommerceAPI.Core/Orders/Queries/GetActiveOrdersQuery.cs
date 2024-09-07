@@ -32,7 +32,7 @@ namespace EcommerceAPI.Core.Orders.Queries
                     .Where(x => !x.Order.IsArchived)
                     .Where(x => query.StartDate == null || x.Order.CreatedAt >= query.StartDate.Value.Date)
                     .Where(x => query.EndDate == null || x.Order.CreatedAt < query.EndDate.Value.Date.AddDays(1))
-                    .Where(x => x.OrderItemState == OrderItemState.InStock);
+                    ;
 
                 if (!string.IsNullOrEmpty(query.Country))
                     temp = temp.Where(x => x.Order.Country == query.Country);
@@ -48,8 +48,6 @@ namespace EcommerceAPI.Core.Orders.Queries
                     .Where(x => EF.Constant(orderIds).Contains(x.Id))
                     .To<OrderVM>(_mapper).ToListAsync();
 
-                foreach (var o in result)
-                    o.OrderItems = o.OrderItems.Where(x => !x.ShipmentId.HasValue && x.OrderItemState == OrderItemState.InStock).ToList();
                 return new RequestResult<List<OrderVM>>(result);
             }
         }

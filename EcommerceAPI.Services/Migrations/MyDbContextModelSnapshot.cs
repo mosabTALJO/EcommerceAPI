@@ -1088,10 +1088,6 @@ namespace EcommerceAPI.Services.Migrations
                     b.Property<double>("SalePrice")
                         .HasColumnType("double precision");
 
-                    b.Property<string>("ShippingCode")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("ShippingCompany")
                         .IsRequired()
                         .HasColumnType("text");
@@ -1101,6 +1097,10 @@ namespace EcommerceAPI.Services.Migrations
 
                     b.Property<double>("TotalSalePrice")
                         .HasColumnType("double precision");
+
+                    b.Property<string>("TrackingNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");

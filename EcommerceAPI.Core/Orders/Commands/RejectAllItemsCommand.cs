@@ -50,7 +50,7 @@ namespace EcommerceAPI.Core.Orders.Commands
                 double removedDiscountValue = 0;
                 foreach (var oi in o.OrderItems)
                 {
-                    if (oi.OrderItemState != OrderItemState.Pending && oi.OrderItemState != OrderItemState.Accepted && oi.OrderItemState != OrderItemState.InStock)
+                    if (oi.OrderItemState != OrderItemState.Pending && oi.OrderItemState != OrderItemState.Accepted)
                         continue;
                     oi.RejectedDate = DateTime.UtcNow;
                     oi.OrderItemState = OrderItemState.Rejected;

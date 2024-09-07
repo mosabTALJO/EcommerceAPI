@@ -125,14 +125,6 @@ namespace EcommerceAPI.Web.Controllers
             return GetActionResult(await _mediator.Send(command));
         }
 
-        [HttpPost("InStockItem/{OrderId}/{OrderItemID}")]
-        [Authorize(Policy = PoliciesText.UpdateOrder)]
-        [ApiExplorerSettings(GroupName = "cp")]
-        public async Task<ActionResult<RequestResult<bool>>> InStockItem(int OrderId, int OrderItemID)
-        {
-            return GetActionResult(await _mediator.Send(new InStockItemCommand { OrderId = OrderId, OrderItemId = OrderItemID, UserId = User.Identity.Name }));
-        }
-
         [HttpPut("UpdateAcceptedItem/{OrderId}/{OrderItemID}")]
         [Authorize(Policy = PoliciesText.UpdateOrder)]
         [ApiExplorerSettings(GroupName = "cp")]
@@ -167,6 +159,25 @@ namespace EcommerceAPI.Web.Controllers
         public async Task<ActionResult<RequestResult<bool>>> RejectItem(int OrderId, int OrderItemID)
         {
             return GetActionResult(await _mediator.Send(new RejectItemByIdCommand { OrderId = OrderId, OrderItemID = OrderItemID, UserId = User.Identity.Name }));
+        }
+
+
+        [HttpPost("ShipOrder")]
+        [Authorize(Policy = PoliciesText.UpdateOrder)]
+        [ApiExplorerSettings(GroupName = "cp")]
+        public async Task<ActionResult<RequestResult<bool>>> ShipOrder(ShipOrderCommand command)
+        {
+            command.UserId = User.Identity!.Name!;
+            return GetActionResult(await _mediator.Send(command));
+        }
+
+        [HttpPost("ShipItem")]
+        [Authorize(Policy = PoliciesText.UpdateOrder)]
+        [ApiExplorerSettings(GroupName = "cp")]
+        public async Task<ActionResult<RequestResult<bool>>> ShipItem(ShipItemCommand command)
+        {
+            command.UserId = User.Identity!.Name!;
+            return GetActionResult(await _mediator.Send(command));
         }
 
         [HttpPost("CancelItem/{OrderId}/{OrderItemID}")]

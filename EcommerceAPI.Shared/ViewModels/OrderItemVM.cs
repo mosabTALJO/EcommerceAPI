@@ -10,7 +10,7 @@ namespace EcommerceAPI.Shared.ViewModels
         public DateTime? AcceptedDate { get; set; }
         public DateTime? RejectedDate { get; set; }
         public DateTime? ShippingDate { get; set; }
-        public string ShippingCode { get; set; }
+        public string TrackingNumber { get; set; }
         public string ShippingCompany { get; set; }
         public DateTime? DeliveredDate { get; set; }
         public DateTime? ReturningDate { get; set; }
@@ -31,7 +31,6 @@ namespace EcommerceAPI.Shared.ViewModels
         public double SalePriceNoKDV { get; set; }
         public double KDV { get; set; }
         public double DiscountAmount { get; set; }
-        public int? ShipmentId { get; set; }
         public bool HasLogs { get; set; }
         public double? CostPrice { get; set; }
     }

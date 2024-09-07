@@ -163,10 +163,8 @@ builder.Services.AddCors(options =>
         builder.WithOrigins("*", 
             "http://localhost:4200",
             "http://localhost:5173",
-            "https://cp.xgoagency.com", 
             "https://cp-ecommerce.usos.co", 
-            "https://Ecommerce.usos.co",
-            "https://Ecommerce.xgoagency.com")
+            "https://Ecommerce.usos.co")
                .AllowAnyMethod()
                .AllowAnyHeader()
                .AllowCredentials();
@@ -198,20 +196,8 @@ if (!builder.Environment.IsDevelopment())
         }
     }
 }
-//else
-//{
-//    using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
-//    {
-//        //var dbContext = serviceScope.ServiceProvider.GetService<MyDbContext>();
-//        var userManager = serviceScope.ServiceProvider.GetService<UserManager<AppUser>>();
-//        var memoryCache = serviceScope.ServiceProvider.GetService<IMemoryCache>();
-//        var roleManager = serviceScope.ServiceProvider.GetService<RoleManager<IdentityRole>>();
-//        //dbContext?.Database.Migrate();
-//        MySeedInitializer.SeedData(userManager, roleManager, memoryCache);
-//    }
-//}
 
-if (app.Environment.IsDevelopment())
+//if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(c =>
