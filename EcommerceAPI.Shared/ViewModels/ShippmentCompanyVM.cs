@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace EcommerceAPI.Shared.ViewModels
+﻿namespace EcommerceAPI.Shared.ViewModels
 {
-    public class KargoCompanyVM
+    public class ShippmentCompanyVM
     {
         public int Id { get; set; }
         public string NameEn { get; set; }

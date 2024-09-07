@@ -2,7 +2,7 @@
 
 namespace EcommerceAPI.Entities.Models
 {
-    public class KargoCompany
+    public class ShippmentCompany
     {
         public int Id { get; set; }
         public string NameEn { get; set; }
