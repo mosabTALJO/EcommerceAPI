@@ -19,6 +19,7 @@ namespace EcommerceAPI.Core.Products.Commands
         public string? FullDescriptionAr { get; set; }
         public string? FullDescriptionEn { get; set; }
         public string? FullDescriptionTr { get; set; }
+        public double? DefaultCostPrice { get; set; }
         public int BrandId { get; set; }
         public int? CategoryId { get; set; }
         public int[]? CategoryIds { get; set; }
@@ -69,6 +70,7 @@ namespace EcommerceAPI.Core.Products.Commands
                     p.OnlinePaymentOnly = command.OnlinePaymentOnly;
                     p.ProductVariants = command.ProductVariants.Select(_mapper.Map<ProductVariant>).ToList();
                     p.Currency = string.IsNullOrEmpty(command.CurrencyCode) ? p.Currency : command.CurrencyCode;
+                    p.DefaultCostPrice = command.DefaultCostPrice;
 
                     await _productService.UpdateProduct(p);
                     if (await _unitOfWork.SaveChangesAsync() > 0)

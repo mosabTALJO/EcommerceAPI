@@ -45,7 +45,7 @@ namespace EcommerceAPI.Core.Products.Queries
                 if (string.IsNullOrEmpty(p.NameEn)) p.NameEn = p.NameTr;
                 if (string.IsNullOrEmpty(p.NameAr)) p.NameAr = p.NameEn;
 
-                CleanImages(p, query.Role);
+                CleanImages(p);
 
                 //calcualte IsFavorite
                 if (!string.IsNullOrEmpty(query.UserId))
@@ -54,6 +54,7 @@ namespace EcommerceAPI.Core.Products.Queries
 
                 if (query.Role != "Admin")
                 {
+                    p.DefaultCostPrice = null;
                     p.Discount = p.Discount > 0 ? p.Discount : p.Category.Discount > 0 ? p.Category.Discount : null;
                     p.SalesPrice = query.Currency == p.Currency ? p.SalesPrice : p.SalesPriceUSD * usdRate;
                     foreach (var pv in p.ProductVariants)
@@ -66,7 +67,7 @@ namespace EcommerceAPI.Core.Products.Queries
 
                 return new RequestResult<ProductVM>(p);
             }
-            private void CleanImages(ProductVM p, string role)
+            private void CleanImages(ProductVM p)
             {
                 if (string.IsNullOrWhiteSpace(p.MainImage))
                 {
