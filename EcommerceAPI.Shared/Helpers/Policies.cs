@@ -88,8 +88,8 @@
         //Statistics
         Statistics = 33,
 
-        //Shippment Companies
-        EditShippmentCompanies = 34,
+        //Shipping Companies
+        EditShippingCompanies = 34,
 
         //PricingDiscount
         PricingDiscount = 99,
@@ -189,8 +189,8 @@
         //Statistics
         public const string Statistics = "33";
 
-        //Shippment Companies
-        public const string EditShippmentCompanies = "34";
+        //Shipping Companies
+        public const string EditShippingCompanies = "34";
 
         //PricingDiscount
         public const string PricingDiscount = "99";

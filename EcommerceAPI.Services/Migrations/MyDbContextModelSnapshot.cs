@@ -1659,7 +1659,7 @@ namespace EcommerceAPI.Services.Migrations
                     b.ToTable("UserAddress");
                 });
 
-            modelBuilder.Entity("EcommerceAPI.Entities.Models.ShippmentCompany", b =>
+            modelBuilder.Entity("EcommerceAPI.Entities.Models.ShippingCompany", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1692,7 +1692,7 @@ namespace EcommerceAPI.Services.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ShippmentCompanies");
+                    b.ToTable("ShippingCompanies");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
