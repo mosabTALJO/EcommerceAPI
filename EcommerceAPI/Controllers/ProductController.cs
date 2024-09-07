@@ -87,8 +87,8 @@ namespace EcommerceAPI.Web.Controllers
             return GetActionResult(await _mediator.Send(new GetProductDetailsQuery
             {
                 Id = id,
-                Currency = Request.Headers["Currency"],
                 UserId = User.Identity.Name,
+                Currency = Request.Headers["Currency"],
                 Role = HttpContext.User?.Claims?.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value
             }));
         }

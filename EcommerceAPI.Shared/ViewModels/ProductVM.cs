@@ -11,6 +11,7 @@
         public string FullDescriptionEn { get; set; } = string.Empty;
         public string FullDescriptionTr { get; set; } = string.Empty;
         public int? BrandId { get; set; }
+        public double? DefaultCostPrice { get; set; }
         public BrandVM? Brand { get; set; }
         public int? CategoryId { get; set; }
         public CategoryVM? Category { get; set; }
