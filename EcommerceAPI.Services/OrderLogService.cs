@@ -14,6 +14,7 @@ namespace EcommerceAPI.Services
         Task OrderUpdatedLog(Order order, string UserId, string? notes = null);
         Task ItemCreatedLog(int itemId, Order order, string UserId);
         Task ItemAcceptedLog(int itemId, Order order, string UserId);
+        Task ItemDeliveredLog(int itemId, Order order, string UserId);
         Task ItemShippedLog(int itemId, Order order, string UserId);
         Task ItemUpdatedOrEditedLog(OrderItem item, string UserId, string notes);
         Task ItemRejectedLog(int itemId, Order order, string UserId);
@@ -127,6 +128,21 @@ namespace EcommerceAPI.Services
                 OrderId = order.Id,
                 OrderStatus = order.OrderStatus,
                 OrderItemState = OrderItemState.Accepted,
+                CreatedAt = DateTime.UtcNow,
+                CreatedBy = u.Id,
+                Username = u.DisplayName = ", " + u.Email,
+                UserType = u.UserType,
+            });
+        }     
+        public async Task ItemDeliveredLog(int itemId, Order order, string UserId)
+        {
+            var u = await _userManager.FindByIdAsync(UserId);
+            Insert(new OrderLog
+            {
+                OrderItemId = itemId,
+                OrderId = order.Id,
+                OrderStatus = order.OrderStatus,
+                OrderItemState = OrderItemState.Delivered,
                 CreatedAt = DateTime.UtcNow,
                 CreatedBy = u.Id,
                 Username = u.DisplayName = ", " + u.Email,

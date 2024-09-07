@@ -12,7 +12,7 @@ namespace EcommerceAPI.Core.Orders.Commands
         public int OrderId { get; set; }
         public int ShippingCompanyId { get; set; }
         public required string TrackingNumber { get; set; }
-        public string UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
         public class ShipOrderCommandHandler : IRequestHandler<ShipOrderCommand, RequestResult<bool>>
         {
             private readonly IOrderService _orderService;

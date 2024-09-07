@@ -10,10 +10,8 @@ namespace EcommerceAPI.Web.Controllers
 {
     public class OrderController : MyControllerBase
     {
-        //private readonly IStringLocalizer _stringLocalizer;
         public OrderController(IMediator mediator) : base(mediator: mediator)
         {
-            //_stringLocalizer = stringLocalizer;
         }
 
         // GETList api/Order
@@ -156,10 +154,20 @@ namespace EcommerceAPI.Web.Controllers
         [HttpPost("RejectItem/{OrderId}/{OrderItemID}")]
         [Authorize(Policy = PoliciesText.UpdateOrder)]
         [ApiExplorerSettings(GroupName = "cp")]
-        public async Task<ActionResult<RequestResult<bool>>> RejectItem(int OrderId, int OrderItemID)
-        {
-            return GetActionResult(await _mediator.Send(new RejectItemByIdCommand { OrderId = OrderId, OrderItemID = OrderItemID, UserId = User.Identity.Name }));
-        }
+        public async Task<ActionResult<RequestResult<bool>>> RejectItem(int OrderId, int OrderItemID) =>
+            GetActionResult(await _mediator.Send(new RejectItemByIdCommand { OrderId = OrderId, OrderItemID = OrderItemID, UserId = User.Identity.Name }));
+
+        [HttpPost("DeliverItem/{OrderId}/All")]
+        [Authorize(Policy = PoliciesText.UpdateOrder)]
+        [ApiExplorerSettings(GroupName = "cp")]
+        public async Task<ActionResult<RequestResult<bool>>> DeliverAllItems(int OrderId) =>
+            GetActionResult(await _mediator.Send(new DeliverAllItemsCommand { OrderId = OrderId, UserId = User.Identity!.Name! }));
+
+        [HttpPost("DeliverItem/{OrderId}/{OrderItemID}")]
+        [Authorize(Policy = PoliciesText.UpdateOrder)]
+        [ApiExplorerSettings(GroupName = "cp")]
+        public async Task<ActionResult<RequestResult<bool>>> DeliverItem(int OrderId, int OrderItemID) =>
+            GetActionResult(await _mediator.Send(new DeliverItemByIdCommand { OrderItemID = OrderItemID, UserId = User.Identity!.Name! }));
 
 
         [HttpPost("ShipOrder")]
