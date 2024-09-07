@@ -16,16 +16,16 @@ namespace EcommerceAPI.Core.Orders.Commands
         public class ShipItemCommandHandler : IRequestHandler<ShipItemCommand, RequestResult<bool>>
         {
             private readonly IOrderService _orderService;
-            private readonly IShippmentCompanyService _shippmentCompanyService;
+            private readonly IShippingCompanyService _ShippingCompanyService;
             private readonly IOrderLogService _orderLogService;
             private readonly IUnitOfWork _unitOfWork;
 
-            public ShipItemCommandHandler(IOrderService orderService, IUnitOfWork unitOfWork, IOrderLogService orderLogService, IShippmentCompanyService shippmentCompanyService)
+            public ShipItemCommandHandler(IOrderService orderService, IUnitOfWork unitOfWork, IOrderLogService orderLogService, IShippingCompanyService ShippingCompanyService)
             {
                 _orderService = orderService;
                 _unitOfWork = unitOfWork;
                 _orderLogService = orderLogService;
-                _shippmentCompanyService = shippmentCompanyService;
+                _ShippingCompanyService = ShippingCompanyService;
             }
             public async Task<RequestResult<bool>> Handle(ShipItemCommand command, CancellationToken cancellationToken)
             {
@@ -33,7 +33,7 @@ namespace EcommerceAPI.Core.Orders.Commands
                     .FirstOrDefault(x => x.Id == command.OrderItemId);
                 if (oi is null)
                     return new RequestResult<bool>(ActionResultType.NotFound, "Order not found");
-                var comp = await _shippmentCompanyService.Queryable().FirstOrDefaultAsync(x => x.Id == command.ShippingCompanyId);
+                var comp = await _ShippingCompanyService.Queryable().FirstOrDefaultAsync(x => x.Id == command.ShippingCompanyId);
                 if (comp is null)
                     return new RequestResult<bool>(ActionResultType.NotFound, "Company not found");
 
