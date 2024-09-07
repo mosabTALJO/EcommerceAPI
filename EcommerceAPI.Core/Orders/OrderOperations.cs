@@ -42,7 +42,7 @@ namespace EcommerceAPI.Core.Orders
                 ReturningDate = itemToClone.ReturningDate,
                 ReturnReason = itemToClone.ReturnReason,
                 SalePrice = itemToClone.SalePrice,
-                ShippingCode = itemToClone.ShippingCode,
+                TrackingNumber = itemToClone.TrackingNumber,
                 ShippingCompany = itemToClone.ShippingCompany,
                 ShippingDate = itemToClone.ShippingDate,
                 TotalSalePrice = itemToClone.TotalSalePrice,

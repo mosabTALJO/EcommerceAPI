@@ -12,7 +12,7 @@ namespace EcommerceAPI.Data.Models
         public DateTime? AcceptedDate { get; set; }
         public DateTime? ShippingDate { get; set; }
         public string ShippingCompany { get; set; } = string.Empty;
-        public string ShippingCode { get; set; } = string.Empty;
+        public string TrackingNumber { get; set; } = string.Empty;
         public DateTime? DeliveredDate { get; set; }
         public DateTime? ReturningDate { get; set; }
         public DateTime? CancelDate { get; set; }

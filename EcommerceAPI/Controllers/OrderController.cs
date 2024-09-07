@@ -10,10 +10,8 @@ namespace EcommerceAPI.Web.Controllers
 {
     public class OrderController : MyControllerBase
     {
-        //private readonly IStringLocalizer _stringLocalizer;
         public OrderController(IMediator mediator) : base(mediator: mediator)
         {
-            //_stringLocalizer = stringLocalizer;
         }
 
         // GETList api/Order
@@ -110,27 +108,26 @@ namespace EcommerceAPI.Web.Controllers
             return GetActionResult(await _mediator.Send(new GetOrderByIdQuery { Id = id }));
         }
 
-        [HttpPost("AcceptItem/{OrderId}/{OrderItemID}/{CostPrice?}")]
+        [HttpPost("AcceptItem/{OrderItemID}/{CostPrice?}")]
         [Authorize(Policy = PoliciesText.UpdateOrder)]
         [ApiExplorerSettings(GroupName = "cp")]
-        public async Task<ActionResult<RequestResult<bool>>> AcceptItem(int OrderId, int OrderItemID, double? CostPrice)
+        public async Task<ActionResult<RequestResult<bool>>> AcceptItem(int OrderItemID, double? CostPrice)
         {
             var command = new AcceptItemCommand()
             {
                 OrderItemId = OrderItemID,
-                OrderId = OrderId,
                 UserId = User?.Identity?.Name,
                 CostPrice = CostPrice,
             };
             return GetActionResult(await _mediator.Send(command));
         }
-
-        [HttpPost("InStockItem/{OrderId}/{OrderItemID}")]
+        [HttpPost("AcceptAllItems")]
         [Authorize(Policy = PoliciesText.UpdateOrder)]
         [ApiExplorerSettings(GroupName = "cp")]
-        public async Task<ActionResult<RequestResult<bool>>> InStockItem(int OrderId, int OrderItemID)
+        public async Task<ActionResult<RequestResult<bool>>> AcceptItem(AcceptAllItemsCommand command)
         {
-            return GetActionResult(await _mediator.Send(new InStockItemCommand { OrderId = OrderId, OrderItemId = OrderItemID, UserId = User.Identity.Name }));
+            command.UserId = User.Identity!.Name!;
+            return GetActionResult(await _mediator.Send(command));
         }
 
         [HttpPut("UpdateAcceptedItem/{OrderId}/{OrderItemID}")]
@@ -164,9 +161,38 @@ namespace EcommerceAPI.Web.Controllers
         [HttpPost("RejectItem/{OrderId}/{OrderItemID}")]
         [Authorize(Policy = PoliciesText.UpdateOrder)]
         [ApiExplorerSettings(GroupName = "cp")]
-        public async Task<ActionResult<RequestResult<bool>>> RejectItem(int OrderId, int OrderItemID)
+        public async Task<ActionResult<RequestResult<bool>>> RejectItem(int OrderId, int OrderItemID) =>
+            GetActionResult(await _mediator.Send(new RejectItemByIdCommand { OrderId = OrderId, OrderItemID = OrderItemID, UserId = User.Identity.Name }));
+
+        [HttpPost("DeliverItem/{OrderId}/All")]
+        [Authorize(Policy = PoliciesText.UpdateOrder)]
+        [ApiExplorerSettings(GroupName = "cp")]
+        public async Task<ActionResult<RequestResult<bool>>> DeliverAllItems(int OrderId) =>
+            GetActionResult(await _mediator.Send(new DeliverAllItemsCommand { OrderId = OrderId, UserId = User.Identity!.Name! }));
+
+        [HttpPost("DeliverItem/{OrderItemID}")]
+        [Authorize(Policy = PoliciesText.UpdateOrder)]
+        [ApiExplorerSettings(GroupName = "cp")]
+        public async Task<ActionResult<RequestResult<bool>>> DeliverItem(int OrderItemID) =>
+            GetActionResult(await _mediator.Send(new DeliverItemByIdCommand { OrderItemID = OrderItemID, UserId = User.Identity!.Name! }));
+
+
+        [HttpPost("ShipOrder")]
+        [Authorize(Policy = PoliciesText.UpdateOrder)]
+        [ApiExplorerSettings(GroupName = "cp")]
+        public async Task<ActionResult<RequestResult<bool>>> ShipOrder(ShipOrderCommand command)
         {
-            return GetActionResult(await _mediator.Send(new RejectItemByIdCommand { OrderId = OrderId, OrderItemID = OrderItemID, UserId = User.Identity.Name }));
+            command.UserId = User.Identity!.Name!;
+            return GetActionResult(await _mediator.Send(command));
+        }
+
+        [HttpPost("ShipItem")]
+        [Authorize(Policy = PoliciesText.UpdateOrder)]
+        [ApiExplorerSettings(GroupName = "cp")]
+        public async Task<ActionResult<RequestResult<bool>>> ShipItem(ShipItemCommand command)
+        {
+            command.UserId = User.Identity!.Name!;
+            return GetActionResult(await _mediator.Send(command));
         }
 
         [HttpPost("CancelItem/{OrderId}/{OrderItemID}")]

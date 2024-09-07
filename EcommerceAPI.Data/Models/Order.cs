@@ -65,7 +65,6 @@ namespace EcommerceAPI.Data.Models
         Returning,
         Returned,
         Cancelled,
-        InStock,
     }
     public enum OrderStatus
     {

@@ -196,18 +196,6 @@ if (!builder.Environment.IsDevelopment())
         }
     }
 }
-//else
-//{
-//    using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
-//    {
-//        //var dbContext = serviceScope.ServiceProvider.GetService<MyDbContext>();
-//        var userManager = serviceScope.ServiceProvider.GetService<UserManager<AppUser>>();
-//        var memoryCache = serviceScope.ServiceProvider.GetService<IMemoryCache>();
-//        var roleManager = serviceScope.ServiceProvider.GetService<RoleManager<IdentityRole>>();
-//        //dbContext?.Database.Migrate();
-//        MySeedInitializer.SeedData(userManager, roleManager, memoryCache);
-//    }
-//}
 
 //if (app.Environment.IsDevelopment())
 {

@@ -9,43 +9,43 @@ namespace EcommerceAPI.Core.Orders.Commands
 {
     public class ShipItemCommand : IRequest<RequestResult<bool>>
     {
-        public int OrderId { get; set; }
-        public int OrderItemID { get; set; }
-        public string ShippingCompany { get; set; }
-        public string ShippingCode { get; set; }
-        public string UserId { get; set; }
+        public int OrderItemId { get; set; }
+        public int ShippingCompanyId { get; set; }
+        public required string TrackingNumber { get; set; }
+        public string UserId { get; set; } = string.Empty;
         public class ShipItemCommandHandler : IRequestHandler<ShipItemCommand, RequestResult<bool>>
         {
             private readonly IOrderService _orderService;
+            private readonly IKargoCompanyService _kargoCompanyService;
             private readonly IOrderLogService _orderLogService;
             private readonly IUnitOfWork _unitOfWork;
 
-            public ShipItemCommandHandler(IOrderService orderService, IUnitOfWork unitOfWork, IOrderLogService orderLogService)
+            public ShipItemCommandHandler(IOrderService orderService, IUnitOfWork unitOfWork, IOrderLogService orderLogService, IKargoCompanyService kargoCompanyService)
             {
                 _orderService = orderService;
                 _unitOfWork = unitOfWork;
                 _orderLogService = orderLogService;
+                _kargoCompanyService = kargoCompanyService;
             }
             public async Task<RequestResult<bool>> Handle(ShipItemCommand command, CancellationToken cancellationToken)
             {
-                var o = _orderService.Queryable()
-                 .Include(x => x.Customer)
-                 .Include(x => x.OrderItems)
-                 .FirstOrDefault(x => x.Id == command.OrderId);
-                if (o is null)
-                    return new RequestResult<bool>(ActionResultType.NotFound, "Order not found");
-                var oi = o.OrderItems.FirstOrDefault(x => x.Id == command.OrderItemID);
+                var oi = _orderService.ItemsQueryable().Include(x => x.Order)
+                    .FirstOrDefault(x => x.Id == command.OrderItemId);
                 if (oi is null)
-                    return new RequestResult<bool>(ActionResultType.NotFound, "Item not found");
-                if (oi.OrderItemState != OrderItemState.Accepted)
-                    return new RequestResult<bool>(ActionResultType.BadRequest, "Status error");
+                    return new RequestResult<bool>(ActionResultType.NotFound, "Order not found");
+                var comp = await _kargoCompanyService.Queryable().FirstOrDefaultAsync(x => x.Id == command.ShippingCompanyId);
+                if (comp is null)
+                    return new RequestResult<bool>(ActionResultType.NotFound, "Company not found");
 
-                //await _orderLogService.ShipItemLog(oi.Id, command.UserId);
-                _orderService.ShipItem(oi, command.ShippingCompany, command.ShippingCode);
+                if (oi.OrderItemState != OrderItemState.Accepted)
+                    return new RequestResult<bool>(ActionResultType.NotFound, "Status Error");
+
+                await _orderLogService.ItemShippedLog(oi.Id, oi.Order, command.UserId);
+                _orderService.ShipItem(oi, comp.NameEn, command.TrackingNumber);
+
                 if (await _unitOfWork.SaveChangesAsync() > 0)
                     return new RequestResult<bool>(true);
-                return
-                    new RequestResult<bool>(ActionResultType.BadRequest, "Error");
+                return new RequestResult<bool>(ActionResultType.BadRequest, "Error");
             }
         }
     }

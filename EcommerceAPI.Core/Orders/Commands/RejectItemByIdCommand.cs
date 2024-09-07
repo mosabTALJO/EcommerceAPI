@@ -43,7 +43,7 @@ namespace EcommerceAPI.Core.Orders.Commands
                 var oi = o.OrderItems.FirstOrDefault(x => x.Id == command.OrderItemID);
                 if (oi is null)
                     return new RequestResult<bool>(ActionResultType.NotFound, "Item not found");
-                if (oi.OrderItemState != OrderItemState.Pending && oi.OrderItemState != OrderItemState.Accepted && oi.OrderItemState != OrderItemState.InStock)
+                if (oi.OrderItemState != OrderItemState.Pending && oi.OrderItemState != OrderItemState.Accepted)
                     return new RequestResult<bool>(ActionResultType.BadRequest, "Status error");
 
                 var country = _countryService.Queryable().AsNoTracking().FirstOrDefault(x => x.CurrencyCode.ToLower() == o.Currency.ToLower()) ??

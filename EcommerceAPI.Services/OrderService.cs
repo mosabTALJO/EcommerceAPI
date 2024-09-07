@@ -18,7 +18,6 @@ namespace EcommerceAPI.Services
         void DeleteOrder(Order o);
         void ShipItem(OrderItem orderItem, string ShippingCompany, string ShippingCode);
         void Accept(OrderItem orderItem, double? CostPrice);
-        void InStock(OrderItem orderItem);
         void Cancel(OrderItem oi);
         void Return(OrderItem oi, string reason);
         void DeleteOrderItem(OrderItem oi);
@@ -88,7 +87,7 @@ namespace EcommerceAPI.Services
         }
         public void ShipItem(OrderItem OrderItem, string ShippingCompany, string ShippingCode)
         {
-            OrderItem.ShippingCode = ShippingCode;
+            OrderItem.TrackingNumber = ShippingCode;
             OrderItem.ShippingCompany = ShippingCompany;
             OrderItem.ShippingDate = DateTime.UtcNow;
             OrderItem.OrderItemState = OrderItemState.Shipped;
@@ -143,12 +142,6 @@ namespace EcommerceAPI.Services
 
             dbOrderItem.CompleteRemove = true;
             _orderItemRepo.Delete(dbOrderItem);
-        }
-        public void InStock(OrderItem orderItem)
-        {
-            orderItem.InStockDate = DateTime.UtcNow;
-            orderItem.OrderItemState = OrderItemState.InStock;
-            _orderItemRepo.Update(orderItem);
         }
         public IQueryable<OrderItem> ItemsQueryable() => _orderItemRepo.Queryable();
     }

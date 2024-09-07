@@ -9,7 +9,6 @@ namespace EcommerceAPI.Core.Orders.Commands
 {
     public class AcceptItemCommand : IRequest<RequestResult<bool>>
     {
-        public int OrderId { get; set; }
         public int OrderItemId { get; set; }
         public double? CostPrice { get; set; }
         public string? UserId { get; set; }
@@ -28,22 +27,20 @@ namespace EcommerceAPI.Core.Orders.Commands
             }
             public async Task<RequestResult<bool>> Handle(AcceptItemCommand command, CancellationToken cancellationToken)
             {
-                var o = _orderService.Queryable()
-                 .Include(x => x.Customer)
-                 .Include(x => x.OrderItems)
-                 .FirstOrDefault(x => x.Id == command.OrderId);
-                if (o is null)
-                    return new RequestResult<bool>(ActionResultType.NotFound, "Order not found");
-                var oi = o.OrderItems.FirstOrDefault(x => x.Id == command.OrderItemId);
+                var oi = _orderService.ItemsQueryable()
+                 .Include(x => x.Order)
+                 .FirstOrDefault(x => x.Id == command.OrderItemId);
                 if (oi is null)
                     return new RequestResult<bool>(ActionResultType.NotFound, "Item not found");
                 if (oi.OrderItemState != OrderItemState.Pending && oi.OrderItemState != OrderItemState.Rejected && oi.OrderItemState != OrderItemState.Cancelled)
                     return new RequestResult<bool>(ActionResultType.BadRequest, "Status error");
-
+                var o = oi.Order;
+              
                 if (oi.OrderItemState == OrderItemState.Rejected || oi.OrderItemState == OrderItemState.Cancelled)
                 {
-                    var country = await _countryService.Queryable().AsNoTracking().FirstOrDefaultAsync(x => x.CurrencyCode.ToLower() == o.Currency.ToLower()) ??
-                        await _countryService.Queryable().AsNoTracking().FirstOrDefaultAsync(x => x.CurrencyCode.ToLower() == "kwd");
+                    var country = 
+                        await _countryService.Queryable().AsNoTracking().FirstOrDefaultAsync(x => x.CurrencyCode.ToLower() == o.Currency.ToLower()) ??
+                        await _countryService.Queryable().AsNoTracking().FirstOrDefaultAsync(x => x.IsDefault);
 
                     double AddedValue = oi.TotalSalePrice;
                     var totalWithCuponDiscount = o.TotalSalePrice - o.DeliveryPrice + AddedValue;

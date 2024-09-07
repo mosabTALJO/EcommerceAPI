@@ -10,12 +10,12 @@ namespace EcommerceAPI.Services
         Task OrderCreatedLog(int orderId, string UserId);
         Task OrderOnDoorPaymentPendingLog(int orderId, string UserId);
         Task OrderPaiedLog(int orderId, string UserId);
-        Task OrderShippedLog(int orderId, string UserId);
         Task OrderCompletedLog(int orderId, string UserId);
-        Task OrderUpdatedLog(Order order, string UserId, string notes = null);
+        Task OrderUpdatedLog(Order order, string UserId, string? notes = null);
         Task ItemCreatedLog(int itemId, Order order, string UserId);
         Task ItemAcceptedLog(int itemId, Order order, string UserId);
-        Task ItemInStockedLog(int itemId, Order order, string UserId);
+        Task ItemDeliveredLog(int itemId, Order order, string UserId);
+        Task ItemShippedLog(int itemId, Order order, string UserId);
         Task ItemUpdatedOrEditedLog(OrderItem item, string UserId, string notes);
         Task ItemRejectedLog(int itemId, Order order, string UserId);
         Task ItemCancelledLog(int itemId, Order order, string UserId);
@@ -65,20 +65,6 @@ namespace EcommerceAPI.Services
             {
                 OrderId = orderId,
                 OrderStatus = OrderStatus.Paid,
-                CreatedAt = DateTime.UtcNow,
-                CreatedBy = u.Id,
-                Username = u.DisplayName = ", " + u.Email,
-                UserType = u.UserType,
-            });
-        }
-        public async Task OrderShippedLog(int orderId, string UserId)
-        {
-            var u = await _userManager.FindByIdAsync(UserId);
-
-            Insert(new OrderLog
-            {
-                OrderId = orderId,
-                OrderStatus = OrderStatus.Shipped,
                 CreatedAt = DateTime.UtcNow,
                 CreatedBy = u.Id,
                 Username = u.DisplayName = ", " + u.Email,
@@ -147,8 +133,23 @@ namespace EcommerceAPI.Services
                 Username = u.DisplayName = ", " + u.Email,
                 UserType = u.UserType,
             });
+        }     
+        public async Task ItemDeliveredLog(int itemId, Order order, string UserId)
+        {
+            var u = await _userManager.FindByIdAsync(UserId);
+            Insert(new OrderLog
+            {
+                OrderItemId = itemId,
+                OrderId = order.Id,
+                OrderStatus = order.OrderStatus,
+                OrderItemState = OrderItemState.Delivered,
+                CreatedAt = DateTime.UtcNow,
+                CreatedBy = u.Id,
+                Username = u.DisplayName = ", " + u.Email,
+                UserType = u.UserType,
+            });
         }
-        public async Task ItemInStockedLog(int itemId, Order order, string UserId)
+        public async Task ItemShippedLog(int itemId, Order order, string UserId)
         {
             var u = await _userManager.FindByIdAsync(UserId);
 
@@ -157,7 +158,7 @@ namespace EcommerceAPI.Services
                 OrderItemId = itemId,
                 OrderId = order.Id,
                 OrderStatus = order.OrderStatus,
-                OrderItemState = OrderItemState.InStock,
+                OrderItemState = OrderItemState.Shipped,
                 CreatedAt = DateTime.UtcNow,
                 CreatedBy = u.Id,
                 Username = u.DisplayName = ", " + u.Email,
