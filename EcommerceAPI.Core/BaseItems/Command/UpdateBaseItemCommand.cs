@@ -14,7 +14,7 @@ namespace EcommerceAPI.Core.BaseItems.Command
         public BaseItemTypes BaseItemType { get; set; }
         public string NameEn { get; set; }
         public string NameAr { get; set; } = string.Empty;
-        public string NameTr { get; set; } = string.Empty;
+        public string? NameTr { get; set; } = string.Empty;
         public bool IsWeb { get; set; }
         public bool IsPhone { get; set; }
 
@@ -45,6 +45,7 @@ namespace EcommerceAPI.Core.BaseItems.Command
                 dbItem.IsPhone = command.IsPhone;
                 dbItem.NameAr = command.NameAr;
                 dbItem.NameEn = command.NameEn;
+                dbItem.NameTr = command.NameTr ?? command.NameEn;
 
                 dbItem.Data = string.Empty;
                 if (command.BaseItemType == BaseItemTypes.BrandsSet)

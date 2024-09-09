@@ -12,7 +12,7 @@ namespace EcommerceAPI.Core.Countries.Commands
     {
         public string NameAr { get; set; } = string.Empty;
         public string NameEn { get; set; } = string.Empty;
-        public string NameTr { get; set; } = string.Empty;
+        public string? NameTr { get; set; } = string.Empty;
         public double DeliveryLimitAmount { get; set; }
         public double DeliveryLimitFixedAmount { get; set; }
         public double DeliveryLimitPercent { get; set; }
@@ -53,7 +53,7 @@ namespace EcommerceAPI.Core.Countries.Commands
                 {
                     NameAr = command.NameAr,
                     NameEn = command.NameEn,
-                    NameTr = command.NameTr,
+                    NameTr = command.NameTr ?? command.NameEn,
                     Code = command.Code,
                     CurrencyCode = command.CurrencyCode,
                     PhoneCode = command.PhoneCode,

@@ -14,7 +14,7 @@ namespace EcommerceAPI.Core.BaseItems.Command
         public BaseItemTypes BaseItemType { get; set; }
         public string NameEn { get; set; }
         public string NameAr { get; set; } = string.Empty;
-        public string NameTr { get; set; } = string.Empty;
+        public string? NameTr { get; set; } = string.Empty;
         public bool IsWeb { get; set; }
         public bool IsPhone { get; set; }
         public int OrderIndex { get; set; }
@@ -41,6 +41,7 @@ namespace EcommerceAPI.Core.BaseItems.Command
             {
                 //item.Id = 0;
                 command.OrderIndex = _baseItemService.Queryable().OrderByDescending(x => x.OrderIndex).FirstOrDefault()?.OrderIndex ?? 0 + 1;
+                command.NameTr ??= command.NameEn;
                 var x = _mapper.Map<BaseItem>(command);
 
                 if (x.BaseItemType == BaseItemTypes.BrandsSet)

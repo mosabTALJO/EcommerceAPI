@@ -12,7 +12,7 @@ namespace EcommerceAPI.Core.Categories.Commands
         public int Id { get; set; }
         public string NameAr { get; set; } = string.Empty;
         public string NameEn { get; set; } = string.Empty;
-        public string NameTr { get; set; } = string.Empty;
+        public string? NameTr { get; set; } = string.Empty;
         public string Image { get; set; } = string.Empty;
         public int? ParentId { get; set; }
         public bool IsActive { get; set; }
@@ -35,7 +35,7 @@ namespace EcommerceAPI.Core.Categories.Commands
                 {
                     b.NameAr = command.NameAr;
                     b.NameEn = command.NameEn;
-                    b.NameTr = command.NameTr;
+                    b.NameTr = command.NameTr ?? b.NameEn;
                     b.Image = command.Image;
                     b.ParentId = command.ParentId;
                     b.IsActive = command.IsActive;
