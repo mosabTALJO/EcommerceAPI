@@ -12,7 +12,7 @@ namespace EcommerceAPI.Core.Brands.Commands
         public int Id { get; set; }
         public string NameAr { get; set; } = string.Empty;
         public string NameEn { get; set; } = string.Empty;
-        public string NameTr { get; set; } = string.Empty;  
+        public string? NameTr { get; set; } = string.Empty;  
         public string Image { get; set; } = string.Empty;
         public string Icon { get; set; } = string.Empty;
         public bool IsActive { get; set; }
@@ -37,7 +37,7 @@ namespace EcommerceAPI.Core.Brands.Commands
                     return new RequestResult<bool>(ActionResultType.BadRequest, error);
                 b.NameAr = command.NameAr?.Trim();
                 b.NameEn = command.NameEn?.Trim();
-                b.NameTr = command.NameTr?.Trim();
+                b.NameTr = command.NameTr?.Trim() ?? b.NameEn;
                 b.Image = command.Image;
                 b.Icon = command.Icon;
                 b.IsActive = command.IsActive;

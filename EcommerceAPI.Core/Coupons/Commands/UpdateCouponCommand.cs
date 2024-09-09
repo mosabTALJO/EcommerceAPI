@@ -12,7 +12,7 @@ namespace EcommerceAPI.Core.Coupons.Commands
         public string Code { get; set; } = string.Empty;
         public string NameAr { get; set; } = string.Empty;
         public string NameEn { get; set; } = string.Empty;
-        public string NameTr { get; set; } = string.Empty;
+        public string? NameTr { get; set; } = string.Empty;
         public DateTime ExpireDate { get; set; }
         public int Count { get; set; }
         public int RemainingCount { get; set; }
@@ -51,7 +51,7 @@ namespace EcommerceAPI.Core.Coupons.Commands
                     c.Code = command.Code;
                     c.NameAr = command.NameAr;
                     c.NameEn = command.NameEn;
-                    c.NameTr = command.NameTr;
+                    c.NameTr = command.NameTr ?? command.NameEn;
                     c.ExpireDate = command.ExpireDate;
                     c.IsActive = command.IsActive;
 

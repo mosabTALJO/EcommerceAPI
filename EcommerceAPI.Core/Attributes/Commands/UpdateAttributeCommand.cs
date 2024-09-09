@@ -28,7 +28,7 @@ namespace EcommerceAPI.Core.Attributes.Commands
 
                 dbAttribute.NameAr = request.ProductAttributeVM.NameAr;
                 dbAttribute.NameEn = request.ProductAttributeVM.NameEn;
-                dbAttribute.NameTr = request.ProductAttributeVM.NameTr;
+                dbAttribute.NameTr = request.ProductAttributeVM.NameTr ?? request.ProductAttributeVM.NameEn;
 
                 _attributesService.Update(dbAttribute);
                 if (await _unitOfWork.SaveChangesAsync() > 0)

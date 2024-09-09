@@ -12,7 +12,7 @@ namespace EcommerceAPI.Core.Coupons.Commands
         public string Code { get; set; } = string.Empty;
         public string NameAr { get; set; } = string.Empty;
         public string NameEn { get; set; } = string.Empty;
-        public string NameTr { get; set; } = string.Empty;
+        public string? NameTr { get; set; } = string.Empty;
         public DateTime ExpireDate { get; set; }
         public int Count { get; set; }
         public int RemainingCount { get; set; }
@@ -40,6 +40,7 @@ namespace EcommerceAPI.Core.Coupons.Commands
 
             public async Task<RequestResult<int>> Handle(CreateCouponCommand command, CancellationToken cancellationToken)
             {
+                command.NameTr ??= command.NameEn;
                 if (command.ExpireDate < DateTime.UtcNow)
                     return new RequestResult<int>(ActionResultType.BadRequest, "Expire date has passed!");
                 command.RemainingCount = command.Count;
