@@ -14,7 +14,7 @@ namespace EcommerceAPI.Core.Countries.Commands
         public int Id { get; set; }
         public string NameAr { get; set; } = string.Empty;
         public string NameEn { get; set; } = string.Empty;
-        public string NameTr { get; set; } = string.Empty;
+        public string? NameTr { get; set; } = string.Empty;
         public double DeliveryLimitAmount { get; set; }
         public double DeliveryLimitFixedAmount { get; set; }
         public double DeliveryLimitPercent { get; set; }
@@ -59,7 +59,7 @@ namespace EcommerceAPI.Core.Countries.Commands
                     dbCountry.Image = command.Image;
                     dbCountry.NameAr = command.NameAr;
                     dbCountry.NameEn = command.NameEn;
-                    dbCountry.NameTr = command.NameTr;
+                    dbCountry.NameTr = command.NameTr ?? command.NameEn;
                     dbCountry.Code = command.Code;
                     dbCountry.CurrencyCode = command.CurrencyCode;
                     dbCountry.PhoneCode = command.PhoneCode;

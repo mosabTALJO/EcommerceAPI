@@ -37,8 +37,8 @@ namespace EcommerceAPI.Services
         public bool IsValid(Brand b, out string error)
         {
             var errors = new List<string>();
-            if (string.IsNullOrWhiteSpace(b.NameTr))
-                errors.Add("NameTr is Not valid");
+            //if (string.IsNullOrWhiteSpace(b.NameTr))
+            //    errors.Add("NameTr is Not valid");
             if (string.IsNullOrWhiteSpace(b.NameEn))
                 errors.Add("NameEn is Not valid");
             if (string.IsNullOrWhiteSpace(b.NameAr))

@@ -13,7 +13,7 @@ namespace EcommerceAPI.Core.Products.Commands
         public string CurrencyCode { get; set; } = string.Empty;
         public string NameAr { get; set; }
         public string NameEn { get; set; }
-        public string NameTr { get; set; }
+        public string? NameTr { get; set; }
         public string FullDescriptionAr { get; set; }
         public string FullDescriptionEn { get; set; }
         public string FullDescriptionTr { get; set; }
@@ -44,6 +44,7 @@ namespace EcommerceAPI.Core.Products.Commands
                 //fix images
                 foreach (var pv in command.ProductVariants ?? [])
                     pv.Images = pv.Images.Intersect(command.Images).ToList();
+                command.NameTr ??= command.NameEn;
 
                 var p = _mapper.Map<Product>(command);
                 p.IsActive = true;

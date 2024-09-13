@@ -11,7 +11,7 @@ namespace EcommerceAPI.Core.Categories.Commands
     {
         public string NameAr { get; set; } = string.Empty;
         public string NameEn { get; set; } = string.Empty;
-        public string NameTr { get; set; } = string.Empty;
+        public string? NameTr { get; set; } = string.Empty;
         public string Image { get; set; } = string.Empty;
         public int? ParentId { get; set; }
         public bool IsActive { get; set; }
@@ -30,6 +30,7 @@ namespace EcommerceAPI.Core.Categories.Commands
             }
             public async Task<RequestResult<bool>> Handle(CreateCategoryCommand command, CancellationToken cancellationToken)
             {
+                command.NameTr ??= command.NameEn;
                 var category = _mapper.Map<Category>(command);
                 _categoryService.Insert(category);
                 if (await _unitOfWork.SaveChangesAsync() > 0)
