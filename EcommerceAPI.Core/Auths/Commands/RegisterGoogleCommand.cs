@@ -27,20 +27,21 @@ namespace EcommerceAPI.Core.Auths.Commands
                 var issuer = jwtSecurityToken.Claims.FirstOrDefault(claim => claim.Type == "iss")?.Value;
                 var sub = jwtSecurityToken.Claims.FirstOrDefault(claim => claim.Type == "sub")?.Value;
                 var email = jwtSecurityToken.Claims.FirstOrDefault(claim => claim.Type == "email")?.Value;
-
-
+                var displayName = jwtSecurityToken.Claims.FirstOrDefault(claim => claim.Type == "name")?.Value;
 
                 if (string.IsNullOrEmpty(email) && string.IsNullOrEmpty(sub))
                     return new RequestResult<TokenViewModel>(ActionResultType.BadRequest, "Invalid User");
                 if (string.IsNullOrEmpty(email))
                     email = sub + "@google.com";
+                if (string.IsNullOrEmpty(displayName))
+                    displayName = email;
 
                 var user = new AppUser
                 {
                     UserName = email,
                     Email = email,
                     GoogleId = sub,
-                    DisplayName = "",
+                    DisplayName = displayName,
                     IsActive = true,
                     SecurityStamp = Guid.NewGuid().ToString(),
                     CreatedAt = DateTime.UtcNow,
