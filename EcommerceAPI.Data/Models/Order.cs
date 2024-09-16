@@ -46,7 +46,7 @@ namespace EcommerceAPI.Data.Models
         public CaptureStatus CaptureStatus { get; set; }
     }
     public enum CaptureStatus { Pending, Captured, Released }
-    public enum PaymentGateway { Iyzico, MyFatoorah, PayTab }
+    public enum PaymentGateway { MyFatoorah, Iyzico, PayTab }
     public enum OrderDeviceType
     {
         None = 0,
