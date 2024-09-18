@@ -48,6 +48,7 @@ namespace EcommerceAPI.Data.Models
     {
         public SingleBanner[] Banners { get; set; }
         public bool IsFullScreen { get; set; }
+        public bool IsSlider { get; set; }
     }
     public class SingleBanner
     {

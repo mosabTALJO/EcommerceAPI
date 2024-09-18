@@ -74,7 +74,7 @@ namespace EcommerceAPI.Web.Controllers
         [ApiExplorerSettings(GroupName = "fe")]
         public async Task<ActionResult<RequestResult<OrderVM>>> GetMyCartNoUser([FromBody] CartItemVM[] items, [FromQuery] string? couponCode = null)
         {
-            if (Request.Headers.ContainsKey("Currency"))
+            if (!Request.Headers.ContainsKey("Currency"))
                 return BadRequest("Currency Missing");
 
             return GetActionResult(await _mediator.Send(new GetMyCartNoUserQuery
