@@ -6,9 +6,9 @@ namespace EcommerceAPI.Data.Models
     {
         public int Id { get; set; }
         public FrontendSettingType Type { get; set; }
-        public string TextTr { get; set; }
-        public string TextEn { get; set; }
-        public string TextAr { get; set; }
+        public string TextTr { get; set; } = string.Empty;
+        public string TextEn { get; set; } = string.Empty;
+        public string TextAr { get; set; } = string.Empty;
     }
 
     public enum FrontendSettingType
