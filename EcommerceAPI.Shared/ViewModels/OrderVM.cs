@@ -10,6 +10,7 @@ namespace EcommerceAPI.Shared.ViewModels
         public string InvoiceId { get; set; }
         public string CustomerName { get; set; }
         public double TotalSalePrice { get; set; }
+        public double TotalCancelledPrice { get; set; }
         public double DeliveryPrice { get; set; }
         public double? PaidSalePrice { get; set; }
         public int? DiscountCoupunId { get; set; }

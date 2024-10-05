@@ -40,6 +40,7 @@ namespace EcommerceAPI.Core.Orders.Queries
                     //oi.Product.CompanyURL = string.IsNullOrWhiteSpace(oi.Product.CompanyURL) || oi.Product.CompanyURL.StartsWith("https") ? oi.Product.CompanyURL : "https://www.trendyol.com" + (oi.Product.CompanyURL?.StartsWith("/") == true ? "" : "/") + oi.Product.CompanyURL;
                 }
                 o.Ratings = await _ratingService.Queryable().AsNoTracking().Where(r => r.OrderId == o.Id).To<RatingVM>(_mapper).ToArrayAsync();
+                o.TotalCancelledPrice = o.OrderItems.Where(x => x.OrderItemState == Data.Models.OrderItemState.Cancelled).Sum(x => x.TotalSalePrice);
                 return new RequestResult<OrderVM>(o);
             }
         }
