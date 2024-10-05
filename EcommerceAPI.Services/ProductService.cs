@@ -94,7 +94,7 @@ namespace EcommerceAPI.Services
                     _productVariantRepo.Update(dbVariant);
                 }
             }
-            foreach (var pv in p.ProductVariants?.Where(x => x.Id == 0) ?? [])
+            foreach (var pv in p.ProductVariants?.Where(x => x.Id == 0).ToList() ?? [])
             {
                 pv.ProductId = p.Id;
                 pv.SalesPriceUSD = usdRate * pv.SalesPrice;

@@ -66,7 +66,8 @@ namespace EcommerceAPI.Web.Controllers
             {
                 AddressId = addressId,
                 Currency = Request.Headers.TryGetValue("Currency", out StringValues s) ? s.ToString() : null,
-                UserId = User.Identity?.Name
+                UserId = User.Identity?.Name,
+                CountryCode = Request.Headers["Country-Code"].ToString(),
             });
         }
 
