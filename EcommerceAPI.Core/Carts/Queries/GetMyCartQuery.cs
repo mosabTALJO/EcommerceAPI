@@ -6,6 +6,7 @@ using EcommerceAPI.Shared.ViewModels;
 using EcommerceAPI.UnitOfWork.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace EcommerceAPI.Core.Carts.Queries
 {
@@ -14,6 +15,7 @@ namespace EcommerceAPI.Core.Carts.Queries
         public int? AddressId { get; set; }
         public string? UserId { get; set; }
         public string? Currency { get; set; }
+        public string? CountryCode { get; set; }
         public class GetMyCartQueryHandler : IRequestHandler<GetMyCartQuery, RequestResult<OrderVM>>
         {
             private readonly IOrderService _orderService;
@@ -37,19 +39,32 @@ namespace EcommerceAPI.Core.Carts.Queries
 
             public async Task<RequestResult<OrderVM>> Handle(GetMyCartQuery query, CancellationToken cancellationToken)
             {
+                if (string.IsNullOrEmpty(query.Currency))
+                    query.Currency = "TR";
+
                 var cartOrder = _orderService.Queryable().Include(x => x.OrderItems).AsNoTracking()
                     .FirstOrDefault(x => x.OrderStatus == OrderStatus.CartOrder && x.CustomerId == query.UserId);
                 if (cartOrder is null)
-                    return new RequestResult<OrderVM>(ActionResultType.NotFound, "No Cart");
+                {
+                    cartOrder = new Order()
+                    {
+                        OrderStatus = OrderStatus.CartOrder,
+                        CustomerId = query.UserId,
+                        OrderItems = new List<OrderItem>(),
+                        Currency = query.Currency,
+                        Country = query.CountryCode,
+                    };
+
+                    _orderService.CreateOrder(cartOrder);
+                    await _unitOfWork.SaveChangesAsync();
+                }
+
                 var dbOrder = await _orderService.GetOrderDetails(cartOrder.Id);
-                if (dbOrder?.OrderItems?.Any() != true)
-                    return new RequestResult<OrderVM>(ActionResultType.NotFound, "No OrderItems");
-
-                dbOrder.Currency = query.Currency ?? dbOrder.Currency;
-                if (string.IsNullOrEmpty(dbOrder.Currency))
-                    dbOrder.Currency = "TR";
-
-                await CartOrderOperations.CalcualteCartItems(_countryService, _productVariantService, _orderService, _unitOfWork, _collectionService, _currencyRateService, dbOrder);
+                dbOrder.Currency = query.Currency;
+                
+                if (dbOrder.OrderItems.Any())
+                    await CartOrderOperations.CalcualteCartItems(_countryService, _productVariantService, _orderService, _unitOfWork, _collectionService, _currencyRateService, dbOrder);
+                
                 return new RequestResult<OrderVM>(_mapper.Map<OrderVM>(dbOrder));
             }
         }
